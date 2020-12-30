@@ -1,7 +1,8 @@
 
 package org.luwrain.io.filters.textdoc;
 
-public class List implements Container.Item
+public class CommonList implements ContainerItem, ListEntry
 {
     public enum Type {ORDERED, UNORDERED};
+
 }
