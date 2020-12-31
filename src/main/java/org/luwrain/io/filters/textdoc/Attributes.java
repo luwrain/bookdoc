@@ -1,5 +1,5 @@
 
-package org.luwrain.io.filters.msdocx;
+package org.luwrain.io.filters.textdoc;
 
 import com.google.gson.annotations.*;
 
