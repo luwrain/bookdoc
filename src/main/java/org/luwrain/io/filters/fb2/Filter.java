@@ -31,8 +31,67 @@ public final class Filter
     private void onBody(Node body)
     {
 	for(Node n: body.childNodes())
+	    if (isElement(n, "fictionbook"))
+		readChildren((Element)n);
+    }
+
+    private void readChildren(Element root)
+    {
+	for(Node n: root.childNodes())
 	{
-	    System.out.println(n.toString());
+	    if (isElement(n, "section"))
+	    {
+		onSection((Element)n);
+		continue;
+	    }
+	    if (isElement(n, "p"))
+	    {
+		onParagraph((Element)n);
+		continue;
+	    }
+	    printInfo(n);
 	}
+    }
+
+    private void onSection(Element sect)
+    {
+	System.out.println("Section");
+	readChildren(sect);
+    }
+
+    private void onParagraph(Element p)
+    {
+	final StringBuilder b = new StringBuilder();
+	for(Node n: p.childNodes())
+	{
+	    if (n instanceof TextNode)
+	    {
+		final TextNode textNode = (TextNode)n;
+		b.append(textNode.text());
+		continue;
+	    }
+	    System.out.println("p " + n.getClass().getName());
+	}
+	System.out.println(new String(b));
+	System.out.println("");
+    }
+
+    private boolean isElement(Node n, String tagName)
+    {
+	if (!(n instanceof Element))
+	    return false;
+	final Element el = (Element)n;
+	return el.tagName().toLowerCase().equals(tagName);
+    }
+
+    private void printInfo(Node n)
+    {
+	if (n instanceof Element)
+	{
+	    final Element el = (Element)n;
+	    System.out.println(el.tagName());
+	    return;
+	}
+	System.out.println(n.getClass().getName()); 
     }
 }
