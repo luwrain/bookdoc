@@ -19,7 +19,7 @@ public final class Filter
 	     throw new NullPointerException("uri can't be null");
 	 this.uri = uri;
     }
-    
+
     public void read() throws IOException
     {
 	try (final InputStream is = uri.toURL().openStream()) {
