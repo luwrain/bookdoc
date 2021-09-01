@@ -81,7 +81,7 @@ doc.setProperty("charset", charset);
 	final Root root = new Root();
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
-	root.addAll(onNode(jsoupDoc.body(), false));
+	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final org.luwrain.io.filters.textdoc.Document doc = new org.luwrain.io.filters.textdoc.Document(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;
@@ -256,12 +256,11 @@ tagName = name.trim().toLowerCase();
 	    {
 	    commitParagraph(nodes, runs);
 	addAttrs(el);
-	final Heading h = new Heading();
-	builder.addSubnodes(onNode(el, preMode));
-		final org.luwrain.reader.Node n = builder.newSection(tagName.trim().charAt(1) - '0');
-	n.extraInfo = getCurrentExtraInfo();
+	final Heading h = new Heading(tagName.trim().charAt(1) - '0');
+	h.getItems().addAll(onNode(el, preMode));
+	h.setAttributes(getAttributes());
 	releaseExtraInfo();
-	nodes.add(n);
+	nodes.add(h);
 	    }
 	break;
 	case "ul":
@@ -273,13 +272,12 @@ tagName = name.trim().toLowerCase();
 	case "td":
 	    {
 	    commitParagraph(nodes, runs);
-	addExtraInfo(el);
-	final NodeBuilder builder = new NodeBuilder();
-	builder.addSubnodes(onNode(el, preMode));
-	final org.luwrain.reader.Node n = createNode(tagName, builder);
-	n.extraInfo = getCurrentExtraInfo();
+	addAttrs(el);
+	final Heading h = new Heading(1);
+	h.getItems().addAll(onNode(el, preMode));
+	h.setAttributes(getAttributes());
 	releaseExtraInfo();
-	nodes.add(n);
+	nodes.add(h);
 	    }
 	break;
 	case "img":
@@ -300,7 +298,7 @@ tagName = name.trim().toLowerCase();
 	case "font":
 	case "sup":
 	case "label":
-	    addExtraInfo(el);
+	    addAttrs(el);
 	onElementInPara(el, nodes, runs, preMode);
 	releaseExtraInfo();
 	break;
@@ -319,17 +317,17 @@ tagName = name.trim().toLowerCase();
 	    return;
 	if (!preMode)
 	{
-	    runs.add(new org.luwrain.reader.TextRun(text, !hrefStack.isEmpty()?hrefStack.getLast():"", getCurrentExtraInfo()));
+	    runs.add(new TextRun(text, !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
 	    return;
 	}
 	final String[] lines = text.split("\n", -1);
 	if (lines.length == 0)
 	    return;
-		    runs.add(new org.luwrain.reader.TextRun(lines[0], !hrefStack.isEmpty()?hrefStack.getLast():"", getCurrentExtraInfo()));
+		    runs.add(new TextRun(lines[0], !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
 		    for(int i = 1;i < lines.length;i++)
 		    {
 			commitParagraph(nodes, runs);
-					    runs.add(new org.luwrain.reader.TextRun(lines[i], !hrefStack.isEmpty()?hrefStack.getLast():"", getCurrentExtraInfo()));
+			runs.add(new TextRun(lines[i], !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
 		    }
     }
 
@@ -339,12 +337,13 @@ tagName = name.trim().toLowerCase();
 	NullCheck.notNull(runs, "runs");
 	if (runs.isEmpty())
 	    return;
-	final org.luwrain.reader.Paragraph p = NodeBuilder.newParagraph(runs.toArray(new org.luwrain.reader.Run[runs.size()]));
-	p.extraInfo = getCurrentExtraInfo();
+	final Paragraph p = new Paragraph(runs);
+	p.setAttributes(getAttributes());
 	nodes.add(p);
 	runs.clear();
     }
 
+    /*
     private ContainerItem newContainerItem(String tagName, Container builder)
     {
 	NullCheck.notEmpty(tagName, "tagName");
@@ -368,6 +367,7 @@ tagName = name.trim().toLowerCase();
 	    return null;
 	}
     }
+    */
 
     private void onImg(Element el, List<Run> runs)
     {
@@ -375,7 +375,7 @@ tagName = name.trim().toLowerCase();
 	 NullCheck.notNull(runs, "runs");
 	 final String value = el.attr("alt");
 	 if (value != null && !value.isEmpty())
-	     runs.add(new org.luwrain.reader.TextRun("[" + value + "]", !hrefStack.isEmpty()?hrefStack.getLast():"", getCurrentExtraInfo()));
+	     runs.add(new TextRun("[" + value + "]", !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
 	 }
 
     private String extractHref(Element el)
@@ -396,14 +396,14 @@ tagName = name.trim().toLowerCase();
     private void onPre(Element el, List<ContainerItem> items, List<Run> runs)
     {
 	NullCheck.notNull(el, "el");
-	NullCheck.notNull(nodes, "nodes");
+	NullCheck.notNull(items, "items");
 	NullCheck.notNull(runs, "runs");
-	commitParagraph(nodes, runs);
-	addExtraInfo(el);
+	commitParagraph(items, runs);
+	addAttrs(el);
 	try {
-	    for(org.luwrain.reader.Node n: onNode(el, true))
-		nodes.add(n);
-	    commitParagraph(nodes, runs);
+	    for(ContainerItem n: onNode(el, true))
+		items.add(n);
+	    commitParagraph(items, runs);
 	}
 	finally {
 	    releaseExtraInfo();

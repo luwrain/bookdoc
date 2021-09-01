@@ -10,22 +10,24 @@ public final class Paragraph implements ContainerItem
     @SerializedName("runs")
     private List<Run> runs = null;
 
-    public void addRun(Run run)
+    @SerializedName("attr")
+    private Attributes attr = null;
+
+    public Paragraph(List<Run> runs)
     {
-	if (run == null)
-	    throw new NullPointerException("run can't be null");
+	this.runs = new ArrayList<>();
+	this.runs.addAll(runs);
+    }
+
+    public List<Run> getRuns()
+    {
 	if (this.runs == null)
-	    this.runs = new ArrayList();
-	this.runs.add(run);
+	    this.runs = new ArrayList<>();
+	return this.runs;
     }
 
-    public Run[] getRuns()
+    public void setAttributes(Attributes attr)
     {
-	return this.runs != null?this.runs.toArray(new Run[this.runs.size()]):new Run[0];
+	this.attr = attr;
     }
-
-    public void clear()
-    {
-	this.runs = null;
     }
-}
