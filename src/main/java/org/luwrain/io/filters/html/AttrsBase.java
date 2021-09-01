@@ -2,45 +2,45 @@
 package org.luwrain.io.filters.html;
 
 import java.util.*;
-
-import org.jsoup.nodes.*;
-
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.luwrain.io.filters.textdoc.Attributes;
 import org.luwrain.io.filters.*;
 
-class Base
+class AttrsBase
 {
     static final String LOG_COMPONENT = "reader";
 
-    private final LinkedList<org.luwrain.io.filters.textdoc.Attributes> extraInfoStack = new LinkedList<>();
+    private final List<Attributes> attrsStack = new ArrayList<>();
 
     protected void addAttrs(Element el)
     {
 	NullCheck.notNull(el, "el");
 	final org.luwrain.io.filters.textdoc.Attributes attr = new org.luwrain.io.filters.textdoc.Attributes();
 	attr.tagName = el.nodeName();
-	final Attributes a = el.attributes();
+	final org.jsoup.nodes.Attributes a = el.attributes();
 	if (a != null)
-	    for(Attribute aa: a.asList())
+	    for(org.jsoup.nodes.Attribute aa: a.asList())
 	    {
 		final String key = aa.getKey();
 		final String value = aa.getValue();
 		if (key != null && !key.isEmpty() && value != null)
 		    attr.attrMap.put(key, value);
 	    }
-	if (!extraInfoStack.isEmpty())
-	    attr.parentAttr.addAll(extraInfoStack);
-	extraInfoStack.add(attr);
+	if (!attrsStack.isEmpty())
+	    attr.parentAttr.addAll(attrsStack);
+	attrsStack.add(attr);
     }
 
-    protected void releaseExtraInfo()
+    protected void releaseAttrs()
     {
-	if (!extraInfoStack.isEmpty())
-	    extraInfoStack.pollLast();
+	if (!attrsStack.isEmpty())
+	    attrsStack.remove(attrsStack.size() - 1);
     }
 
-    protected org.luwrain.io.filters.textdoc.Attributes getAttributes()
+    protected Attributes getAttributes()
     {
-	return extraInfoStack.isEmpty()?null:extraInfoStack.getLast();
+	return attrsStack.isEmpty()?null:attrsStack.get(attrsStack.size() - 1);
     }
 
     static protected void collectMeta(Element el, Map<String, String> meta)

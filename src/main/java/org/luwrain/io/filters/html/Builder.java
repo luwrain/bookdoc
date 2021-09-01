@@ -12,7 +12,7 @@ import org.jsoup.select.*;
 import org.luwrain.io.filters.*;
 import org.luwrain.io.filters.textdoc.*;
 
-final class Builder extends Base
+final class Builder extends AttrsBase
 {
     static private final String DEFAULT_CHARSET = "UTF-8";
 
@@ -240,7 +240,7 @@ tagName = name.trim().toLowerCase();
 	    commitParagraph(nodes, runs);
 	addAttrs(el);
 	final List<ContainerItem > nn = onNode(el, preMode);
-	releaseExtraInfo();
+	releaseAttrs();
 	nodes.addAll(nn);
 	    }
 	break;
@@ -259,7 +259,7 @@ tagName = name.trim().toLowerCase();
 	final Heading h = new Heading(tagName.trim().charAt(1) - '0');
 	h.getItems().addAll(onNode(el, preMode));
 	h.setAttributes(getAttributes());
-	releaseExtraInfo();
+	releaseAttrs();
 	nodes.add(h);
 	    }
 	break;
@@ -276,7 +276,7 @@ tagName = name.trim().toLowerCase();
 	final Heading h = new Heading(1);
 	h.getItems().addAll(onNode(el, preMode));
 	h.setAttributes(getAttributes());
-	releaseExtraInfo();
+	releaseAttrs();
 	nodes.add(h);
 	    }
 	break;
@@ -300,7 +300,7 @@ tagName = name.trim().toLowerCase();
 	case "label":
 	    addAttrs(el);
 	onElementInPara(el, nodes, runs, preMode);
-	releaseExtraInfo();
+	releaseAttrs();
 	break;
 	default:
 	    Log.warning(LOG_COMPONENT, "unprocessed tag:" + tagName);
@@ -406,7 +406,7 @@ tagName = name.trim().toLowerCase();
 	    commitParagraph(items, runs);
 	}
 	finally {
-	    releaseExtraInfo();
+	    releaseAttrs();
 	}
     }
 }
