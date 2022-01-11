@@ -2,14 +2,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.luwrain</groupId>
-  <artifactId>luwrain-filters</artifactId>
-  <version>1.0.0</version>
-  <name>LUWRAIN text filters</name>
+  <artifactId>luwrain-bookdoc</artifactId>
+  <version>0.2.0</version>
+  <name>LUWRAIN BookDoc library</name>
+  <description>A library for extracting and formatting text of books and documents</description>
   <url>https://books.luwrain.org</url>
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <poi.version>5.0.0</poi.version>
+    <jsoup.version>1.14.1</jsoup.version>
   </properties>
   <dependencies>
     <dependency>
@@ -40,7 +42,7 @@
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
-      <version>1.14.1</version>
+      <version>${jsoup.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
