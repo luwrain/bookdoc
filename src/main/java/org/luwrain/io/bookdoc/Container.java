@@ -3,7 +3,7 @@ package org.luwrain.io.bookdoc;
 
 import java.util.*;
 
-public class Container 
+public class Container implements Node
 {
     private List<ContainerItem> items = null;
 

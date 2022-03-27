@@ -8,12 +8,28 @@ public final class Doc
 static public final String
     PROP_URL = "url",
     PROP_STARTING_REF = "startingref",
-    PROP_DAISY_LOCAL_PATH = "daisy.localpath";
+    PROP_DAISY_LOCAL_PATH = "daisy.localpath",
+    PROP_TITLE = "title";
 
-    private final Node root = null;
+    private final Root root;
     private final Map<String, String> props = new HashMap();
+    private String[] hrefs = new String[0];
 
-    public Node getRoot()
+    public Doc(Root root, String title)
+    {
+	if (root == null)
+	    throw new NullPointerException("root can't be null");
+	this.root = root;
+	if (title != null)
+	    props.put(PROP_TITLE, title);
+    }
+
+    public Doc(Root root)
+    {
+	this(root, null);
+    }
+
+    public Root getRoot()
     {
 	return root;
     }
@@ -36,6 +52,11 @@ static public final String
 
     public String[] getHrefs()
     {
-	return new String[0];
+	return this.hrefs;
+    }
+
+    public void setHrefs(String[] hrefs)
+    {
+	this.hrefs = hrefs.clone();
     }
 }

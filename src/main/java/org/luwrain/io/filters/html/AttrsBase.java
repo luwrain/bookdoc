@@ -4,7 +4,7 @@ package org.luwrain.io.filters.html;
 import java.util.*;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.luwrain.io.filters.textdoc.Attributes;
+import org.luwrain.io.bookdoc.Attributes;
 import org.luwrain.io.filters.*;
 
 class AttrsBase
@@ -16,7 +16,7 @@ class AttrsBase
     protected void addAttrs(Element el)
     {
 	NullCheck.notNull(el, "el");
-	final org.luwrain.io.filters.textdoc.Attributes attr = new org.luwrain.io.filters.textdoc.Attributes();
+	final org.luwrain.io.bookdoc.Attributes attr = new org.luwrain.io.bookdoc.Attributes();
 	attr.tagName = el.nodeName();
 	final org.jsoup.nodes.Attributes a = el.attributes();
 	if (a != null)

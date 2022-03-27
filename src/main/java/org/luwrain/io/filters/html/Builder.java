@@ -10,9 +10,9 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 import org.luwrain.io.filters.*;
-import org.luwrain.io.filters.textdoc.*;
+import org.luwrain.io.bookdoc.*;
 
-final class Builder extends AttrsBase
+public final class Builder extends AttrsBase
 {
     static private final String DEFAULT_CHARSET = "UTF-8";
 
@@ -22,7 +22,7 @@ final class Builder extends AttrsBase
     private final LinkedList<String> hrefStack = new LinkedList();
     private final List<String> allHrefs = new LinkedList();
 
-public org.luwrain.io.filters.textdoc.Document buildDoc(File file, Properties props) throws IOException
+public Doc buildDoc(File file, Properties props) throws IOException
     {
 	NullCheck.notNull(file, "file");
 	NullCheck.notNull(props, "props");
@@ -35,7 +35,7 @@ public org.luwrain.io.filters.textdoc.Document buildDoc(File file, Properties pr
 	}
     }
 
-public org.luwrain.io.filters.textdoc.Document buildDoc(String text, Properties props)
+public Doc buildDoc(String text, Properties props)
 {
     NullCheck.notNull(text, "text");
     NullCheck.notNull(props, "props");
@@ -55,7 +55,7 @@ public org.luwrain.io.filters.textdoc.Document buildDoc(String text, Properties 
     }
     }
 
-public org.luwrain.io.filters.textdoc.Document buildDoc(InputStream is, Properties props) throws IOException
+public Doc buildDoc(InputStream is, Properties props) throws IOException
     {
 	NullCheck.notNull(is, "is");
 	NullCheck.notNull(props, "props");
@@ -69,33 +69,33 @@ throw new IOException("no \'url\' property");
 		    charset = charsetValue; else
 		    charset = DEFAULT_CHARSET;
 	this.jsoupDoc = Jsoup.parse(is, charset, docUrl.toString());
-	final org.luwrain.io.filters.textdoc.Document doc = constructDoc();
+	final Doc doc = constructDoc();
 doc.setProperty("url", docUrl.toString());
 doc.setProperty("contenttype", "FIXMEContentTypes.TEXT_HTML_DEFAULT");
 doc.setProperty("charset", charset);
 	return doc;
     }
 
-	    private org.luwrain.io.filters.textdoc.Document constructDoc()
+	    private Doc constructDoc()
     {
 	final Root root = new Root();
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
 	root.getItems().addAll(onNode(jsoupDoc.body(), false));
-	final org.luwrain.io.filters.textdoc.Document doc = new org.luwrain.io.filters.textdoc.Document(root, jsoupDoc.title());
+	final Doc doc = new Doc(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;
     }
 
-    private List<ContainerItem> onNode(Node node, boolean preMode)
+    private List<ContainerItem> onNode(org.jsoup.nodes.Node node, boolean preMode)
     {
 	NullCheck.notNull(node, "node");
 	final List<ContainerItem> resItems = new ArrayList<>();
 	final List<Run> runs = new ArrayList<>();
-	final List<Node> nodes = node.childNodes();
+	final List<org.jsoup.nodes.Node> nodes = node.childNodes();
 	if (nodes == null)
 	    return Arrays.asList(new ContainerItem[0]);
-	for(Node n: nodes)
+	for(org.jsoup.nodes.Node n: nodes)
 	{
 	    if (n instanceof TextNode)
 	    {
@@ -151,10 +151,10 @@ doc.setProperty("charset", charset);
 	if (href != null)
 	    hrefStack.add(href);
 	try {
-	    final List<Node> nn = el.childNodes();
+	    final List<org.jsoup.nodes.Node> nn = el.childNodes();
 	    if (nn == null)
 		return;
-	    for(Node n: nn)
+	    for(org.jsoup.nodes.Node n: nn)
 	    {
 		if (n instanceof TextNode)
 		{
