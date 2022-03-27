@@ -12,7 +12,6 @@ import org.jsoup.select.*;
 import org.jsoup.parser.*;
 
 import org.luwrain.io.bookdoc.Audio;
-import org.luwrain.io.bookdoc.Run;
 import org.luwrain.io.filters.Log;
 
 final class Smil
@@ -21,17 +20,17 @@ final class Smil
 	LOG_COMPONENT = "daisy",
 	USER_AGENT = "Mozilla/5.0";
 
-        static private final Pattern
-	    TIME_PATTERN = Pattern.compile("^npt=(?<sec>\\d+.\\d+)s$");
+    static private final Pattern
+	TIME_PATTERN = Pattern.compile("^npt=(?<sec>\\d+.\\d+)s$");
 
     static class Entry
     {
-enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
+	enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	final Type type;
 	final String id;
 	final Entry[] entries;
-	private String src = null;
-	private final Audio audioInfo;
+	String src = null;
+	final Audio audioInfo;
 	Entry(Type type)
 	{
 	    if (type == null)
@@ -54,10 +53,10 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	}
 	Entry(Type type, String id, Entry[] entries)
 	{
-	    	    if (type == null)
+	    if (type == null)
 		throw new NullPointerException("info can't be null");
-		    if (id == null)
-			throw new NullPointerException("id can't be null");
+	    if (id == null)
+		throw new NullPointerException("id can't be null");
 	    if (entries == null)
 		throw new NullPointerException("entries can't be null");
 	    this.type = type;
@@ -67,10 +66,10 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	}
 	Entry (Type type, String id, String src)
 	{
-	    	    if (type == null)
+	    if (type == null)
 		throw new NullPointerException("info can't be null");
-		    if (id == null)
-			throw new NullPointerException("id can't be null");
+	    if (id == null)
+		throw new NullPointerException("id can't be null");
 	    if (src == null)
 		throw new NullPointerException("src can't be null");
 	    this.type = type;
@@ -81,11 +80,11 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	}
 	Entry (String id, String src, Audio audioInfo)
 	{
-		    if (id == null)
-			throw new NullPointerException("id can't be null");
+	    if (id == null)
+		throw new NullPointerException("id can't be null");
 	    if (src == null)
 		throw new NullPointerException("src can't be null");
-	    	    	    if (audioInfo == null)
+	    if (audioInfo == null)
 		throw new NullPointerException("audioInfo can't be null");
 	    this.type = Type.AUDIO;
 	    this.id = id;
@@ -134,7 +133,7 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	}
     }
 
-    static public Entry fromUrl(URL url)
+    static Entry fromUrl(URL url)
     {
 	final org.jsoup.nodes.Document doc;
 	try {
@@ -172,7 +171,6 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
     static private Entry[] onNode(Node node)
     {
 	final ArrayList<Entry> res = new ArrayList<>();
-	final ArrayList<Run> runs = new ArrayList<>();
 	final List<Node> childNodes = node.childNodes();
 	for(Node n: childNodes)
 	{
@@ -231,7 +229,6 @@ enum Type { SEQ, PAR, AUDIO, TEXT, FILE};
 	final String src = el.attr("src");
 	return new Entry(Entry.Type.TEXT, id, src);
     }
-
 
     static private long parseTime(String value)
     {
