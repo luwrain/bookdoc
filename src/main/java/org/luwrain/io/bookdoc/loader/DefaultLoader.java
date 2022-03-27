@@ -1,5 +1,5 @@
 
-package org.luwrain.io.bookdoc;
+package org.luwrain.io.bookdoc.loaders;
 
 import java.net.*;
 import java.io.*;
@@ -7,23 +7,24 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.zip.*;
 
-import org.luwrain.core.*;
-import org.luwrain.util.*;
-import org.luwrain.reader.*;
-import org.luwrain.app.reader.books.*;
-import org.luwrain.app.reader.*;
+import org.luwrain.io.bookdoc.*;
+import org.luwrain.io.filters.*;
 
-public final class UrlLoader
+import static org.luwrain.io.bookdoc.loaders.Utils.*;
+
+public final class DefaultLoader extends Loader
 {
-    static private final String LOG_COMPONENT = "reader";
-    static private final String DEFAULT_CHARSET = "UTF-8";
+    static private final String
+	LOG_COMPONENT = "bookdoc",
+	DEFAULT_CHARSET = "UTF-8";
 
-    private final Luwrain luwrain;
+    static private final FileContentType contentType = new FileContentType();
+
     final URL requestedUrl;
     private String requestedContentType = "";
     private String requestedTagRef = "";
     private String requestedCharset = "";
-    private ParagraphStyle requestedTxtParaStyle = ParagraphStyle.EMPTY_LINES;
+    //    private ParagraphStyle requestedTxtParaStyle = ParagraphStyle.EMPTY_LINES;
 
     private URL responseUrl = null;
     private String responseContentType = "";
@@ -34,11 +35,10 @@ public final class UrlLoader
 
     private Path tmpFile;
 
-    public UrlLoader(Luwrain luwrain, URL url) throws MalformedURLException
+    public DefaultLoader(URL url) throws MalformedURLException
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(url, "url");
-	this.luwrain = luwrain;
+	if (url == null)
+	    throw new NullPointerException("url can't be null");
 	this.requestedTagRef = url.getRef();
 	this.requestedUrl = new URL(url.getProtocol(), IDN.toASCII(url.getHost()),
 				    url.getPort(), url.getFile());
@@ -70,20 +70,22 @@ public final class UrlLoader
 	return requestedCharset != null?requestedCharset:"";
     }
 
+    /*
     void setTxtParaStyle(ParagraphStyle paraStyle)
     {
 	NullCheck.notNull(paraStyle, "paraStyle");
 	this.requestedTxtParaStyle = paraStyle;
     }
+    */
 
-    public Result load() throws IOException
+    @Override public Result load() throws IOException
     {
 	try {
 	    Log.debug(LOG_COMPONENT, "fetching " + requestedUrl.toString());
 	    fetch();
 	    this.selectedContentType = requestedContentType.isEmpty()?responseContentType:requestedContentType;
 	    if (selectedContentType.isEmpty() || ContentTypes.isUnknown(selectedContentType))
-		this.selectedContentType = luwrain.suggestContentType(requestedUrl, ContentTypes.ExpectedType.TEXT);
+		this.selectedContentType = contentType.suggestContentType(requestedUrl, ContentTypes.ExpectedType.TEXT);
 	    if (selectedContentType.isEmpty())
 		throw new IOException("Unable to understand the content type");
 	    Log.debug(LOG_COMPONENT, "selected content type is " + selectedContentType);
@@ -93,18 +95,7 @@ public final class UrlLoader
 		this.selectedCharset = this.requestedCharset;
 	    if (this.selectedCharset.isEmpty())
 		this.selectedCharset = DEFAULT_CHARSET;
-	    Log.debug(LOG_COMPONENT, "trying to use extensible document builders, contentType=" + selectedContentType + ", charset=" + selectedCharset);
-	    final DocumentBuilderHook builderHook = new DocumentBuilderHook(luwrain);
-	    final Document hookDoc = builderHook.build(Utils.extractBaseContentType(selectedContentType), new Properties(), tmpFile.toFile());
-	    if (hookDoc != null)
-	    {
-		Log.debug(LOG_COMPONENT, "the builder hook  has constructed the document");
-		res = new Result();
-		res.doc = hookDoc;
-	    } else
-	    {
-		Log.debug(LOG_COMPONENT, "the builder hook failed");
-		final DocumentBuilder builder = new DocumentBuilderLoader().newDocumentBuilder(luwrain, Utils.extractBaseContentType(selectedContentType));
+		final DocumentBuilder builder = DocumentBuilder.newBuilder(extractBaseContentType(selectedContentType));
 		if (builder == null)
 		    throw new IOException("No suitable handler for the content type: " + selectedContentType);
 		res = new Result();
@@ -112,10 +103,9 @@ public final class UrlLoader
 		props.setProperty("url", responseUrl.toString());
 		props.setProperty("charset", selectedCharset);
 		res.doc = builder.buildDoc(tmpFile.toFile(), props);
-	    }
 	    if (res.doc == null)
 		throw new IOException("No suitable handler for the content type: " + selectedContentType);
-	    res.doc.setProperty("hash", getTmpFileHash());
+	    //	    res.doc.setProperty("hash", getTmpFileHash());
 	    res.doc.setProperty("url", responseUrl.toString());
 	    res.doc.setProperty("contenttype", selectedContentType);
 	    if (requestedTagRef != null)
@@ -170,6 +160,7 @@ public final class UrlLoader
 	Files.copy(s, tmpFile, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /*
     private String getTmpFileHash()
     {
 	try {
@@ -187,6 +178,7 @@ public final class UrlLoader
 	    return "";
 	}
     }
+    */
 
     private String makeTitleFromUrl()
     {
@@ -202,11 +194,5 @@ public final class UrlLoader
 	{
 	    return fileName;
 	}
-    }
-
-    static public final class Result
-    {
-	public Book book = null;
-	public Document doc = null;
     }
 }
