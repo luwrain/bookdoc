@@ -1,9 +1,9 @@
 
-package org.luwrain.io.filters.textdoc;
+package org.luwrain.io.bookdoc;
 
 import java.util.*;
 
-import com.google.gson.annotations.*;
+//import com.google.gson.annotations.*;
 
 public final class Attributes
 {

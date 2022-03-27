@@ -1,5 +1,5 @@
 
-package org.luwrain.io.filters.textdoc;
+package org.luwrain.io.bookdoc;
 
 public final class Root extends Container
 {
