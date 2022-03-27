@@ -10,9 +10,9 @@ public abstract class Loader
 {
     public abstract Result load() throws IOException;
 
-    static public Loader newDefaultLoader(URI uri)
+    static public Loader newDefaultLoader(URI uri, String contentType)
     {
-	return new DefaultLoader(uri);
+	return new DefaultLoader(uri, contentType);
     }
 
         static public final class Result

@@ -378,7 +378,7 @@ private Smil.Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl,
     {
 	final Loader loader;
 	try {
-	loader = Loader.newDefaultLoader(url.toURI());
+	    loader = Loader.newDefaultLoader(url.toURI(), null);
 	}
 	catch(URISyntaxException e)
 	{

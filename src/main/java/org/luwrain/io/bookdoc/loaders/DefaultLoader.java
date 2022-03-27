@@ -19,12 +19,10 @@ public final class DefaultLoader extends Loader
 	DEFAULT_CHARSET = "UTF-8";
 
     static private final FileContentType contentType = new FileContentType();
-
     final URL requestedUrl;
-    private String requestedContentType = "";
-    private String requestedTagRef = "";
+    final String requestedContentType;
+    final String requestedTagRef;
     private String requestedCharset = "";
-    //    private ParagraphStyle requestedTxtParaStyle = ParagraphStyle.EMPTY_LINES;
 
     private URL responseUrl = null;
     private String responseContentType = "";
@@ -35,48 +33,22 @@ public final class DefaultLoader extends Loader
 
     private Path tmpFile;
 
-    public DefaultLoader(URL url) throws MalformedURLException
+    public DefaultLoader(URI uri, String contentType)
     {
-	if (url == null)
-	    throw new NullPointerException("url can't be null");
-	this.requestedTagRef = url.getRef();
-	this.requestedUrl = new URL(url.getProtocol(), IDN.toASCII(url.getHost()),
-				    url.getPort(), url.getFile());
+	if (uri == null)
+	    throw new NullPointerException("uri can't be null");
+	this.requestedContentType = contentType != null?contentType:"";
+	try {
+	    final URL url = uri.toURL();
+	    this.requestedTagRef = url.getRef();
+	    this.requestedUrl = new URL(url.getProtocol(), IDN.toASCII(url.getHost()),
+					url.getPort(), url.getFile());
+	}
+	catch(MalformedURLException e)
+	{
+	    throw new IllegalArgumentException(e);
+	}
     }
-
-    public void setContentType(String contentType)
-    {
-	NullCheck.notEmpty(contentType, "contentType");
-	this.requestedContentType = contentType;
-    }
-
-    public String getContentType()
-    {
-	if (selectedContentType != null && !selectedContentType.isEmpty())
-	    return selectedContentType;
-	return requestedContentType != null?requestedContentType:"";
-    }
-
-    public void setCharset(String charset)
-    {
-	NullCheck.notEmpty(charset, "charset");
-	this.requestedCharset = charset;
-    }
-
-    public String getCharset()
-    {
-	if (selectedCharset != null && !selectedCharset.isEmpty())
-	    return selectedCharset;
-	return requestedCharset != null?requestedCharset:"";
-    }
-
-    /*
-    void setTxtParaStyle(ParagraphStyle paraStyle)
-    {
-	NullCheck.notNull(paraStyle, "paraStyle");
-	this.requestedTxtParaStyle = paraStyle;
-    }
-    */
 
     @Override public Result load() throws IOException
     {
