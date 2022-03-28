@@ -79,7 +79,6 @@ doc.setProperty("charset", charset);
 	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
-	System.out.println("proba " + doc.getRoot().getItems().size());
 	return doc;
     }
 
@@ -101,22 +100,19 @@ doc.setProperty("charset", charset);
 	    if (n instanceof Element)
 	    {
 		final Element el = (Element)n;
-		    onElement(el, resItems, runs, preMode);
-		    continue;
+		onElement(el, resItems, runs, preMode);
+		continue;
 	    }
-	    	    if (n instanceof Comment)
-			continue;
-throw new IllegalStateException("unprocessed node of class " + n.getClass().getName());
+	    if (n instanceof Comment)
+		continue;
+	    throw new IllegalStateException("unprocessed node of class " + n.getClass().getName());
 	}
 	commitParagraph(resItems, runs);
 	return resItems;
     }
 
-    private void onElementInPara(Element el, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
+    private void onTextElement(Element el, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
     {
-	NullCheck.notNull(el, "el");
-	NullCheck.notNull(nodes, "nodes");
-	NullCheck.notNull(runs, "runs");
 	final String tagName;
 	{
 	    final String name = el.nodeName();
@@ -153,7 +149,7 @@ throw new IllegalStateException("unprocessed node of class " + n.getClass().getN
 		}
 		if (n instanceof Comment)
 		    continue;
-		Log.warning(LOG_COMPONENT, "encountering unexpected node of class " + n.getClass().getName());
+throw new IllegalStateException("encountering unexpected node of class " + n.getClass().getName());
 	    }
 	}
 	finally
@@ -165,9 +161,6 @@ throw new IllegalStateException("unprocessed node of class " + n.getClass().getN
 
     private void onElement(Element el, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
     {
-	NullCheck.notNull(el, "el");
-	NullCheck.notNull(nodes, "nodes");
-	NullCheck.notNull(runs, "runs");
 	final String tagName;
 	{
 	final String name = el.nodeName();
@@ -284,7 +277,7 @@ tagName = name.trim().toLowerCase();
 	case "sup":
 	case "label":
 	    addAttrs(el);
-	onElementInPara(el, nodes, runs, preMode);
+	onTextElement(el, nodes, runs, preMode);
 	releaseAttrs();
 	break;
 	default:
