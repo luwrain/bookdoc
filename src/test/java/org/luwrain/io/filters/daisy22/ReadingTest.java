@@ -21,7 +21,17 @@ public class ReadingTest extends Assert
 	assertNotNull(loader);
 	final Result res = loader.load();
 	assertNotNull(res);
-	
+assertNotNull(res.doc);
+onDoc(res.doc);
+    }
+
+    private void onDoc(Doc doc)
+    {
+	final Root root = doc.getRoot();
+	assertNotNull(root);
+assertFalse(root.getItems().isEmpty());
+System.out.println("proba " + root.getItems().size());
+System.out.println(root.getItems().get(0).getClass().getName());
     }
 
     private Properties loadProps()

@@ -14,18 +14,17 @@ import org.luwrain.io.bookdoc.*;
 
 public final class Builder extends AttrsBase
 {
-    static private final String DEFAULT_CHARSET = "UTF-8";
+    static private final String
+	DEFAULT_CHARSET = "UTF-8";
 
     private org.jsoup.nodes.Document jsoupDoc = null;
     private URL docUrl = null;
 
     private final LinkedList<String> hrefStack = new LinkedList();
-    private final List<String> allHrefs = new LinkedList();
+    private final List<String> allHrefs = new ArrayList<>();
 
 public Doc buildDoc(File file, Properties props) throws IOException
     {
-	NullCheck.notNull(file, "file");
-	NullCheck.notNull(props, "props");
 	final InputStream is = new FileInputStream(file);
 	try {
 	    return buildDoc(is, props);
@@ -37,8 +36,6 @@ public Doc buildDoc(File file, Properties props) throws IOException
 
 public Doc buildDoc(String text, Properties props)
 {
-    NullCheck.notNull(text, "text");
-    NullCheck.notNull(props, "props");
     final InputStream is = new ByteArrayInputStream(text.getBytes());
     try {
 	try {
@@ -57,8 +54,6 @@ public Doc buildDoc(String text, Properties props)
 
 public Doc buildDoc(InputStream is, Properties props) throws IOException
     {
-	NullCheck.notNull(is, "is");
-	NullCheck.notNull(props, "props");
 		final String urlStr = props.getProperty("url");
 	if (urlStr == null || urlStr.isEmpty())
 throw new IOException("no \'url\' property");
@@ -84,12 +79,12 @@ doc.setProperty("charset", charset);
 	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
+	System.out.println("proba " + doc.getRoot().getItems().size());
 	return doc;
     }
 
     private List<ContainerItem> onNode(org.jsoup.nodes.Node node, boolean preMode)
     {
-	NullCheck.notNull(node, "node");
 	final List<ContainerItem> resItems = new ArrayList<>();
 	final List<Run> runs = new ArrayList<>();
 	final List<org.jsoup.nodes.Node> nodes = node.childNodes();
@@ -101,27 +96,17 @@ doc.setProperty("charset", charset);
 	    {
 		final TextNode textNode = (TextNode)n;
 		onTextNode(textNode, resItems, runs, preMode);
-		/*
-		final String text = textNode.text();
-		if (text != null && !text.isEmpty())
-		    runs.add(new org.luwrain.reader.TextRun(text, !hrefStack.isEmpty()?hrefStack.getLast():"", getCurrentExtraInfo()));
-		*/
 		continue;
 	    }
 	    if (n instanceof Element)
 	    {
 		final Element el = (Element)n;
-		{
-		    onElement((Element)n, resItems, runs, preMode);
+		    onElement(el, resItems, runs, preMode);
 		    continue;
-		}
 	    }
-
 	    	    if (n instanceof Comment)
 			continue;
-			
-	    
-	    		Log.warning(LOG_COMPONENT, "unprocessed node of class " + n.getClass().getName());
+throw new IllegalStateException("unprocessed node of class " + n.getClass().getName());
 	}
 	commitParagraph(resItems, runs);
 	return resItems;

@@ -14,6 +14,15 @@ public class Container implements Node
 	return this.items;
     }
 
+    public void addItem(ContainerItem item)
+    {
+	if (item == null)
+	    throw new NullPointerException("item can't be null");
+	if (this.items == null)
+	    this.items = new ArrayList<>();
+	this.items.add(item);
+    }
+
     public void setAttributes(Attributes attr)
     {
     }
