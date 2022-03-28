@@ -217,23 +217,16 @@ final class Daisy2 implements Book
     {
 	if (docs.containsKey(url))
 	    return;
-	Loader.Result res;
+	Doc doc;
 	try {
-res = loadDoc(url);
+doc = loadDoc(url);
 	}
 	catch(Exception e)
 	{
-	    Log.error("doctree-daisy", "unable to read a document from URL " + url.toString());
-	    e.printStackTrace();
-	    return;
+	    throw new RuntimeException(e);
 	}
-	if (res.book != null)
-	{
-	    Log.debug("doctree-daisy", "the URL " + url + "references a book, not including to current one");
-	    return;
-	}
-	res.doc.setProperty("daisy.localpath", localPath);
-	docs.put(url, res.doc);
+	doc.setProperty("daisy.localpath", localPath);
+	docs.put(url, doc);
     }
 
     static private Smil.Entry findSmilEntryWithText(Smil.Entry entry, String src)
@@ -374,7 +367,7 @@ private Smil.Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl,
 			return !links.isEmpty()?links.getFirst():null;
 		    }
 
-    private Loader.Result loadDoc(URL url) throws IOException
+    private Doc loadDoc(URL url) throws IOException
     {
 	final Loader loader;
 	try {

@@ -19,10 +19,9 @@ public class ReadingTest extends Assert
 	assertNotNull(bookFile);
 	final Loader loader = Loader.newDefaultLoader(new File(bookFile).toURI(), null);
 	assertNotNull(loader);
-	final Result res = loader.load();
-	assertNotNull(res);
-assertNotNull(res.doc);
-onDoc(res.doc);
+	final Doc doc = loader.load();
+	assertNotNull(doc);
+onDoc(doc);
     }
 
     private void onDoc(Doc doc)

@@ -50,7 +50,7 @@ public final class DefaultLoader extends Loader
 	}
     }
 
-    @Override public Result load() throws IOException
+    @Override public Doc load() throws IOException
     {
 	try {
 	    Log.debug(LOG_COMPONENT, "fetching " + requestedUrl.toString());
@@ -60,8 +60,6 @@ public final class DefaultLoader extends Loader
 		this.selectedContentType = contentType.suggestContentType(requestedUrl, ContentTypes.ExpectedType.TEXT);
 	    if (selectedContentType.isEmpty())
 		throw new IOException("Unable to understand the content type");
-	    Log.debug(LOG_COMPONENT, "selected content type is " + selectedContentType);
-	    final Result res;
 	    this.selectedCharset = Utils.extractCharset(selectedContentType);
 	    if (!this.requestedCharset.isEmpty())
 		this.selectedCharset = this.requestedCharset;
@@ -70,24 +68,22 @@ public final class DefaultLoader extends Loader
 		final DocumentBuilder builder = DocumentBuilder.newBuilder(extractBaseContentType(selectedContentType));
 		if (builder == null)
 		    throw new IOException("No suitable handler for the content type: " + selectedContentType);
-		res = new Result();
 		final Properties props = new Properties();
 		props.setProperty("url", responseUrl.toString());
 		props.setProperty("charset", selectedCharset);
-		res.doc = builder.buildDoc(tmpFile.toFile(), props);
-	    if (res.doc == null)
+		final Doc doc = builder.buildDoc(tmpFile.toFile(), props);
+	    if (doc == null)
 		throw new IOException("No suitable handler for the content type: " + selectedContentType);
 	    //	    res.doc.setProperty("hash", getTmpFileHash());
-	    res.doc.setProperty("url", responseUrl.toString());
-	    res.doc.setProperty("contenttype", selectedContentType);
+	    doc.setProperty("url", responseUrl.toString());
+	    doc.setProperty("contenttype", selectedContentType);
 	    if (requestedTagRef != null)
-		res.doc.setProperty("startingref", requestedTagRef);
-	    return res;
+		doc.setProperty("startingref", requestedTagRef);
+	    return doc;
 	}
 	finally {
 	    if (tmpFile != null)
 	    {
-		Log.debug(LOG_COMPONENT, "deleting temporary file " + tmpFile.toString());
 		Files.delete(tmpFile);
 		tmpFile = null;
 	    }
