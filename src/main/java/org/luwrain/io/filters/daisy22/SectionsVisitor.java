@@ -3,36 +3,24 @@ package org.luwrain.io.filters.daisy22;
 
 import java.util.*;
 import org.luwrain.io.bookdoc.*;
+import org.luwrain.io.bookdoc.Book.*;
 
 class SectionsVisitor extends Visitor
 {
-    final List<Book.Section> sections = new ArrayList<>();
+    final List<Section> sections = new ArrayList<>();
 
-    /*
-    @Override public void visit(Section node)
+    @Override public void visit(Heading h)
     {
-	final LinkedList<String> hrefs = new LinkedList<String>();
-	collectHrefs(node, hrefs);
+	final List<String> hrefs = new ArrayList<>();
+	final Visitor hrefsVisitor = new Visitor(){
+		@Override public void visit(Run run)
+		{
+		    if (run.getHref() != null && !run.getHref().isEmpty())
+			hrefs.add(run.getHref());
+		}
+	    };
+	Visitor.walk(h, hrefsVisitor);
 	if (!hrefs.isEmpty())
-	    sections.add(new Book.Section(node.getSectionLevel(), node.getCompleteText().trim(), hrefs.getFirst()));
+	    sections.add(new Section(h.getLevel(), h.getText(), hrefs.get(0)));
     }
-    */
-
-
-    /*
-    static private void collectHrefs(Node node, LinkedList<String> hrefs)
-    {
-	NullCheck.notNull(node, "node");
-	NullCheck.notNull(hrefs, "hrefs");
-	if (node instanceof Paragraph)
-	{
-	    final Paragraph para = (Paragraph)node;
-	    for(Run r: para.getRuns())
-		    if (r.href() != null && !r.href().isEmpty())
-			hrefs.add(r.href());
-	} else
-	    for(Node n: node.getSubnodes())
-		    collectHrefs(n, hrefs);
-    }
-    */
 }

@@ -39,4 +39,12 @@ public interface Book
 	}
     }
 
+    static public Book newDaisy22(Doc nccDoc)
+    {
+	if (nccDoc == null)
+	    throw new NullPointerException("nccDoc can't be null");
+	final org.luwrain.io.filters.daisy22.Daisy22 d = new org.luwrain.io.filters.daisy22.Daisy22();
+	d.init(nccDoc);
+	return d;
+    }
 }

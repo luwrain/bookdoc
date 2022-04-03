@@ -1,17 +1,10 @@
 
 package org.luwrain.io.bookdoc;
 
-import com.google.gson.annotations.*;
-
 public class TextRun implements Run
 {
-    @SerializedName("atext")
     private String text = null;
-
-    @SerializedName("href")
     private String href = null;
-
-    @SerializedName("attr")
     private Attributes attr = null;
 
     public TextRun(String text, String href, Attributes attr)
@@ -19,5 +12,20 @@ public class TextRun implements Run
 	this.text = text;
 	this.href = href;
 	this.attr = attr;
+    }
+
+    public String getText()
+    {
+	return text;
+    }
+
+    public String getHref()
+    {
+	return href;
+    }
+
+    @Override public String toString()
+    {
+	return text != null?text:"";
     }
 }

@@ -5,12 +5,10 @@ import java.util.*;
 
 import com.google.gson.annotations.*;
 
-public final class Paragraph implements ContainerItem
+public final class Paragraph extends Node implements ContainerItem
 {
-    @SerializedName("runs")
     private List<Run> runs = null;
 
-    @SerializedName("attr")
     private Attributes attr = null;
 
     public Paragraph(List<Run> runs)

@@ -3,7 +3,6 @@ package org.luwrain.io.bookdoc;
 
 import java.util.*;
 
-public final class TableRow
+public final class TableRow extends Container implements ContainerItem
 {
-    private final List<TableCell> cells = new ArrayList();    
 }

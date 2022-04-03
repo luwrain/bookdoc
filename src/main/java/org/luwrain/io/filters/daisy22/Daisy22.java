@@ -11,7 +11,7 @@ import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.Book.Section;
 import org.luwrain.io.filters.daisy22.Smil.Entry;
 
-final class Daisy2 implements Book
+public final class Daisy22 implements Book
 {
     static private final String
 	LOG_COMPONENT = "daisy";
@@ -97,8 +97,6 @@ final class Daisy2 implements Book
 
     @Override public Audio findAudioForId(String id)
     {
-	NullCheck.notNull(id, "id");
-	Log.debug("doctree-daisy", "searching audio for " + id);
 	for(Map.Entry<URL, Smil.Entry> e: smils.entrySet())
 	{
 	    final Smil.Entry entry = findSmilEntryWithText(e.getValue(), id);
@@ -115,8 +113,6 @@ final class Daisy2 implements Book
 
     @Override public     String findTextForAudio(String audioFileUrl, long msec)
     {
-	NullCheck.notNull(audioFileUrl, "audioFileUrl");
-	Log.debug("doctree-daisy", "text for " + audioFileUrl + " at " + msec);
 	for(Map.Entry<URL, Smil.Entry> e: smils.entrySet())
 	{
 	    final Smil.Entry entry = findSmilEntryWithAudio(e.getValue(), audioFileUrl, msec);
@@ -131,8 +127,9 @@ final class Daisy2 implements Book
 	return null;
     }
 
-    void init(Doc nccDoc) throws IOException
+    public void init(Doc nccDoc)
     {
+	try {
 	final URL nccDocUrl = new URL(nccDoc.getProperty(Doc.PROP_URL));
 		nccDoc.setProperty(Doc.PROP_DAISY_LOCAL_PATH, nccDocUrl.getFile());//FIXME:Leave only base file name
 	final String[] allHrefs = nccDoc.getHrefs();
@@ -187,6 +184,11 @@ final class Daisy2 implements Book
 	    Log.debug("doctree-daisy", "book path set to " + bookPath.toString()); else
 	    Log.debug("doctree-daisy", "book path isn\'t set");
 	*/
+	}
+	catch(IOException e)
+	{
+	    throw new RuntimeException(e);
+	}
     }
 
     @Override public Book.Section[] getBookSections()

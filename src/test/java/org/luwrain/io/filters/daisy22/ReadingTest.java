@@ -8,6 +8,7 @@ import org.junit.*;
 
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.Loader.*;
+import org.luwrain.io.bookdoc.Book.*;
 
 public class ReadingTest extends Assert
 {
@@ -22,6 +23,10 @@ public class ReadingTest extends Assert
 	final Doc doc = loader.load();
 	assertNotNull(doc);
 onDoc(doc);
+final Book daisy = Book.newDaisy22(doc);
+final Section[] sect = daisy.getBookSections();
+assertNotNull(sect);
+assertEquals(1, sect.length);
     }
 
     private void onDoc(Doc doc)
