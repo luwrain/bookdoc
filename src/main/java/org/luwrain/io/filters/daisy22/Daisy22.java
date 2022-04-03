@@ -18,7 +18,7 @@ public final class Daisy22 implements Book
 	LOG_COMPONENT = "daisy";
 
     protected final Map<String, Doc> docs = new HashMap<>();
-    protected final Map<URL, Entry> smils = new HashMap<>();
+    protected final Map<String, Entry> smils = new HashMap<>();
     protected Doc nccDoc = null;
     protected URL nccDocUrl = null;
     protected Book.Section[] bookSections = new Book.Section[0];
@@ -60,11 +60,11 @@ public final class Daisy22 implements Book
 	    {
 		if (requested.type == Smil.Entry.Type.PAR || requested.type == Smil.Entry.Type.SEQ)
 		{
-		    final LinkedList<String> links = new LinkedList<String>();
+		    final List<String> links = new ArrayList<>();
 		    collectTextStartingAtEntry(requested, links);
 		    if (!links.isEmpty())
 		    {
-			final String link = links.getFirst();
+			final String link = links.get(0);
 			return getDoc(link);
 		    }
 		    return null;
@@ -98,7 +98,7 @@ public final class Daisy22 implements Book
 
     @Override public Audio findAudioForId(String id)
     {
-	for(Map.Entry<URL, Smil.Entry> e: smils.entrySet())
+	for(Map.Entry<String, Entry> e: smils.entrySet())
 	{
 	    final Smil.Entry entry = findSmilEntryWithText(e.getValue(), id);
 	    if (entry != null)
@@ -114,15 +114,15 @@ public final class Daisy22 implements Book
 
     @Override public     String findTextForAudio(String audioFileUrl, long msec)
     {
-	for(Map.Entry<URL, Smil.Entry> e: smils.entrySet())
+	for(Map.Entry<String, Entry> e: smils.entrySet())
 	{
 	    final Smil.Entry entry = findSmilEntryWithAudio(e.getValue(), audioFileUrl, msec);
 	    if (entry != null)
 	    {
-		final LinkedList<String> links = new LinkedList<String>();
+		final List<String> links = new ArrayList<>();
 		collectTextStartingAtEntry(entry, links);
 		if (links.size() > 0)
-		    return links.getFirst();
+		    return links.get(0);
 	    }
 	}
 	return null;
@@ -140,7 +140,7 @@ public final class Daisy22 implements Book
 		URL url = new URL(nccDocUrl, h);
 		url = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
 		if (url.getFile().toLowerCase().endsWith(".smil"))
-		    loadSmil(url, textSrcs); else
+		    loadSmil(url.toString(), textSrcs); else
 		    textSrcs.add(h);
 	}
 	for(String s: textSrcs)
@@ -197,23 +197,14 @@ public final class Daisy22 implements Book
 	return bookSections;
     }
 
-    private void loadSmil(URL url, List<String> textSrcs)
+    private void loadSmil(String url, List<String> textSrcs)
     {
-	NullCheck.notNull(url, "url");
 	if (smils.containsKey(url))
 	    return;
-	final Smil.Entry smil = Smil.fromUrl(url);
-	if (smil == null)
-	    throw new RuntimeException("Unable to load SMIL from " + url.toString());
+	final Entry smil = Smil.fromUrl(url);
 	smils.put(url, smil);
 	smil.saveTextSrc(textSrcs);
-	try {
 	    smil.allSrcToUrls(url); 
-	}
-	catch(MalformedURLException e)
-	{
-	    e.printStackTrace();
-	}
     }
 
     private void loadDoc(String localPath, String url)
@@ -333,10 +324,8 @@ private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long
 	}
     }
 
-    static private void collectTextStartingAtEntry(Smil.Entry entry, LinkedList<String> links)
+    static private void collectTextStartingAtEntry(Entry entry, List<String> links)
     {
-	NullCheck.notNull(entry, "entry");
-	NullCheck.notNull(links, "links");
 	switch(entry.type)
 	{
 	case AUDIO:
@@ -345,7 +334,7 @@ private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long
 	    links.add(entry.src);
 	    return;
 	case PAR:
-		for(Smil.Entry e: entry.entries)
+		for(Entry e: entry.entries)
 		    collectTextStartingAtEntry(e, links);
 	    return;
 	case FILE:

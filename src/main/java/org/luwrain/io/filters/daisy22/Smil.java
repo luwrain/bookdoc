@@ -101,13 +101,20 @@ final class Smil
 		for(Entry e: entries)
 		    e.saveTextSrc(res);
 	}
-	void allSrcToUrls(URL base) throws MalformedURLException
+	void allSrcToUrls(String base)
 	{
-	    if (src != null && !src.isEmpty())
-		src = new URL(base, src).toString();
-	    if (entries != null)
-		for(Entry e: entries)
+	    try {
+		final URL baseUrl = new URL(base);
+		if (src != null && !src.isEmpty())
+		    src = new URL(baseUrl, src).toString();
+		if (entries != null)
+		    for(Entry e: entries)
 		    e.allSrcToUrls(base);
+	    }
+	    catch(MalformedURLException e)
+	    {
+		throw new IllegalArgumentException(e);
+	    }
 	}
 	Entry findById(String id)
 	{
@@ -133,10 +140,11 @@ final class Smil
 	}
     }
 
-    static Entry fromUrl(URL url)
+    static Entry fromUrl(String href)
     {
 	final org.jsoup.nodes.Document doc;
 	try {
+	    final URL url = new URL(href);
 	    if (!url.getProtocol().equals("file"))
 	    {
 		final Connection con=Jsoup.connect(url.toString());
@@ -148,8 +156,7 @@ final class Smil
 	}	
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to fetch SMIL from URL " + url.toString() + ":" + e.getClass().getName() + ":" + e.getMessage());
-	    return null;
+throw new RuntimeException("Unable to fetch SMIL from URL: " + href + ": " + e.getClass().getName() + ": " + e.getMessage());
 	}
 	return new Entry(Entry.Type.FILE, onNode(doc.body()));
     }
