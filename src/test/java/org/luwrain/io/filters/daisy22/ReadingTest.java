@@ -26,7 +26,7 @@ onDoc(doc);
 final Book daisy = Book.newDaisy22(doc);
 final Section[] sect = daisy.getBookSections();
 assertNotNull(sect);
-assertEquals(1, sect.length);
+assertEquals(164, sect.length);
     }
 
     private void onDoc(Doc doc)
@@ -34,8 +34,6 @@ assertEquals(1, sect.length);
 	final Root root = doc.getRoot();
 	assertNotNull(root);
 assertFalse(root.getItems().isEmpty());
-System.out.println("proba " + root.getItems().size());
-System.out.println(root.getItems().get(0).getClass().getName());
     }
 
     private Properties loadProps()

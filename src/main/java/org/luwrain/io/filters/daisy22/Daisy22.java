@@ -8,6 +8,7 @@ import java.nio.file.*;
 
 import org.luwrain.io.filters.*;
 import org.luwrain.io.bookdoc.*;
+
 import org.luwrain.io.bookdoc.Book.Section;
 import org.luwrain.io.filters.daisy22.Smil.Entry;
 
@@ -16,8 +17,8 @@ public final class Daisy22 implements Book
     static private final String
 	LOG_COMPONENT = "daisy";
 
-    protected final Map<URL, Doc> docs = new HashMap<>();
-    protected final Map<URL, Smil.Entry> smils = new HashMap<>();
+    protected final Map<String, Doc> docs = new HashMap<>();
+    protected final Map<URL, Entry> smils = new HashMap<>();
     protected Doc nccDoc = null;
     protected URL nccDocUrl = null;
     protected Book.Section[] bookSections = new Book.Section[0];
@@ -146,7 +147,7 @@ public final class Daisy22 implements Book
 	{
 		URL url = new URL(nccDocUrl, s);
 		url = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
-		loadDoc(s, url);
+		loadDoc(s, url.toString());
 	    }
 	this.nccDoc = nccDoc;
 	this.nccDocUrl = nccDocUrl;
@@ -215,26 +216,29 @@ public final class Daisy22 implements Book
 	}
     }
 
-    private void loadDoc(String localPath, URL url)
+    private void loadDoc(String localPath, String url)
     {
 	if (docs.containsKey(url))
 	    return;
-	Doc doc;
-	try {
-doc = loadDoc(url);
-	}
-	catch(Exception e)
-	{
-	    throw new RuntimeException(e);
-	}
+final Doc doc = loadDoc(url);
 	doc.setProperty("daisy.localpath", localPath);
 	docs.put(url, doc);
     }
 
-    static private Smil.Entry findSmilEntryWithText(Smil.Entry entry, String src)
+        private Doc loadDoc(String url)
     {
-	NullCheck.notNull(entry, "entry");
-	NullCheck.notNull(src, "src");
+		try {
+	final Loader loader = Loader.newDefaultLoader(new URI(url), null);
+return loader.load();
+		}
+	catch(Exception e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    static private Entry findSmilEntryWithText(Smil.Entry entry, String src)
+    {
 	switch(entry.type )
 	{
 	case TEXT:
@@ -264,15 +268,12 @@ doc = loadDoc(url);
 	    }
 	    return null;
 	default:
-	    Log.warning("doctree-daisy", "unknown SMIL entry type:" + entry.type);
-	    return null;
+	    throw new IllegalStateException("Unknown SMIL entry type: " + entry.type);
 	}
     }
 
-private Smil.Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long msec)
+private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long msec)
     {
-	NullCheck.notNull(entry, "entry");
-	NullCheck.notNull(audioFileUrl, "audioFileUrl");
 	switch(entry.type )
 	{
 	case AUDIO:
@@ -353,7 +354,7 @@ private Smil.Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl,
 		collectTextStartingAtEntry(entry.entries[0], links);
 	    return;
 	default:
-	    Log.warning("doctree-daisy", "unknown SMIL entry type:" + entry.type);
+	    throw new IllegalStateException("Unknown SMIL entry type: " + entry.type);
 	}
     }
 
@@ -368,17 +369,4 @@ private Smil.Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl,
 			collectTextStartingAtEntry(entry, links);
 			return !links.isEmpty()?links.getFirst():null;
 		    }
-
-    private Doc loadDoc(URL url) throws IOException
-    {
-	final Loader loader;
-	try {
-	    loader = Loader.newDefaultLoader(url.toURI(), null);
-	}
-	catch(URISyntaxException e)
-	{
-	    throw new IllegalArgumentException(e);
-	}
-return loader.load();
-    }
 }
