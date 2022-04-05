@@ -16,7 +16,7 @@ interface DocumentBuilder
 	    return new DocumentBuilder(){
 		@Override public     Doc buildDoc(File file, Properties props) throws IOException
 		{
-		    return new org.luwrain.io.filters.html.Builder().buildDoc(file, props);
+		    return new org.luwrain.io.filters.html2.Builder().buildDoc(file, props);
 		}
 	    };
 	return null;

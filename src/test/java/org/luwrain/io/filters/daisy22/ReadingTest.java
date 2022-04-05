@@ -22,18 +22,20 @@ public class ReadingTest extends Assert
 	assertNotNull(loader);
 	final Doc doc = loader.load();
 	assertNotNull(doc);
-onDoc(doc);
+		final Root root = doc.getRoot();
+	assertNotNull(root);
+assertFalse(root.getItems().isEmpty());
 final Book daisy = Book.newDaisy22(doc);
 final Section[] sect = daisy.getBookSections();
 assertNotNull(sect);
-assertEquals(164, sect.length);
-    }
-
-    private void onDoc(Doc doc)
-    {
-	final Root root = doc.getRoot();
-	assertNotNull(root);
-assertFalse(root.getItems().isEmpty());
+assertFalse(sect.length == 0);
+for(Section s: sect)
+{
+    assertNotNull(s.href);
+    assertFalse(s.href.isEmpty());
+    final Doc d = daisy.getDoc(s.href);
+    assertNotNull(d);
+}
     }
 
     private Properties loadProps()

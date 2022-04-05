@@ -53,7 +53,6 @@ public final class DefaultLoader extends Loader
     @Override public Doc load() throws IOException
     {
 	try {
-	    Log.debug(LOG_COMPONENT, "fetching " + requestedUrl.toString());
 	    fetch();
 	    this.selectedContentType = requestedContentType.isEmpty()?responseContentType:requestedContentType;
 	    if (selectedContentType.isEmpty() || ContentTypes.isUnknown(selectedContentType))
@@ -124,7 +123,6 @@ public final class DefaultLoader extends Loader
     {
 	NullCheck.notNull(s, "s");
 	tmpFile = Files.createTempFile("tmplwr-reader-", ".dat");
-	Log.debug(LOG_COMPONENT, "creating temporary file " + tmpFile.toString());
 	Files.copy(s, tmpFile, StandardCopyOption.REPLACE_EXISTING);
     }
 

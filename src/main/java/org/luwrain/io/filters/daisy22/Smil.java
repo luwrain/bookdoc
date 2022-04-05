@@ -118,12 +118,15 @@ final class Smil
 	}
 	Entry findById(String id)
 	{
+	    Log.debug("proba", "ID " + id);
 	    if (this.id != null && this.id.equals(id))
 		return this;
 	    if (entries == null)
 		return null;
+	    Log.debug("proba", "" + entries.length);
 	    for(Entry e: entries)
 	    {
+		Log.debug("proba", "Checking " + e.id );
 		final Entry res = e.findById(id);
 		if (res != null)
 		    return res;
@@ -140,56 +143,33 @@ final class Smil
 	}
     }
 
-    static Entry fromUrl(String href)
+    static Entry fromUrl(String href) throws IOException
     {
 	final org.jsoup.nodes.Document doc;
-	try {
-	    final URL url = new URL(href);
-	    if (!url.getProtocol().equals("file"))
-	    {
-		final Connection con=Jsoup.connect(url.toString());
-		con.userAgent(USER_AGENT);
-		con.timeout(30000);
-		doc = con.get();
-	    } else
-		doc = Jsoup.parse(url.openStream(), "utf-8", "", Parser.xmlParser());
-	}	
-	catch(Exception e)
+	final URL url = new URL(href);
+	if (!url.getProtocol().equals("file"))
 	{
-throw new RuntimeException("Unable to fetch SMIL from URL: " + href + ": " + e.getClass().getName() + ": " + e.getMessage());
-	}
+	    final Connection con=Jsoup.connect(href);
+	    con.userAgent(USER_AGENT);
+	    con.timeout(30000);
+	    doc = con.get();
+	} else
+	    doc = Jsoup.parse(url.openStream(), "utf-8", "", Parser.xmlParser());
 	return new Entry(Entry.Type.FILE, onNode(doc.body()));
     }
 
-    static Entry fromFile(java.io.File file)
+    static Entry fromFile(java.io.File file) throws IOException
     {
-	final org.jsoup.nodes.Document doc;
-	try {
-	    doc = Jsoup.parse(new FileInputStream(file), "utf-8", "", Parser.xmlParser());
-	}
-	catch(Exception e)
-	{
-	    Log.error(LOG_COMPONENT, "unable to parse " + file.getAbsolutePath() + ":" + e.getClass().getName() + ":" + e.getMessage());
-	    return null;
-	}
+	final org.jsoup.nodes.Document doc = Jsoup.parse(new FileInputStream(file), "utf-8", "", Parser.xmlParser());
 	return new Entry(Entry.Type.FILE, onNode(doc.body()));
     }
 
     static private Entry[] onNode(Node node)
     {
-	final ArrayList<Entry> res = new ArrayList<>();
-	final List<Node> childNodes = node.childNodes();
-	for(Node n: childNodes)
+	final List<Entry> res = new ArrayList<>();
+	for(Node n: node.childNodes())
 	{
 	    final String name = n.nodeName();
-	    if (n instanceof TextNode)
-	    {
-		final TextNode textNode = (TextNode)n;
-		final String text = textNode.text();
-		if (!text.trim().isEmpty())
-		    Log.warning(LOG_COMPONENT, "unexpected text content:" + text);
-		continue;
-	    }
 	    if (n instanceof Element)
 	    {
 		final Element el = (Element)n;
@@ -208,7 +188,7 @@ throw new RuntimeException("Unable to fetch SMIL from URL: " + href + ": " + e.g
 		    res.add(onText(el));
 		    break;
 		default:
-		    Log.warning(LOG_COMPONENT, "unknown tag:" + name);
+		    throw new RuntimeException("Unknown SMIL tag: " + name);
 		}
 		continue;
 	    }

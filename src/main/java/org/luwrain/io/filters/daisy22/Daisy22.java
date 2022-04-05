@@ -11,6 +11,7 @@ import org.luwrain.io.bookdoc.*;
 
 import org.luwrain.io.bookdoc.Book.Section;
 import org.luwrain.io.filters.daisy22.Smil.Entry;
+import org.luwrain.io.filters.daisy22.Smil.Entry.Type;
 
 public final class Daisy22 implements Book
 {
@@ -40,59 +41,59 @@ public final class Daisy22 implements Book
 
     @Override public Doc getDoc(String href)
     {
-	final URL url, noRefUrl;
+	Log.debug(LOG_COMPONENT, "Requested " + href);
+	final String urlStr, noRefUrlStr, ref;
 	try {
-	    url = new URL(href);
+	    	final URL
+		url = new URL(href),
 	    noRefUrl = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
+		urlStr = url.toString();
+	noRefUrlStr = noRefUrl.toString();
+	ref = url.getRef();
 	}
 	catch(MalformedURLException e)
 	{
 	    throw new IllegalArgumentException(e);
 	}
-	final String
-	urlStr = url.toString(),
-	noRefUrlStr = noRefUrl.toString();
-	if (smils.containsKey(noRefUrl))
+	//Checking the SMILs for the requested URL
+	if (smils.containsKey(noRefUrlStr))
 	{
-	    final Smil.Entry entry = smils.get(noRefUrl);
-	    final Smil.Entry requested = entry.findById(url.getRef());
+	    Log.debug(LOG_COMPONENT, "in map");
+	    final Entry entry = smils.get(noRefUrlStr);
+	    final Entry requested = entry.findById(ref);
+	    //There is an appropriate SMIL entry
 	    if (requested != null)
 	    {
-		if (requested.type == Smil.Entry.Type.PAR || requested.type == Smil.Entry.Type.SEQ)
+		Log.debug(LOG_COMPONENT, "has requested " + requested.type.toString());
+		if (requested.type == Type.PAR || requested.type == Type.SEQ)
 		{
 		    final List<String> links = new ArrayList<>();
 		    collectTextStartingAtEntry(requested, links);
+		    Log.debug(LOG_COMPONENT, "links " + links.size());
 		    if (!links.isEmpty())
-		    {
-			final String link = links.get(0);
-			return getDoc(link);
-		    }
+			return getDoc(links.get(0));
 		    return null;
 		} else
-		if (requested.type == Smil.Entry.Type.TEXT)
+		if (requested.type == Type.TEXT)
 		    return getDoc(requested.src); else
-		{
-		    Log.warning("doctree-daisy", "URL " + href + " points to a SMIL entry, but its type is " + requested.type);
 		    return null;
-		}
 	    }
-	} //smils;
-	if (docs.containsKey(noRefUrl))
+	} //SMILs
+	if (docs.containsKey(noRefUrlStr))
 	{
-	    final Doc res = docs.get(noRefUrl);
-	    if (res != null && url.getRef() != null)
-		res.setProperty(Doc.PROP_STARTING_REF, url.getRef()); else
+	    final Doc res = docs.get(noRefUrlStr);
+	    if (res != null && ref != null)
+		res.setProperty(Doc.PROP_STARTING_REF, ref); else
 		res.setProperty("startingref", "");
 	    return res;
 	}
 	if (nccDoc.getProperty(Doc.PROP_URL).equals(urlStr))
 	{
-	    if (url.getRef() != null)
-		nccDoc.setProperty("startingref", url.getRef()); else
+	    if (ref != null)
+		nccDoc.setProperty(Doc.PROP_STARTING_REF, ref); else
 		nccDoc.setProperty("startingref", "");
 	    return nccDoc;
 	}
-	Log.warning("doctree", "unable to find a document in Daisy2 book for URL:" + url.toString());
 	return null;
     }
 
@@ -134,7 +135,8 @@ public final class Daisy22 implements Book
 	final URL nccDocUrl = new URL(nccDoc.getProperty(Doc.PROP_URL));
 		nccDoc.setProperty(Doc.PROP_DAISY_LOCAL_PATH, nccDocUrl.getFile());//FIXME:Leave only base file name
 	final String[] allHrefs = nccDoc.getHrefs();
-	final LinkedList<String> textSrcs = new LinkedList<String>();
+	Log.debug(LOG_COMPONENT, "ncc refs " + allHrefs.length);
+	final List<String> textSrcs = new ArrayList<>();
 	for(String h: allHrefs)
 	{
 		URL url = new URL(nccDocUrl, h);
@@ -147,6 +149,7 @@ public final class Daisy22 implements Book
 	{
 		URL url = new URL(nccDocUrl, s);
 		url = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
+		Log.debug(LOG_COMPONENT, "loading doc " + url.toString());
 		loadDoc(s, url.toString());
 	    }
 	this.nccDoc = nccDoc;
@@ -201,31 +204,33 @@ public final class Daisy22 implements Book
     {
 	if (smils.containsKey(url))
 	    return;
+	try {
 	final Entry smil = Smil.fromUrl(url);
 	smils.put(url, smil);
 	smil.saveTextSrc(textSrcs);
-	    smil.allSrcToUrls(url); 
+	    smil.allSrcToUrls(url);
+	}
+	catch(IOException e)
+	{
+	    throw new RuntimeException(e);
+	}
     }
 
     private void loadDoc(String localPath, String url)
     {
 	if (docs.containsKey(url))
 	    return;
-final Doc doc = loadDoc(url);
-	doc.setProperty("daisy.localpath", localPath);
-	docs.put(url, doc);
-    }
-
-        private Doc loadDoc(String url)
-    {
+	final Doc doc;
 		try {
 	final Loader loader = Loader.newDefaultLoader(new URI(url), null);
-return loader.load();
+doc = loader.load();
 		}
 	catch(Exception e)
 	{
 	    throw new RuntimeException(e);
 	}
+	doc.setProperty("daisy.localpath", localPath);
+	docs.put(url, doc);
     }
 
     static private Entry findSmilEntryWithText(Smil.Entry entry, String src)
