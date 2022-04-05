@@ -118,15 +118,12 @@ final class Smil
 	}
 	Entry findById(String id)
 	{
-	    Log.debug("proba", "ID " + id);
 	    if (this.id != null && this.id.equals(id))
 		return this;
 	    if (entries == null)
 		return null;
-	    Log.debug("proba", "" + entries.length);
 	    for(Entry e: entries)
 	    {
-		Log.debug("proba", "Checking " + e.id );
 		final Entry res = e.findById(id);
 		if (res != null)
 		    return res;

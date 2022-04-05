@@ -76,6 +76,7 @@ doc.setProperty("charset", charset);
 	final Root root = new Root();
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
+	addAttrs(jsoupDoc.body());
 	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
@@ -86,10 +87,9 @@ doc.setProperty("charset", charset);
     {
 	final List<ContainerItem> resItems = new ArrayList<>();
 	final List<Run> runs = new ArrayList<>();
-	final List<org.jsoup.nodes.Node> nodes = node.childNodes();
-	if (nodes == null)
-	    return Arrays.asList(new ContainerItem[0]);
-	for(org.jsoup.nodes.Node n: nodes)
+	if (node.childNodes() == null)
+	    	    return Arrays.asList(new ContainerItem[0]);
+	for(org.jsoup.nodes.Node n: node.childNodes())
 	{
 	    if (n instanceof TextNode)
 	    {
@@ -287,37 +287,30 @@ tagName = name.trim().toLowerCase();
 
     private void onTextNode(TextNode textNode, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
     {
-	NullCheck.notNull(textNode, "textNode");
-	NullCheck.notNull(nodes, "nodes");
-	NullCheck.notNull(runs, "runs");
 	final String text = textNode.text();
 	if (text == null || text.isEmpty())
 	    return;
 	if (!preMode)
 	{
-	    runs.add(new TextRun(text, !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
+	    runs.add(new TextRun(text, getLastHref(), getAttributes()));
 	    return;
 	}
 	final String[] lines = text.split("\n", -1);
 	if (lines.length == 0)
 	    return;
-		    runs.add(new TextRun(lines[0], !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
+	runs.add(new TextRun(lines[0], getLastHref(), getAttributes()));
 		    for(int i = 1;i < lines.length;i++)
 		    {
 			commitParagraph(nodes, runs);
-			runs.add(new TextRun(lines[i], !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
+			runs.add(new TextRun(lines[i], getLastHref(), getAttributes()));
 		    }
     }
 
     private void commitParagraph(List<ContainerItem> nodes, List<Run> runs)
     {
-	NullCheck.notNull(nodes, "nodes");
-	NullCheck.notNull(runs, "runs");
 	if (runs.isEmpty())
 	    return;
-	final Paragraph p = new Paragraph(runs);
-	p.setAttributes(getAttributes());
-	nodes.add(p);
+	nodes.add(new Paragraph(runs, getAttributes()));
 	runs.clear();
     }
 
@@ -349,11 +342,9 @@ tagName = name.trim().toLowerCase();
 
     private void onImg(Element el, List<Run> runs)
     {
-	 NullCheck.notNull(el, "el");
-	 NullCheck.notNull(runs, "runs");
 	 final String value = el.attr("alt");
 	 if (value != null && !value.isEmpty())
-	     runs.add(new TextRun("[" + value + "]", !hrefStack.isEmpty()?hrefStack.getLast():"", getAttributes()));
+	     runs.add(new TextRun("[" + value + "]", getLastHref(), getAttributes()));
 	 }
 
     private String extractHref(Element el)
@@ -373,9 +364,6 @@ tagName = name.trim().toLowerCase();
 
     private void onPre(Element el, List<ContainerItem> items, List<Run> runs)
     {
-	NullCheck.notNull(el, "el");
-	NullCheck.notNull(items, "items");
-	NullCheck.notNull(runs, "runs");
 	commitParagraph(items, runs);
 	addAttrs(el);
 	try {
@@ -386,5 +374,12 @@ tagName = name.trim().toLowerCase();
 	finally {
 	    releaseAttrs();
 	}
+    }
+
+    private String getLastHref()
+    {
+	if (hrefStack.isEmpty())
+	    return null;
+	return hrefStack.getLast();
     }
 }

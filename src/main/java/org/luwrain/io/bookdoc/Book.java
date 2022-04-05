@@ -13,6 +13,7 @@ public interface Book
     Section[] getBookSections();
     Doc getDoc(String href) throws java.io.IOException;
     Doc getDefaultDoc();
+    Doc[] getDocs();
     Audio findAudioForId(String ids);
     String findTextForAudio(String audioFileUrl, long msec);
 

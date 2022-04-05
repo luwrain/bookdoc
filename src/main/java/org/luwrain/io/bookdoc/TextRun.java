@@ -9,20 +9,16 @@ public class TextRun implements Run
 
     public TextRun(String text, String href, Attributes attr)
     {
+	if (text == null)
+	    throw new NullPointerException("text can't be null");
 	this.text = text;
 	this.href = href;
 	this.attr = attr;
     }
 
-    public String getText()
-    {
-	return text;
-    }
-
-    public String getHref()
-    {
-	return href;
-    }
+    @Override public String getText() { return text; }
+    @Override public String getHref() { return href; }
+    @Override public Attributes getAttrs() { return attr; }
 
     @Override public String toString()
     {

@@ -9,13 +9,13 @@ import org.luwrain.io.filters.*;
 
 class AttrsBase
 {
-    static final String LOG_COMPONENT = "reader";
+    static final String
+	LOG_COMPONENT = "bookdoc";
 
     private final List<Attributes> attrsStack = new ArrayList<>();
 
     protected void addAttrs(Element el)
     {
-	NullCheck.notNull(el, "el");
 	final org.luwrain.io.bookdoc.Attributes attr = new org.luwrain.io.bookdoc.Attributes();
 	attr.tagName = el.nodeName();
 	final org.jsoup.nodes.Attributes a = el.attributes();

@@ -93,6 +93,14 @@ public final class Daisy22 implements Book
 	return null;
     }
 
+    @Override public Doc[] getDocs()
+    {
+	final List<Doc> res = new ArrayList();
+	for(Map.Entry<String, Doc> e: docs.entrySet())
+	    res.add(e.getValue());
+	return res.toArray(new Doc[res.size()]);
+    }
+
     @Override public Audio findAudioForId(String id)
     {
 	for(Map.Entry<String, Entry> e: smils.entrySet())

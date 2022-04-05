@@ -8,13 +8,13 @@ import com.google.gson.annotations.*;
 public final class Paragraph extends Node implements ContainerItem
 {
     private List<Run> runs = null;
+    private Attributes attrs = null;
 
-    private Attributes attr = null;
-
-    public Paragraph(List<Run> runs)
+    public Paragraph(List<Run> runs, Attributes attrs)
     {
 	this.runs = new ArrayList<>();
 	this.runs.addAll(runs);
+	this.attrs = attrs;
     }
 
     public List<Run> getRuns()
@@ -24,10 +24,13 @@ public final class Paragraph extends Node implements ContainerItem
 	return this.runs;
     }
 
-    public void setAttributes(Attributes attr)
+    public void setAttributes(Attributes attrs)
     {
-	this.attr = attr;
-    }
+	this.attrs = attrs;
     }
 
-
+    public Attributes getAttributes()
+    {
+	return attrs;
+    }
+    }

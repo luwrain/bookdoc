@@ -36,6 +36,38 @@ for(Section s: sect)
     final Doc d = daisy.getDoc(s.href);
     assertNotNull(d);
 }
+final Doc[] docs = daisy.getDocs();
+assertNotNull(docs);
+assertFalse(docs.length == 0);
+int emptyRunCount = 0, idRunCount = 0;
+System.out.println("proba");
+for(Doc d: docs)
+{
+    final List<Run> runs = new ArrayList<>();
+    final Visitor runsVisitor = new Visitor(){
+	    @Override public void visit(Run run) { runs.add(run); }
+	};
+    Visitor.walk(d.getRoot(), runsVisitor);
+    assertFalse(runs.isEmpty());
+    for(Run r: runs)
+    {
+	if (r.getAttrs() == null)
+	{
+	    emptyRunCount++;
+	    continue;
+	}
+	final String id = r.getAttrs().getIdWithParents();
+	if (id == null || id.isEmpty())
+	{
+	    emptyRunCount++;
+	    continue;
+	}
+	idRunCount++;
+    }
+}
+    System.out.println("Runs without ID: " + emptyRunCount);
+    System.out.println("Runs with ID: " + idRunCount);
+
     }
 
     private Properties loadProps()
