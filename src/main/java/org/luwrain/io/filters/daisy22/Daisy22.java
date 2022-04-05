@@ -41,15 +41,14 @@ public final class Daisy22 implements Book
 
     @Override public Doc getDoc(String href)
     {
-	Log.debug(LOG_COMPONENT, "Requested " + href);
 	final String urlStr, noRefUrlStr, ref;
 	try {
-	    	final URL
-		url = new URL(href),
+	    final URL
+	    url = new URL(href),
 	    noRefUrl = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
-		urlStr = url.toString();
-	noRefUrlStr = noRefUrl.toString();
-	ref = url.getRef();
+	    urlStr = url.toString();
+	    noRefUrlStr = noRefUrl.toString();
+	    ref = url.getRef();
 	}
 	catch(MalformedURLException e)
 	{
@@ -58,25 +57,22 @@ public final class Daisy22 implements Book
 	//Checking the SMILs for the requested URL
 	if (smils.containsKey(noRefUrlStr))
 	{
-	    Log.debug(LOG_COMPONENT, "in map");
 	    final Entry entry = smils.get(noRefUrlStr);
 	    final Entry requested = entry.findById(ref);
 	    //There is an appropriate SMIL entry
 	    if (requested != null)
 	    {
-		Log.debug(LOG_COMPONENT, "has requested " + requested.type.toString());
 		if (requested.type == Type.PAR || requested.type == Type.SEQ)
 		{
 		    final List<String> links = new ArrayList<>();
 		    collectTextStartingAtEntry(requested, links);
-		    Log.debug(LOG_COMPONENT, "links " + links.size());
 		    if (!links.isEmpty())
 			return getDoc(links.get(0));
 		    return null;
 		} else
-		if (requested.type == Type.TEXT)
-		    return getDoc(requested.src); else
-		    return null;
+		    if (requested.type == Type.TEXT)
+			return getDoc(requested.src); else
+			return null;
 	    }
 	} //SMILs
 	if (docs.containsKey(noRefUrlStr))
@@ -135,7 +131,6 @@ public final class Daisy22 implements Book
 	final URL nccDocUrl = new URL(nccDoc.getProperty(Doc.PROP_URL));
 		nccDoc.setProperty(Doc.PROP_DAISY_LOCAL_PATH, nccDocUrl.getFile());//FIXME:Leave only base file name
 	final String[] allHrefs = nccDoc.getHrefs();
-	Log.debug(LOG_COMPONENT, "ncc refs " + allHrefs.length);
 	final List<String> textSrcs = new ArrayList<>();
 	for(String h: allHrefs)
 	{
@@ -149,7 +144,6 @@ public final class Daisy22 implements Book
 	{
 		URL url = new URL(nccDocUrl, s);
 		url = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
-		Log.debug(LOG_COMPONENT, "loading doc " + url.toString());
 		loadDoc(s, url.toString());
 	    }
 	this.nccDoc = nccDoc;
