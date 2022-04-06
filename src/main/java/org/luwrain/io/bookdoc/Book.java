@@ -6,6 +6,9 @@ import java.net.*;
 
 public interface Book
 {
+	static public final String
+	    PROP_DAISY_LOCAL_PATH = "daisy.localpath";
+
     public enum Flags {OPEN_IN_SECTION_TREE};
 
     String getBookId();
@@ -14,11 +17,14 @@ public interface Book
     Doc getDoc(String href) throws java.io.IOException;
     Doc getDefaultDoc();
     Doc[] getDocs();
+    String getResourceUrl(String resName);
     Audio findAudioForId(String ids);
     String findTextForAudio(String audioFileUrl, long msec);
 
     static public final class Section
     {
+
+	
 	public final int level;
 	public final String title;
 	public final String href;

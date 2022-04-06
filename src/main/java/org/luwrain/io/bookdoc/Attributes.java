@@ -29,6 +29,28 @@ public final class Attributes
 	return null;
     }
 
+        public String[] getIdsWithParents()
+    {
+	final List<String> res = new ArrayList<>();
+	if (attrMap != null)
+	{
+	    for(Map.Entry<String, Object> i: attrMap.entrySet())
+		if (i.getKey().toLowerCase().equals("id"))
+		    res.add(i.getValue().toString());
+	}
+	if (parentAttr == null)
+	    return res.toArray(new String[res.size()]);
+	final List<Attributes> reversed = new ArrayList<>(parentAttr);
+	Collections.reverse(reversed);
+	for(Attributes a: reversed)
+	    if (a.attrMap != null)
+		for(Map.Entry<String, Object> i: a.attrMap.entrySet())
+		    if (i.getKey().toLowerCase().equals("id"))
+			res.add(i.getValue().toString());
+	    return res.toArray(new String[res.size()]);
+    }
+
+
     @Override public String toString()
     {
 	final StringBuilder b = new StringBuilder();

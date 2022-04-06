@@ -39,8 +39,7 @@ for(Section s: sect)
 final Doc[] docs = daisy.getDocs();
 assertNotNull(docs);
 assertFalse(docs.length == 0);
-int emptyRunCount = 0, idRunCount = 0;
-System.out.println("proba");
+int emptyRunCount = 0, idRunCount = 0, audioRunCount = 0;
 for(Doc d: docs)
 {
     final List<Run> runs = new ArrayList<>();
@@ -56,17 +55,28 @@ for(Doc d: docs)
 	    emptyRunCount++;
 	    continue;
 	}
-	final String id = r.getAttrs().getIdWithParents();
-	if (id == null || id.isEmpty())
+	final String[] ids = r.getAttrs().getIdsWithParents();
+	if (ids == null || ids.length == 0)
 	{
 	    emptyRunCount++;
 	    continue;
 	}
 	idRunCount++;
+	Audio audio = null;
+final String url = d.getProperty(Doc.PROP_URL);
+	for(String id: ids)
+	{
+		audio = daisy.findAudioForId(url + "#" + id);
+		if (audio != null)
+		    break;
+	    }
+	if (audio != null)
+	    audioRunCount++;
     }
 }
     System.out.println("Runs without ID: " + emptyRunCount);
     System.out.println("Runs with ID: " + idRunCount);
+        System.out.println("Runs with audio: " + audioRunCount);
 
     }
 

@@ -24,6 +24,19 @@ public final class Daisy22 implements Book
     protected URL nccDocUrl = null;
     protected Book.Section[] bookSections = new Book.Section[0];
 
+        @Override public String getResourceUrl(String resName)
+    {
+	try {
+	    if (nccDocUrl == null)
+		return new URL(resName).toString();
+	    return new URL(nccDocUrl, resName).toString();
+	}
+	catch(MalformedURLException e)
+	{
+	    throw new IllegalArgumentException(e);
+	}
+    }
+
     @Override public String getBookId()
     {
 	return "FIXME";
@@ -105,7 +118,7 @@ public final class Daisy22 implements Book
     {
 	for(Map.Entry<String, Entry> e: smils.entrySet())
 	{
-	    final Smil.Entry entry = findSmilEntryWithText(e.getValue(), id);
+	    final Entry entry = findSmilEntryWithText(e.getValue(), id);
 	    if (entry != null)
 	    {
 		final List<Audio> infos = new ArrayList<>();
@@ -231,11 +244,11 @@ doc = loader.load();
 	{
 	    throw new RuntimeException(e);
 	}
-	doc.setProperty("daisy.localpath", localPath);
+	doc.setProperty(PROP_DAISY_LOCAL_PATH, localPath);
 	docs.put(url, doc);
     }
 
-    static private Entry findSmilEntryWithText(Smil.Entry entry, String src)
+    static private Entry findSmilEntryWithText(Entry entry, String src)
     {
 	switch(entry.type )
 	{
