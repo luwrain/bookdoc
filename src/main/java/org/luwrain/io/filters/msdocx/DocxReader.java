@@ -9,14 +9,14 @@ package org.luwrain.io.filters.msdocx;
 import java.util.*;
 import java.io.*;
 
-import com.google.gson.*;
-
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.poi.xwpf.extractor.*;
 
-public final class Reader
+import org.luwrain.io.bookdoc.*;
+
+public final class DocxReader
 {
-    public final Document output = new Document();
+    public final Root output = new Root();
 
     public void read(File file) throws IOException
     {
@@ -88,13 +88,13 @@ return;
 
     private void onParagraph(XWPFParagraph p, XWPFStyles styles)
     {
+	final Paragraph newParagraph = new Paragraph();
 	final String text = p.getText().trim();
 	if (text.trim().isEmpty())
 	{
-	    output.addItem(new Item(Item.TYPE_PARAGRAPH));
+	    output.addItem(newParagraph);
 	    return;
 	}
-	final Item item = new Item(Item.TYPE_PARAGRAPH);
 	final StringBuilder b = new StringBuilder();
 	final String styleId = p.getStyleID();
 	if (styleId != null)
@@ -104,15 +104,15 @@ return;
 	    {
 		final String name = style.getName();
 		if (name != null)
-		    item.style = name.trim();
+		    newParagraph.getAttributes().attrMap.put(Attributes.STYLE, name.trim());
 	    }
 	}
-item.text = cleanLine(text).trim();
+	newParagraph.getRuns().add(new TextRun(cleanLine(text).trim()));
 
 if (p.getAlignment() != null)
-    item.alignment = p.getAlignment().toString();
-item.firstLineIndent = p.getFirstLineIndent();
-item.fontAlignment = p.getFontAlignment();
+    newParagraph.getAttributes().attrMap.put(Attributes.ALIGNMENT, p.getAlignment().toString());
+newParagraph.getAttributes().attrMap.put(Attributes.FIRST_LINE_INDENT, new Integer(p.getFirstLineIndent()));
+newParagraph.getAttributes().attrMap.put(Attributes.FONT_ALIGNMENT, p.getFontAlignment());
 
 int minFontSize = 1000;
 int maxFontSize = 0;
@@ -122,15 +122,10 @@ for(XWPFRun run: p.getRuns())
     minFontSize = Math.min(run.getFontSize(), minFontSize);
         maxFontSize = Math.max(run.getFontSize(), maxFontSize);
 }
-item.minFontSize = minFontSize;
-item.maxFontSize = maxFontSize;
-	output.addItem(item);
-    }
+newParagraph.getAttributes().attrMap.put(Attributes.MIN_FONT_SIZE, minFontSize);
+newParagraph.getAttributes().attrMap.put(Attributes.MAX_FONT_SIZE, maxFontSize);
 
-    public String toJson()
-    {
-	final Gson gson = new Gson();
-	return gson.toJson(output);
+output.getItems().add(newParagraph);
     }
 
     static String cleanLine(String s)

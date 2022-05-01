@@ -17,6 +17,11 @@ public final class Paragraph extends Node implements ContainerItem
 	this.attrs = attrs;
     }
 
+    public Paragraph()
+    {
+	this(Arrays.asList(new Run[0]), null);
+    }
+
     public List<Run> getRuns()
     {
 	if (this.runs == null)
@@ -31,6 +36,8 @@ public final class Paragraph extends Node implements ContainerItem
 
     public Attributes getAttributes()
     {
+	if (attrs == null)
+	    attrs = new Attributes();
 	return attrs;
     }
     }

@@ -16,6 +16,11 @@ public class TextRun implements Run
 	this.attr = attr;
     }
 
+    public TextRun(String text)
+    {
+	this(text, null, null);
+    }
+
     @Override public String getText() { return text; }
     @Override public String getHref() { return href; }
     @Override public Attributes getAttrs() { return attr; }
