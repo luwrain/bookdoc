@@ -1,3 +1,18 @@
+/*
+   Copyright 2016-2022 Michael Pozhidaev <msp@luwrain.org>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.io.bookdoc.loaders;
 
@@ -18,7 +33,6 @@ public final class DefaultLoader extends Loader
 	LOG_COMPONENT = "bookdoc",
 	DEFAULT_CHARSET = "UTF-8";
 
-    static private final FileContentType contentType = new FileContentType();
     final URL requestedUrl;
     final String requestedContentType;
     final String requestedTagRef;
@@ -55,8 +69,8 @@ public final class DefaultLoader extends Loader
 	try {
 	    fetch();
 	    this.selectedContentType = requestedContentType.isEmpty()?responseContentType:requestedContentType;
-	    if (selectedContentType.isEmpty() || ContentTypes.isUnknown(selectedContentType))
-		this.selectedContentType = contentType.suggestContentType(requestedUrl, ContentTypes.ExpectedType.TEXT);
+	    if (selectedContentType.isEmpty() || selectedContentType.toLowerCase().equals(ContentTypes.UNKNOWN))
+		this.selectedContentType = new ContentTypes().suggest(requestedUrl.getFile());
 	    if (selectedContentType.isEmpty())
 		throw new IOException("Unable to understand the content type");
 	    this.selectedCharset = Utils.extractCharset(selectedContentType);

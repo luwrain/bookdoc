@@ -14,19 +14,25 @@
    General Public License for more details.
 */
 
-package org.luwrain.io.bookdoc;
+package org.luwrain.main.bookdoc;
 
-public class Node
+import java.io.*;
+
+import org.luwrain.io.bookdoc.*;
+
+public final class App
 {
-    static public final EmptyNode EMPTY = new EmptyNode();
-
-    public String getText()
+    static public void main(String[] args) throws Exception
     {
-	final StringBuilder res = new StringBuilder();
-	final Visitor textVisitor = new Visitor(){
-		@Override public void visit(Run run) { res.append(run.toString());}
-	    };
-		Visitor.walk(this, textVisitor);
-		return new String(res);
+	if (args.length == 0 || args[0].isEmpty())
+	    stop("No input files");
+	final Loader loader = Loader.newDefaultLoader(new File(args[0]).toURI(), null);
+	final Doc doc = loader.load();
+    }
+
+    static private void stop(String message)
+    {
+	System.err.println("ERROR: bookdoc: " + message);
+	System.exit(1);
     }
 }
