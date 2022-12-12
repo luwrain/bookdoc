@@ -14,26 +14,26 @@
    General Public License for more details.
 */
 
-package org.luwrain.io.bookdoc.loaders;
-
-import java.io.*;
-import java.util.*;
+package org.luwrain.main.bookdoc;
 
 import org.luwrain.io.bookdoc.*;
 
-interface DocumentBuilder
+final class OutputVisitor extends Visitor
 {
-    Doc buildDoc(File file, Properties props) throws IOException;
+    static private final String HEADING_PREFIX = "heading ";
 
-    static DocumentBuilder newBuilder(String contentType)
+
+    @Override public void visit(Paragraph p)
     {
-	if (contentType.equals(ContentTypes.TEXT_HTML))
-	    return new DocumentBuilder(){
-		@Override public     Doc buildDoc(File file, Properties props) throws IOException
-		{
-		    return new org.luwrain.io.filters.html2.Builder().buildDoc(file, props);
-		}
-	    };
-	return null;
+	final String style;
+	if (p.getAttributes().attrMap.containsKey(Attributes.STYLE))
+	    style = p.getAttributes().attrMap.get(Attributes.STYLE).toString(); else
+	    style = null;
+	if (style != null && style.startsWith(HEADING_PREFIX))
+	    System.out.print("%h" + style.substring(HEADING_PREFIX.length()) + " ");
+	System.out.println(p.getText());
+	System.out.println();
     }
 }
+
+

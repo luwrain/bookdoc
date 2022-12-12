@@ -28,6 +28,7 @@ public final class App
 	    stop("No input files");
 	final Loader loader = Loader.newDefaultLoader(new File(args[0]).toURI(), null);
 	final Doc doc = loader.load();
+	Visitor.walk(doc.getRoot(), new OutputVisitor());
     }
 
     static private void stop(String message)

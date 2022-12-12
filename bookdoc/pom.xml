@@ -1,42 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github.jinahya</groupId>
+    <artifactId>ossrh-parent</artifactId>
+    <version>0.9.6</version>
+  </parent>
   <groupId>org.luwrain</groupId>
   <artifactId>luwrain-bookdoc</artifactId>
-  <version>0.2.0</version>
-  <name>LUWRAIN BookDoc library</name>
+  <version>0.5.0</version>
+  <name>LUWRAIN BookDoc</name>
   <description>A library for extracting and formatting text of books and documents</description>
-  <url>https://books.luwrain.org</url>
+  <url>https://https://github.com/luwrain/bookdoc/</url>
   <properties>
-    <poi.version>5.2.2</poi.version>
     <jsoup.version>1.8.3</jsoup.version>
-<activation.version>1.1.1</activation.version>
-        <maven.compiler.target>1.8</maven.compiler.target>
+    <activation.version>1.1.1</activation.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-
-    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>${poi.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>${poi.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-excelant</artifactId>
-      <version>${poi.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-scratchpad</artifactId>
-      <version>${poi.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>

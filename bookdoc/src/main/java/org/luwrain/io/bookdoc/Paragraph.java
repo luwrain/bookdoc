@@ -55,4 +55,20 @@ public final class Paragraph extends Node implements ContainerItem
 	    attrs = new Attributes();
 	return attrs;
     }
+
+    public String getText()
+    {
+	if (runs == null)
+	    return "";
+	final StringBuilder b = new StringBuilder();
+	for(Run r: runs)
+	    b.append(r.getText());
+	return new String(b);
+    }
+
+        @Override public String toString()
+    {
+	return getText();
+    }
+	    
     }
