@@ -12,7 +12,7 @@ import org.luwrain.io.bookdoc.Book.*;
 
 public class ReadingTest extends Assert
 {
-    @Test public void main() throws Exception
+    @Ignore @Test public void main() throws Exception
     {
 	final Properties props = loadProps();
 	assertNotNull(props);
