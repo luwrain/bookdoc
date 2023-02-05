@@ -1,44 +1,21 @@
 package org.luwrain.io.filters.fb2;
 
+import java.util.ArrayList;
 import org.w3c.dom.Document;
 
-import java.util.ArrayList;
+public final class Description
+{
+    final TitleInfo titleInfo;
+    final SrcTitleInfo srcTitleInfo;
+    final DocumentInfo documentInfo;
+    final PublishInfo publishInfo;
+    final ArrayList<CustomInfo> customInfo = new ArrayList<>();
 
-public class Description {
-
-    protected TitleInfo titleInfo;
-    protected SrcTitleInfo srcTitleInfo;
-    protected DocumentInfo documentInfo;
-    protected PublishInfo publishInfo;
-    protected ArrayList<CustomInfo> customInfo = new ArrayList<>();
-
-    public Description() {
-    }
-
-    Description(Document doc) {
-        titleInfo = new TitleInfo(doc);
-        srcTitleInfo = new SrcTitleInfo(doc);
-        documentInfo = new DocumentInfo(doc);
-        publishInfo = new PublishInfo(doc);
-    }
-
-    public DocumentInfo getDocumentInfo() {
-        return documentInfo;
-    }
-
-    public TitleInfo getTitleInfo() {
-        return titleInfo;
-    }
-
-    public PublishInfo getPublishInfo() {
-        return publishInfo;
-    }
-
-    public SrcTitleInfo getSrcTitleInfo() {
-        return srcTitleInfo;
-    }
-
-    public ArrayList<CustomInfo> getCustomInfo() {
-        return customInfo;
+    Description(Document doc)
+    {
+        this.titleInfo = new TitleInfo(doc);
+        this.srcTitleInfo = new SrcTitleInfo(doc);
+        this.documentInfo = new DocumentInfo(doc);
+        this.publishInfo = new PublishInfo(doc);
     }
 }

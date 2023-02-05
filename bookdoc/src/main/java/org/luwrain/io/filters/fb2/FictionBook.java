@@ -1,3 +1,4 @@
+
 package org.luwrain.io.filters.fb2;
 
 import com.sun.istack.internal.NotNull;
@@ -15,8 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.*;
 
-public class FictionBook {
-
+public final class FictionBook
+{
     protected Xmlns[] xmlns;
     protected Description description;
     protected List<Body> bodies = new ArrayList<>();
@@ -24,62 +25,65 @@ public class FictionBook {
 
     public String encoding = "utf-8";
 
-    public FictionBook() {}
-
-    public FictionBook(File file) throws ParserConfigurationException, IOException, SAXException, OutOfMemoryError {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        InputStream inputStream = new FileInputStream(file);
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        boolean foundIllegalCharacters = false;
-        try {
-            String line = br.readLine().trim();
-            if (!line.startsWith("<")) {
-                foundIllegalCharacters = true;
-            }
-            while (!line.endsWith("?>")) {
-                line += "\n" + br.readLine().trim();
-            }
-            int start = line.indexOf("encoding") + 8;
-            String substring = line.substring(start);
-            substring = substring.substring(substring.indexOf("\"") + 1);
-            encoding = substring.substring(0, substring.indexOf("\"")).toLowerCase();
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Document doc;
-        if (foundIllegalCharacters) {
-            StringBuilder text = new StringBuilder();
-            br = new BufferedReader(new FileReader(file));
-            String line = br.readLine();
-            if (line != null && line.contains("<")) {
-                line = line.substring(line.indexOf("<"));
-            }
-            while (line != null) {
-                text.append(line);
-                line = br.readLine();
-            }
-            br.close();
+    public FictionBook(File file) throws ParserConfigurationException, IOException, SAXException, OutOfMemoryError
+    {
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder db = dbf.newDocumentBuilder();
+	boolean foundIllegalCharacters = false;
+	try {
+	    try (final BufferedReader br = new BufferedReader(new FileReader(file))){
+		String line = br.readLine().trim();
+		if (!line.startsWith("<"))
+		    foundIllegalCharacters = true;
+		while (!line.endsWith("?>")) 
+		    line += "\n" + br.readLine().trim();
+		final int start = line.indexOf("encoding") + 8;
+		String substring = line.substring(start);
+		substring = substring.substring(substring.indexOf("\"") + 1);
+		encoding = substring.substring(0, substring.indexOf("\"")).toLowerCase();
+	    }
+	}
+	catch(Exception e)
+	{
+	    e.printStackTrace();
+	}
+        final Document doc;
+        if (foundIllegalCharacters)
+	{
+            final StringBuilder text = new StringBuilder();
+            try (final BufferedReader br = new BufferedReader(new FileReader(file))) {
+		String line = br.readLine();
+		if (line != null && line.contains("<")) 
+		    line = line.substring(line.indexOf("<"));
+		while (line != null)
+		{
+		    text.append(line);
+		    line = br.readLine();
+		}
+	    }
             doc = db.parse(new InputSource(new StringReader(text.toString())));
-        } else {
-            doc = db.parse(new InputSource(new InputStreamReader(inputStream, encoding)));
+        } else
+	{
+	    try (final InputStream inputStream = new FileInputStream(file)){
+		doc = db.parse(new InputSource(new InputStreamReader(inputStream, encoding)));
+	    }
         }
         initXmlns(doc);
-        description = new Description(doc);
-        NodeList bodyNodes = doc.getElementsByTagName("body");
+        this.description = new Description(doc);
+        final NodeList bodyNodes = doc.getElementsByTagName("body");
         for (int item = 0; item < bodyNodes.getLength(); item++) {
-            bodies.add(new Body(bodyNodes.item(item)));
+            this.bodies.add(new Body(bodyNodes.item(item)));
         }
-        NodeList binary = doc.getElementsByTagName("binary");
+        final NodeList binary = doc.getElementsByTagName("binary");
         for (int item = 0; item < binary.getLength(); item++) {
             if (binaries == null) binaries = new HashMap<>();
             Binary binary1 = new Binary(binary.item(item));
-            binaries.put(binary1.getId().replace("#", ""), binary1);
+            this.binaries.put(binary1.getId().replace("#", ""), binary1);
         }
     }
 
-    protected void setXmlns(ArrayList<Node> nodeList) {
+    protected void setXmlns(ArrayList<Node> nodeList)
+    {
         xmlns = new Xmlns[nodeList.size()];
         for (int index = 0; index < nodeList.size(); index++) {
             Node node = nodeList.get(index);
@@ -87,7 +91,8 @@ public class FictionBook {
         }
     }
 
-    protected void initXmlns(Document doc) {
+    protected void initXmlns(Document doc)
+    {
         NodeList fictionBook = doc.getElementsByTagName("FictionBook");
         ArrayList<Node> xmlns = new ArrayList<>();
         for (int item = 0; item < fictionBook.getLength(); item++) {
@@ -100,54 +105,22 @@ public class FictionBook {
         setXmlns(xmlns);
     }
 
-    public ArrayList<Person> getAuthors() {
-        return description.getDocumentInfo().getAuthors();
-    }
-
-    public Xmlns[] getXmlns() {
-        return xmlns;
-    }
-
-    public Description getDescription() {
-        return description;
-    }
-
-    public @Nullable Body getBody() {
-        return getBody(null);
-    }
-
-    public @Nullable Body getNotes() {
-        return getBody("notes");
-    }
-
-    public @Nullable Body getComments() {
-        return getBody("comments");
-    }
+    public ArrayList<Person> getAuthors() { return description.documentInfo.getAuthors(); }
+    public Xmlns[] getXmlns() { return xmlns; }
+    public Description getDescription() { return description; }
+    public @Nullable Body getBody() { return getBody(null); }
+    public @Nullable Body getNotes() { return getBody("notes"); }
+    public @Nullable Body getComments() { return getBody("comments"); }
+    @NotNull public Map<String, Binary> getBinaries() { return binaries == null ? new HashMap<String, Binary>() : binaries; }
+    public String getTitle() { return description.titleInfo.getBookTitle(); }
+    public String getLang() { return description.titleInfo.getLang(); }
+    public @Nullable Annotation getAnnotation() { return description.titleInfo.getAnnotation(); }
 
     private @NotNull Body getBody(String name) {
         for (Body body : bodies) {
-            if ((name + "").equals(body.getName() + "")) {
+            if ((name + "").equals(body.getName() + "")) 
                 return body;
-            }
         }
         return bodies.get(0);
     }
-
-    @NotNull
-    public Map<String, Binary> getBinaries() {
-        return binaries == null ? new HashMap<String, Binary>() : binaries;
-    }
-
-    public String getTitle() {
-        return description.getTitleInfo().getBookTitle();
-    }
-
-    public String getLang() {
-        return description.getTitleInfo().getLang();
-    }
-
-    public @Nullable Annotation getAnnotation() {
-        return description.getTitleInfo().getAnnotation();
-    }
 }
-
