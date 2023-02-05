@@ -1,4 +1,4 @@
-package com.example.parser.fb2;
+package org.luwrain.io.filters.fb2;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

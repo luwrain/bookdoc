@@ -1,8 +1,8 @@
-package com.example.parser.fb2;
+package org.luwrain.io.filters.fb2;
 
-import com.example.parser.fb2.fonts.Emphasis;
-import com.example.parser.fb2.fonts.StrikeThrough;
-import com.example.parser.fb2.fonts.Strong;
+import org.luwrain.io.filters.fb2.fonts.Emphasis;
+import org.luwrain.io.filters.fb2.fonts.StrikeThrough;
+import org.luwrain.io.filters.fb2.fonts.Strong;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

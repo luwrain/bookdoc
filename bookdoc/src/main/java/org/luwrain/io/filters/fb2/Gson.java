@@ -1,4 +1,4 @@
-package com.example.parser.fb2;
+package org.luwrain.io.filters.fb2;
 
 /**
  * Created by kurs on 30.7.17.

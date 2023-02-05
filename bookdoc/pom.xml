@@ -10,22 +10,28 @@
   <artifactId>luwrain-bookdoc</artifactId>
   <version>0.5.0</version>
   <name>LUWRAIN BookDoc</name>
-  <description>A library for extracting and formatting text of books and documents</description>
-  <url>https://https://github.com/luwrain/bookdoc/</url>
+  <description>A library for extracting and formatting text from books and documents</description>
+  <url>https://github.com/luwrain/bookdoc/</url>
   <properties>
     <jsoup.version>1.8.3</jsoup.version>
     <activation.version>1.1.1</activation.version>
+    <junit.version>5.8.2</junit.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.checkerframework</groupId>
+      <artifactId>checker</artifactId>
+      <version>1.9.11</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.8.7</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
       <version>${activation.version}</version>
@@ -36,9 +42,15 @@
       <version>${jsoup.version}</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -51,7 +63,7 @@
         <configuration>
           <archive>
             <manifest>
-              <addClasspath>true</addClasspath>
+              <addClasspath>false</addClasspath>
             </manifest>
           </archive>
         </configuration>

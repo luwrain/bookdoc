@@ -1,4 +1,4 @@
-package com.example.parser.fb2;
+package org.luwrain.io.filters.fb2;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;

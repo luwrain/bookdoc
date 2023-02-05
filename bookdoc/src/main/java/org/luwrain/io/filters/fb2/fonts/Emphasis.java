@@ -1,4 +1,4 @@
-package com.example.parser.fb2.fonts;
+package org.luwrain.io.filters.fb2.fonts;
 
 public class Emphasis extends Font {
 
