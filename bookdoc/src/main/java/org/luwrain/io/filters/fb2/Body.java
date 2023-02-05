@@ -10,33 +10,32 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 
 //http://www.fictionbook.org/index.php/Элемент_body
-public class Body {
-
+public final class Body
+{
     protected String lang;
     protected String name;
     protected Title title;
     protected Image image;
-    protected ArrayList<Section> sections = new ArrayList<>();
-    protected ArrayList<Epigraph> epigraphs;
+    public final ArrayList<Section> sections = new ArrayList<>();
+    protected final ArrayList<Epigraph> epigraphs = new ArrayList<>();
 
-    public Body() {
-    }
-
-    Body(Node body) {
-        NamedNodeMap attrs = body.getAttributes();
-        for (int index = 0; index < attrs.getLength(); index++) {
-            Node attr = attrs.item(index);
-            if (attr.getNodeName().equals("name")) {
+    Body(Node body)
+    {
+        final NamedNodeMap attrs = body.getAttributes();
+        for (int index = 0; index < attrs.getLength(); index++)
+	{
+            final Node attr = attrs.item(index);
+            if (attr.getNodeName().equals("name"))
                 name = attr.getNodeValue();
-            }
-            if (attr.getNodeName().equals("xml:lang")) {
+            if (attr.getNodeName().equals("xml:lang")) 
                 lang = attr.getNodeValue();
-            }
         }
-        NodeList map = body.getChildNodes();
-        for (int index = 0; index < map.getLength(); index++) {
-            Node node = map.item(index);
-            switch (node.getNodeName()) {
+        final NodeList map = body.getChildNodes();
+        for (int index = 0; index < map.getLength(); index++)
+	{
+            final Node node = map.item(index);
+            switch (node.getNodeName())
+	    {
                 case "section":
                     sections.add(new Section(node));
                     break;
@@ -46,20 +45,14 @@ public class Body {
                 case "name":
                     name = node.getTextContent();
                     break;
-                case "image":
+	    case "image": 
                     image = new Image(node);
                     break;
                 case "epigraph":
-                    if (epigraphs == null) epigraphs = new ArrayList<>();
                     epigraphs.add(new Epigraph(node));
                     break;
             }
         }
-    }
-
-    @NotNull
-    public ArrayList<Section> getSections() {
-        return sections;
     }
 
     @Nullable
@@ -101,13 +94,5 @@ public class Body {
 
     public void setImage(Image image) {
         this.image = image;
-    }
-
-    public void setSections(ArrayList<Section> sections) {
-        this.sections = sections;
-    }
-
-    public void setEpigraphs(ArrayList<Epigraph> epigraphs) {
-        this.epigraphs = epigraphs;
     }
 }

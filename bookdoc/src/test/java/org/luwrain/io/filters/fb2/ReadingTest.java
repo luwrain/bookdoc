@@ -21,7 +21,10 @@ public class ReadingTest
 
 	    System.out.println("Authors: " + fb.getAuthors().size());
 
-	    assertNotNull(fb.getBody());
+	    final Body body = fb.getBody();
+	    assertNotNull(body);
+	    System.out.println("Sections: " + body.sections.size());
+	    assertTrue(body.sections.size() > 0);
 	}
     }
 }
