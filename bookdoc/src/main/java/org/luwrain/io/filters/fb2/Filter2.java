@@ -8,7 +8,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
-public final class Filter
+public final class Filter2
 {
     private final URI uri;
         private org.jsoup.nodes.Document jsoupDoc = null;
