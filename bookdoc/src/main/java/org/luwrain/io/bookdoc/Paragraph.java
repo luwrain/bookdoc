@@ -24,6 +24,7 @@ public final class Paragraph extends Node implements ContainerItem
 {
     private List<Run> runs = null;
     private Attributes attrs = null;
+    private ParagraphView view = null;
 
     public Paragraph(List<Run> runs, Attributes attrs)
     {
@@ -56,6 +57,13 @@ public final class Paragraph extends Node implements ContainerItem
 	return attrs;
     }
 
+    public ParagraphView getView()
+    {
+	if (view == null)
+	    view = new ParagraphView();
+	return view;
+    }
+
     public String getText()
     {
 	if (runs == null)
@@ -70,5 +78,4 @@ public final class Paragraph extends Node implements ContainerItem
     {
 	return getText();
     }
-	    
     }

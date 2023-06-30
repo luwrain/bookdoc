@@ -3,7 +3,7 @@ package org.luwrain.io.bookdoc.view;
 
 import org.luwrain.io.bookdoc.*;
 
-final class RowPart
+public final class RowPart
 {
     /** The run this part is associated with*/
     final Run run;
@@ -19,7 +19,6 @@ final class RowPart
     //For empty runs
         RowPart(Run run)
     {
-	NullCheck.notNull(run, "run");
 	this.run = run;
 	this.posFrom = -1;
 	this.posTo = -1;
@@ -28,7 +27,6 @@ final class RowPart
 
     RowPart(Run run, int posFrom, int posTo, int relRowNum)
     {
-	NullCheck.notNull(run, "run");
 	if (posFrom < 0)
 	    throw new IllegalArgumentException("posFrom (" + posFrom + ") may not be negative");
 	if (posTo < 0)
@@ -52,15 +50,16 @@ boolean isEmpty()
     {
 	if (isEmpty())
 	    return "";
-	return run.text().substring(posFrom, posTo);
+	return run.getText().substring(posFrom, posTo);
     }
 
     //Checks relRowNum and parents of runs
+    /*
     boolean onTheSameRow(RowPart rowPart)
     {
-	NullCheck.notNull(rowPart, "rowPart");
 	if (isEmpty() || rowPart.isEmpty())
 	    return false;
 	return run.getParentNode() == rowPart.run.getParentNode() && relRowNum == rowPart.relRowNum;
     }
+    */
 }

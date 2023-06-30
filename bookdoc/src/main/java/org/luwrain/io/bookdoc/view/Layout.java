@@ -18,11 +18,6 @@ public final class Layout
 	   Row[] rows, RowPart[] rowParts,
 	   Paragraph[] paragraphs, int lineCount)
     {
-	NullCheck.notNull(document, "document");
-	NullCheck.notNull(root, "root");
-	NullCheck.notNullItems(rows, "rows");
-	NullCheck.notNullItems(rowParts, "rowParts");
-	NullCheck.notNullItems(paragraphs, "paragraphs");
 	this.document = document;
 	this.root = root;
 	this.paragraphs = paragraphs;
@@ -40,12 +35,12 @@ public final class Layout
 	}
     }
 
-    @Override public int getLineCount()
+    public int getLineCount()
     {
 	return lines.length;
     }
 
-    @Override public String getLine(int index)
+    public String getLine(int index)
     {
 	if (index < 0)
 	    throw new IllegalArgumentException("index (" + index + ") may not be negative");
@@ -66,7 +61,6 @@ public final class Layout
 
 	void add(Row row)
 	{
-	    NullCheck.notNull(row, "row");
 	    rows = Arrays.copyOf(rows, rows.length + 1);
 	    rows[rows.length - 1] = row;
 	}

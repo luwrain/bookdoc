@@ -1,57 +1,55 @@
 
 package org.luwrain.io.bookdoc.view;
 
+import java.util.*;
+
 import org.luwrain.io.bookdoc.*;
 
 final class NodeGeom
 {
-    void calcWidth(Node node, int recommended)
+    void calcWidth(Container c, int recommended)
     {
-	NullCheck.notNull(node, "node");
-	final Node[] subnodes = node.getSubnodes();
-	NullCheck.notNullItems(subnodes, "subnodes");
-	if (node instanceof TableRow)
+	final List<ContainerItem> items = c.getItems();
+	final int numItems = items.size();
+	if (c instanceof TableRow)
 	{
-	    final TableRow tableRow = (TableRow)node;
-	    final int cellWidth = (recommended - subnodes.length + 1) >= subnodes.length?(recommended - subnodes.length + 1) / subnodes.length:1;
-	    for(Node n: subnodes)
-		calcWidth(n, cellWidth);
-	    tableRow.width = 0;
-	    for(Node n: subnodes)
-		tableRow.width += n.width;
-	    tableRow.width += (subnodes.length - 1);//One additional empty column after each cell
-	    if (tableRow.width < recommended)
-		tableRow.width = recommended;
+	    final TableRow tableRow = (TableRow)c;
+	    final int cellWidth = (recommended - numItems + 1) >= numItems?(recommended - numItems + 1) / numItems:1;
+	    for(ContainerItem i: items)
+		calcWidth((Container)i, cellWidth);
+	    tableRow.getGeom().width = 0;
+	    for(ContainerItem i: items)
+		tableRow.getGeom().width += i.getGeom().width;
+	    tableRow.getGeom().width += (numItems - 1);//One additional empty column after each cell
+	    if (tableRow.getGeom().width < recommended)
+		tableRow.getGeom().width = recommended;
 	    return;
 	}
-	node.width = recommended;
-	for(Node n: subnodes)
+	c.getGeom().width = recommended;
+	for(ContainerItem i: items)
 	{
-	    calcWidth(n, recommended);
-	    if (node.width < n.width)
-	        node.width = n.width;
+	    calcWidth((Container)i, recommended);
+	    if (c.getGeom().width < i.getGeom().width)
+	        c.getGeom().width = i.getGeom().width;
 	}
     }
 
-    void calcHeight(Node node)
+    void calcHeight(Paragraph p)
     {
-	NullCheck.notNull(node, "node");
-	if (node instanceof Paragraph)
-	{
-	    final Paragraph para = (Paragraph)node;
-	    if (para.getRowParts().length == 0)
+	    if (p.getView().getRowParts().length == 0)
 	    {
-		Log.warning("doctree", "there is a paragraph without runs");
-		para.setNodeHeight(0);
+		p.getGeom().height = 0;
 		return;
 	    }
 	    int maxRelRowNum = 0;
-	    for(RowPart p: (RowPart[])para.getRowParts())
-		if (p.relRowNum > maxRelRowNum)
-		    maxRelRowNum = p.relRowNum;
-	    para.setNodeHeight(maxRelRowNum + 1);
-	    return;
-	}
+	    for(RowPart r: (RowPart[])p.getView().getRowParts())
+		if (r.relRowNum > maxRelRowNum)
+		    maxRelRowNum = r.relRowNum;
+	    p.getGeom().height = maxRelRowNum + 1;
+    }
+
+	    void calcHeight(Container c)
+	    {
 	final Node[] subnodes = node.getSubnodes();
 	NullCheck.notNullItems(subnodes, "subnodes");
 	if (node instanceof TableRow)

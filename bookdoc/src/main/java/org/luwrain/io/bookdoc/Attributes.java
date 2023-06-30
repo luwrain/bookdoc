@@ -30,6 +30,7 @@ public final class Attributes
 	STYLE = "style";
 
     public String tagName = null;
+    public int width = 0;
     public final Map<String, Object> attrMap = new HashMap<>();
     public final List<Attributes> parentAttr = new ArrayList<>();
 

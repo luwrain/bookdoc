@@ -13,13 +13,26 @@ final class DefaultRowPartsBuilder
 
 void onNode(Node node)
     {
-	NullCheck.notNull(node, "node"); 
 	onNode(node, 0);
     }
 
-void onNode(Node node, int width)
+    void onNode(Node node, int width)
     {
-	NullCheck.notNull(node, "node");
+	if (node instanceof Container)
+	{
+	    onContainer((Container)node, width);
+	    return;
+	}
+	   	if (node instanceof Paragraph)
+	{
+	    onParagraph((Paragraph)node, width);
+	    return;
+	}
+    }
+
+void onContainer(Container c, int width)
+    {
+	/*
 	if (node instanceof EmptyLine)
 	{
 	    final Paragraph para = (Paragraph)node;
@@ -28,28 +41,22 @@ void onNode(Node node, int width)
 	    parts.add(part);
 	    return;
 	}
-   	if (node instanceof Paragraph)
-	{
-	    onParagraph((Paragraph)node, width);
-	    return;
-	}
-	for(Node n: node.getSubnodes())
-		onNode(n);
+	*/
+	for(ContainerItem i: c.getItems())
+	    onNode((Node)i);
     }
 
     private void onParagraph(Paragraph para, int width)
     {
-	NullCheck.notNull(para, "para");
 	final RowPartsSplitter splitter = new RowPartsSplitter();
 	for(Run r: para.getRuns())
 	{
-	    final String text = r.text();
-	    NullCheck.notNull(text, "text");
-	    splitter.onRun(r, text, 0, text.length(), width > 0?width:para.width);
+	    final String text = r.getText();
+	    splitter.onRun(r, text, 0, text.length(), width > 0?width:para.getAttributes().width);
 	}
 	if (!splitter.res.isEmpty())
 	{
-	    para.setRowParts(splitter.res.toArray(new RowPart[splitter.res.size()]));
+	    para.getView().setRowParts(splitter.res.toArray(new RowPart[splitter.res.size()]));
 	    paragraphs.add(para);
 	    for(RowPart p: splitter.res)
 		parts.add(p);
@@ -57,7 +64,6 @@ void onNode(Node node, int width)
     }
     static private RowPart makeTitlePart(Run run)
     {
-	NullCheck.notNull(run, "run");
 return new RowPart(run);
     }
 

@@ -16,37 +16,16 @@
 
 package org.luwrain.io.bookdoc;
 
-import java.util.*;
+import org.luwrain.io.bookdoc.view.*;
 
-public class Container extends Node
+public final class ParagraphView
 {
-    private List<ContainerItem> items = null;
-    private Geom geom = null;
-
-    public List<ContainerItem> getItems()
+    public RowPart[] getRowParts()
     {
-	if (this.items == null)
-	    this.items = new ArrayList<>();
-	return this.items;
+	return new RowPart[0];
     }
-
-    public void addItem(ContainerItem item)
+    
+    public void setRowParts(RowPart[] parts)
     {
-	if (item == null)
-	    throw new NullPointerException("item can't be null");
-	if (this.items == null)
-	    this.items = new ArrayList<>();
-	this.items.add(item);
-    }
-
-    public void setAttributes(Attributes attr)
-    {
-    }
-
-        public Geom getGeom()
-    {
-	if (geom == null)
-	    geom = new Geom();
-	return geom;
     }
 }

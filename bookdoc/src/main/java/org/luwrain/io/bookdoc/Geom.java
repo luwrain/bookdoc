@@ -16,10 +16,7 @@
 
 package org.luwrain.io.bookdoc;
 
-public interface ContainerItem
+public final class Geom
 {
-    default Geom getGeom()
-    {
-	return new Geom();
-    }
+    public int width, height;
 }
