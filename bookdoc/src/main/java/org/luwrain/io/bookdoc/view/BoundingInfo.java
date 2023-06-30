@@ -1,8 +1,7 @@
 
 package org.luwrain.io.bookdoc.view;
 
-import org.luwrain.core.*;
-import org.luwrain.reader.*;
+import org.luwrain.io.bookdoc.*;
 
 class BoundingInfo
 {

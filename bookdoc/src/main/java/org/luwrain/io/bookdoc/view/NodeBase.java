@@ -1,7 +1,5 @@
 
-package org.luwrain.bookdoc.view;
-
-import org.luwrain.core.*;
+package org.luwrain.io.bookdoc.view;
 
 public class NodeBase
 {

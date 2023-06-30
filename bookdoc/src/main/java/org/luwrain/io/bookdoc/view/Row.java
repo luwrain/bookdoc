@@ -3,8 +3,7 @@ package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
-import org.luwrain.core.*;
-import org.luwrain.reader.*;
+import org.luwrain.io.bookdoc.*;
 
 public final class Row
 {
@@ -26,7 +25,6 @@ int x = 0;
 
     Row(RowPart[] parts, int partsFrom, int partsTo)
     {
-	NullCheck.notNull(parts, "parts");
 	if (partsFrom < 0)
 	    throw new IllegalArgumentException("partsFrom (" + partsFrom + ") may not be negative");
 		if (partsTo < 0)
@@ -82,7 +80,6 @@ int x = 0;
     //returns -1 if index is invalid
     public int runBeginsAt(Run run)
     {
-	NullCheck.notNull(run, "run");
 	//	if (isEmpty())
 	//	    throw new RuntimeException("Row is empty");
 	int offset = 0;

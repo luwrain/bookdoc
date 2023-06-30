@@ -3,8 +3,7 @@ package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
-import org.luwrain.core.*;
-import org.luwrain.reader.*;
+import org.luwrain.io.bookdoc.*;
 
 final class RowPartsSplitter
 {

@@ -4,21 +4,20 @@ package org.luwrain.io.bookdoc.view;
 import java.net.*;
 import java.util.*;
 
-import org.luwrain.core.*;
-import org.luwrain.reader.*;
+import org.luwrain.io.bookdoc.*;
 
 public class View
 {
     static public final String DEFAULT_ITERATOR_INDEX_PROPERTY = "defaultiteratorindex";
 
-    protected final Document doc;
+    protected final Doc doc;
     protected final Node root;
     protected final Paragraph[] paragraphs; //Only paragraphs which appear in document, no paragraphs without row parts
     protected final RowPart[] rowParts;
     protected final Row[] rows;
     protected final int lineCount;
 
-    public View(Document doc, int width)
+    public View(Doc doc, int width)
     {
 	NullCheck.notNull(doc, "doc");
 	this.doc = doc;
@@ -144,12 +143,12 @@ public class View
 	return maxLineNum + 1;
     }
 
-    public org.luwrain.reader.view.Iterator getIterator()
+    public org.luwrain.io.bookdoc.view.Iterator getIterator()
     {
 	return new Iterator(this);
     }
 
-    public org.luwrain.reader.view.Iterator getIterator(int startingIndex)
+    public org.luwrain.io.bookdoc.view.Iterator getIterator(int startingIndex)
     {
 	return new Iterator(this, startingIndex);
     }

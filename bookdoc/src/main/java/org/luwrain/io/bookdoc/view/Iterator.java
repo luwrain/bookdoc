@@ -1,8 +1,7 @@
 
 package org.luwrain.io.bookdoc.view;
 
-import org.luwrain.core.*;
-import org.luwrain.reader.*;
+import org.luwrain.io.bookdoc.*;
 
 public final class Iterator
 {
@@ -72,7 +71,7 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
 	return current == it.current;
     }
 
-    @Override public org.luwrain.reader.view.Iterator clone()
+    @Override public org.luwrain.io.bookdoc.view.Iterator clone()
     {
 	return new Iterator(view, current);
     }
