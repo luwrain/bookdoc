@@ -1,5 +1,5 @@
 /*
-   Copyright 2016-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -18,8 +18,5 @@ package org.luwrain.io.bookdoc;
 
 public interface ContainerItem
 {
-    default Geom getGeom()
-    {
-	return new Geom();
+    Geom getGeom();
     }
-}

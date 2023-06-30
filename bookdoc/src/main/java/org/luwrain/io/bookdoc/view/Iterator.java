@@ -1,3 +1,18 @@
+/*
+   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.io.bookdoc.view;
 
@@ -18,23 +33,17 @@ public final class Iterator
 
     public Iterator(View view)
     {
-	NullCheck.notNull(view, "view");
 this.view = view;
 this.paragraphs = view.getParagraphs();
-NullCheck.notNullItems(paragraphs, "paragraphs");
 	this.rows = view.getRows();
-	NullCheck.notNullItems(rows, "rows");
 	current = 0;
     }
 
     public Iterator(View view, int initialPos)
     {
-	NullCheck.notNull(view, "view");
 		this.view = view;
 	this.paragraphs = view.getParagraphs();
-	NullCheck.notNull(paragraphs, "paragraphs");
 	this.rows = view.getRows();
-	NullCheck.notNull(rows, "rows");
 	if (initialPos < 0 || initialPos >= rows.length)
 	    throw new IllegalArgumentException("INvalid row initialPos (" + initialPos + "), row count is " + rows.length);
 	current = initialPos;
@@ -118,7 +127,6 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
 
     public boolean searchForward(Matching matching)
     {
-	NullCheck.notNull(matching, "matching");
 	if (noContent())
 	    return false;
 	return searchForward(matching, 0);
@@ -126,7 +134,6 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
 
     public boolean searchForward(Matching matching, int searchFrom)
     {
-	NullCheck.notNull(matching, "matching");
 	if (searchFrom < 0)
 	    throw new IllegalArgumentException("searchFrom (" + searchFrom + ") may not be negative");
 	if (noContent())
@@ -136,7 +143,6 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
 
         public boolean searchBackward(Matching matching)
     {
-	NullCheck.notNull(matching, "matching");
 	if (noContent())
 	    return false;
 	return searchBackward(matching, rows.length - 1);
@@ -144,7 +150,6 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
 
     public boolean searchBackward(Matching matching, int searchFrom)
     {
-	NullCheck.notNull(matching, "matching");
 	if (searchFrom < 0)
 	    throw new IllegalArgumentException("searchFrom (" + searchFrom + ") may not be negative");
 	if (noContent())
@@ -155,7 +160,6 @@ NullCheck.notNullItems(paragraphs, "paragraphs");
     //do not changes the position of failure
     protected boolean search(Matching matching, int searchFrom, int step)
     {
-	NullCheck.notNull(matching, "matching");
 	if (searchFrom < 0)
 	    throw new IllegalArgumentException("searchFrom (" + searchFrom + ") may not be negative");
 	if (noContent())

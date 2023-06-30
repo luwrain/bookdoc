@@ -1,3 +1,18 @@
+/*
+   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.io.bookdoc.view;
 
@@ -50,54 +65,51 @@ final class NodeGeom
 
 	    void calcHeight(Container c)
 	    {
-	final Node[] subnodes = node.getSubnodes();
-	NullCheck.notNullItems(subnodes, "subnodes");
-	if (node instanceof TableRow)
+		final List<ContainerItem> items = c.getItems();
+		final int numItems = items.size();
+	if (c instanceof TableRow)
 	{
-	    final TableRow tableRow = (TableRow)node;
-	    for(Node n: subnodes)
-		calcHeight(n);
-	    tableRow.setNodeHeight(0);
-	    for(Node n: subnodes)
-		if (tableRow.getNodeHeight() < n.getNodeHeight())
-		    tableRow.setNodeHeight(n.getNodeHeight());
+	    final TableRow tableRow = (TableRow)c;
+	    for(ContainerItem i: items)
+		calcHeight((Container)i);
+	    tableRow.getGeom().height = 0;
+	    for(ContainerItem i: items)
+		if (tableRow.getGeom().height < i.getGeom().height)
+		    tableRow.getGeom().height = i.getGeom().height;
 	    return;
 	}
 	//Not a paragraph and not a table row
-	for(Node n: subnodes)
-	    calcHeight(n);
+	for(ContainerItem i: items)
+	    calcHeight((Container)i);
 	int height = 0;
-	for(Node n: subnodes)
-	    height += n.getNodeHeight();
-	if (!node.allSubnodesSingleLine())
-    if (subnodes.length > 0)
-	height += (subnodes.length - 1);
-    node.setNodeHeight(height);
+	for(ContainerItem i: items)
+	    height += i.getGeom().height;
+	if (!c.getGeom().allSubnodesSingleLine)
+    if (numItems > 0)
+	height += (numItems - 1);
+	c.getGeom().height = height;
     }
 
-    void calcPosition(Node node)
+    void calcPosition(Container c)
     {
-	NullCheck.notNull(node, "node");
-	final Node[] subnodes = node.getSubnodes();
-	NullCheck.notNullItems(subnodes, "subnodes");
-		if  (node.getType() == Node.Type.ROOT)
-	{
-	    node.setNodeX(0);
-	    node.setNodeY(0);
-	}
+	final List<ContainerItem> items = c.getItems();
+	final Geom g = c.getGeom();
+		if  (c instanceof Root)
+		    g.setPos(0, 0);
 	//Assuming node.x and node.y already set appropriately
-		    final int baseX = node.getNodeX();
-		    		    final int baseY = node.getNodeY();
-	if (node instanceof TableRow)
+		final int
+		baseX = g.x,
+baseY = g.y;
+	if (c instanceof TableRow)
 	{
-	    final TableRow tableRow = (TableRow)node;
+	    final TableRow tableRow = (TableRow)c;
 	    int offset = 0;
-	    for(Node n: subnodes)
+	    for(ContainerItem i: items)
 	    {
-		n.setNodeX(baseX + offset);
-		offset += (n.width + 1);
-		n.setNodeY(baseY);
-		calcPosition(n);
+		i.getGeom().x = baseX + offset;
+		offset += (i.getGeom().width + 1);
+		i.getGeom().y = baseY;
+		calcPosition((Container)i);
 	    }
 	    return;
 	} //table row
@@ -106,14 +118,13 @@ final class NodeGeom
 	if (node instanceof Paragraph && ((Paragraph)node).getRowParts().length > 0)
 	    offset = 1;
 	*/
-	for(Node n: subnodes)
+	for(ContainerItem i: items)
 	{
-	    n.setNodeX(baseX);
-	    n.setNodeY(baseY + offset);
-	    offset += n.getNodeHeight();
-	    if (!node.allSubnodesSingleLine())
+	    i.getGeom().setPos(baseX, baseY + offset);
+	    offset += i.getGeom().height;
+	    if (!i.getGeom().allSubnodesSingleLine)
 		offset++;
-	    calcPosition(n);
+	    calcPosition((Container)i);
 	}
     }
 }
