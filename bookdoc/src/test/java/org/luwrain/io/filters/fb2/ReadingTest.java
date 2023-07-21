@@ -21,7 +21,7 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
+@Disabled
 public class ReadingTest
 {
     static final File DIR = new File(new File("test"), "fb2");

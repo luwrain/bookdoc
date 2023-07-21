@@ -26,7 +26,7 @@ import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.Loader.*;
 import org.luwrain.io.bookdoc.Book.*;
 
-@Ignore
+@Disabled
 public class ReadingTest
 {
     @Test public void main() throws Exception
