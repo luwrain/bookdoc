@@ -1,6 +1,6 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.NotNull;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -32,12 +32,12 @@ public class Binary extends IdElement {
         return contentType;
     }
 
-    @NotNull
+    //    @NotNull
     public String getBinary() {
         return binary;
     }
 
-    @NotNull
+    //    @NotNull
     @Override
     public String getId() {
         return super.getId();
@@ -45,6 +45,7 @@ public class Binary extends IdElement {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+
     }
 
     public void setBinary(String binary) {

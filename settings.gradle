@@ -1,0 +1,9 @@
+
+rootProject.name = 'luwrain-bookdoc-parent'
+
+include ('luwrain-bookdoc')
+project (':luwrain-bookdoc').projectDir = file('bookdoc')
+
+
+//include ('luwrain-bookdoc-view')
+//project (':luwrain-bookdoc-view').projectDir = file('book-view')

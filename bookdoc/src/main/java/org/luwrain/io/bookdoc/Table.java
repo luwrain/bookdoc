@@ -22,4 +22,9 @@ public final class Table implements ContainerItem
 {
     private final List<TableRow> rows = new ArrayList();
 
+    @Override public  Geom getGeom()
+    {
+	return null;
+    }
+
 }

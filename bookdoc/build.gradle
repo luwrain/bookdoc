@@ -1,23 +1,22 @@
 
 plugins {
-  id 'java-library'
-  id 'io.freefair.lombok' version '8.6'
+id 'application'
+  id 'java'
+//  id 'io.freefair.lombok' version '8.6'
 }
-
-  repositories {
-    maven { url 'https://mvn-mirror.gitverse.ru' }
-  }
 
 
 dependencies {
-  implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-  implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-  implementation 'org.languagetool:languagetool-core:5.5'
-  implementation 'org.languagetool:language-ru:5.5'
-  implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-  implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
-  implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-  implementation 'org.apache.pdfbox:pdfbox:2.0.29'
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+implementation 'com.google.code.gson:gson:2.8.5'
+implementation 'org.jsoup:jsoup:1.13.1'
+  implementation 'javax.activation:activation:1.1.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.luwrain'
+        )
+    }
+}

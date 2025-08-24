@@ -1,7 +1,7 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.Nullable;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -55,27 +55,27 @@ public final class Body
         }
     }
 
-    @Nullable
+    //    @Nullable
     public Title getTitle() {
         return title;
     }
 
-    @Nullable
+    //    @Nullable
     public ArrayList<Epigraph> getEpigraphs() {
         return epigraphs;
     }
 
-    @Nullable
+    //    @Nullable
     public Image getImage() {
         return image;
     }
 
-    @Nullable
+    //    @Nullable
     public String getName() {
         return name;
     }
 
-    @Nullable
+    //    @Nullable
     public String getLang() {
         return lang;
     }

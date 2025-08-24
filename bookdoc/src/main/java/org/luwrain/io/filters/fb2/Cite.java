@@ -1,8 +1,8 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.NotNull;
 
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.Nullable;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -60,7 +60,7 @@ public class Cite extends Element {
         }
     }
 
-    @NotNull
+    //    @NotNull
     public ArrayList<TextAuthor> getTextAuthor() {
         return textAuthor == null ? new ArrayList<TextAuthor>() : textAuthor;
     }
@@ -70,7 +70,8 @@ public class Cite extends Element {
     }
 
 
-    @NotNull
+
+    //    @NotNull
     public ArrayList<Element> getElements() {
         return elements == null ? new ArrayList<Element>() : elements;
     }
@@ -86,12 +87,12 @@ public class Cite extends Element {
         return Element.getText(list, "\n");
     }
 
-    @Nullable
+    //    @Nullable
     public String getId() {
         return id;
     }
 
-    @Nullable
+    //    @Nullable
     public String getLang() {
         return lang;
     }

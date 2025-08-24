@@ -1,7 +1,9 @@
 package org.luwrain.io.filters.fb2;
 
+/*
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+*/
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -82,44 +84,44 @@ public class Person {
         this.homePages = homePages;
     }
 
-    @Nullable
+    //    @Nullable
     public String getId() {
         return id;
     }
 
-    @Nullable
+    //    @Nullable
     public String getFirstName() {
         return firstName;
     }
 
-    @Nullable
+    //    @Nullable
     public String getMiddleName() {
         return middleName;
     }
 
-    @Nullable
+    //    @Nullable
     public String getLastName() {
         return lastName;
     }
 
-    @Nullable
+    //    @Nullable
     public String getNickname() {
         return nickname;
     }
 
-    @NotNull
+    //    @NotNull
     public String getFullName() {
         return (firstName == null ? "" : firstName + " ")
                 + (middleName == null ? "" : middleName + " ")
                 + (lastName == null ? "" : lastName);
     }
 
-    @NotNull
+    //    @NotNull
     public ArrayList<String> getEmails() {
         return emails == null ? new ArrayList<String>() : emails;
     }
 
-    @NotNull
+    //    @NotNull
     public ArrayList<String> getHomePages() {
         return homePages == null ? new ArrayList<String>() : homePages;
     }
