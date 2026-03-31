@@ -1,6 +1,6 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.Nullable;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -22,7 +22,7 @@ public class IdElement {
     }
 
 
-    @Nullable
+    
     public String getId() {
         return id;
     }

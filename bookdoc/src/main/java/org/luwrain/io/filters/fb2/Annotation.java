@@ -2,11 +2,11 @@
 package org.luwrain.io.filters.fb2;
 
 import java.util.ArrayList;
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.Nullable;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.NotNull;
 
 //http://www.fictionbook.org/index.php/Элемент_annotation
 public class Annotation extends IdElement

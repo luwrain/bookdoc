@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.regex.*;
 import java.io.*;
 import java.nio.file.*;
-import javax.activation.*;
+//import javax.activation.*;
 
 import org.jsoup.*;
 import org.jsoup.nodes.*;
@@ -34,6 +34,7 @@ class Encoding
     
     static String getHtmlEncoding(Path path) throws IOException
     {
+	/*
 	//  html5 <meta charset="UTF-8">
         //  html4 <meta http-equiv="Content-Type"
 	//content="text/html;charset=ISO-8859-1">
@@ -67,6 +68,7 @@ class Encoding
 	    if (res != null && !res.trim().isEmpty())
 		return res.trim();
 	}
+	*/
 	return "";
     }
 

@@ -1,7 +1,7 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.Nullable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -67,32 +67,32 @@ public class Section extends IdElement {
         }
     }
 
-    @NotNull
+    
     public Title getTitle() {
         return title;
     }
 
-    @NotNull
+    
     public ArrayList<Section> getSections() {
         return sections == null ? new ArrayList<Section>() : sections;
     }
 
-    @NotNull
+    
     public ArrayList<Element> getElements() {
         return elements == null ? new ArrayList<Element>() : elements;
     }
 
-    @Nullable
+    
     public Image getImage() {
         return image;
     }
 
-    @Nullable
+    
     public Annotation getAnnotation() {
         return annotation;
     }
 
-    @NotNull
+    
     public ArrayList<Epigraph> getEpigraphs() {
         return epigraphs == null ? new ArrayList<Epigraph>() : epigraphs;
     }

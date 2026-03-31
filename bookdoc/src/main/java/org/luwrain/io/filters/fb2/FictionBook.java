@@ -1,8 +1,8 @@
 
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -108,15 +108,15 @@ public final class FictionBook
     public ArrayList<Person> getAuthors() { return description.documentInfo.getAuthors(); }
     public Xmlns[] getXmlns() { return xmlns; }
     public Description getDescription() { return description; }
-    public @Nullable Body getBody() { return getBody(null); }
-    public @Nullable Body getNotes() { return getBody("notes"); }
-    public @Nullable Body getComments() { return getBody("comments"); }
-    @NotNull public Map<String, Binary> getBinaries() { return binaries == null ? new HashMap<String, Binary>() : binaries; }
+    public  Body getBody() { return getBody(null); }
+    public  Body getNotes() { return getBody("notes"); }
+    public  Body getComments() { return getBody("comments"); }
+     public Map<String, Binary> getBinaries() { return binaries == null ? new HashMap<String, Binary>() : binaries; }
     public String getTitle() { return description.titleInfo.getBookTitle(); }
     public String getLang() { return description.titleInfo.getLang(); }
-    public @Nullable Annotation getAnnotation() { return description.titleInfo.getAnnotation(); }
+    public  Annotation getAnnotation() { return description.titleInfo.getAnnotation(); }
 
-    private @NotNull Body getBody(String name) {
+    private  Body getBody(String name) {
         for (Body body : bodies) {
             if ((name + "").equals(body.getName() + "")) 
                 return body;

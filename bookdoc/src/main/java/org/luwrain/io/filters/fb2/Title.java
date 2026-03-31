@@ -1,6 +1,6 @@
 package org.luwrain.io.filters.fb2;
 
-import com.sun.istack.internal.NotNull;
+//import com.sun.istack.internal.NotNull;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -25,7 +25,7 @@ public class Title {
         }
     }
 
-    @NotNull
+    
     public ArrayList<P> getParagraphs() {
         return paragraphs;
     }
