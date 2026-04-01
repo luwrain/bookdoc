@@ -32,12 +32,15 @@ public class Binary extends IdElement {
         return contentType;
     }
 
-    
     public String getBinary() {
         return binary;
     }
 
+<<<<<<< HEAD
     
+=======
+    //    @NotNull
+>>>>>>> ssd/master
     @Override
     public String getId() {
         return super.getId();
@@ -45,6 +48,7 @@ public class Binary extends IdElement {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+
     }
 
     public void setBinary(String binary) {

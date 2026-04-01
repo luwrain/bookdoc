@@ -25,7 +25,6 @@ public class Title {
         }
     }
 
-    
     public ArrayList<P> getParagraphs() {
         return paragraphs;
     }

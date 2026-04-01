@@ -1,25 +1,19 @@
 package org.luwrain.io.filters.fb2;
 
+import lombok.*;
+
 import org.w3c.dom.Node;
 
-public class Xmlns {
-    
+@Data
+@NoArgsConstructor
+public class Xmlns
+{
     protected String name;
     protected String value;
 
-    public Xmlns() {
-    }
-
-    Xmlns(Node node) {
+    Xmlns(Node node)
+    {
         this.name = node.getNodeName();
         this.value = node.getNodeValue();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
     }
 }
