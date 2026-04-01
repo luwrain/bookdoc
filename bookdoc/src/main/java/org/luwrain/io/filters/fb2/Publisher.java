@@ -23,6 +23,7 @@ public class Publisher extends Person {
         }
     }
 
+    //    @Nullable
     public String getLang() {
         return lang;
     }

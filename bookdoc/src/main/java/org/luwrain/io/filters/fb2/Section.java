@@ -67,51 +67,32 @@ public class Section extends IdElement {
         }
     }
 
+    //    @NotNull
     public Title getTitle() {
         return title;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @NotNull
->>>>>>> ssd/master
     public ArrayList<Section> getSections() {
         return sections == null ? new ArrayList<Section>() : sections;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @NotNull
->>>>>>> ssd/master
     public ArrayList<Element> getElements() {
         return elements == null ? new ArrayList<Element>() : elements;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public Image getImage() {
         return image;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public Annotation getAnnotation() {
         return annotation;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @NotNull
->>>>>>> ssd/master
     public ArrayList<Epigraph> getEpigraphs() {
         return epigraphs == null ? new ArrayList<Epigraph>() : epigraphs;
     }

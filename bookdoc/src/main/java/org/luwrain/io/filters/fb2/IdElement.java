@@ -1,8 +1,8 @@
 package org.luwrain.io.filters.fb2;
 
+/*
 import com.sun.istack.internal.Nullable;
 */
->>>>>>> ssd/master
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -24,11 +24,7 @@ public class IdElement {
     }
 
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public String getId() {
         return id;
     }

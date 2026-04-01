@@ -103,20 +103,6 @@ public final class FictionBook
         setXmlns(xmlns);
     }
 
-<<<<<<< HEAD
-    public ArrayList<Person> getAuthors() { return description.documentInfo.getAuthors(); }
-    public Xmlns[] getXmlns() { return xmlns; }
-    public Description getDescription() { return description; }
-    public  Body getBody() { return getBody(null); }
-    public  Body getNotes() { return getBody("notes"); }
-    public  Body getComments() { return getBody("comments"); }
-     public Map<String, Binary> getBinaries() { return binaries == null ? new HashMap<String, Binary>() : binaries; }
-    public String getTitle() { return description.titleInfo.getBookTitle(); }
-    public String getLang() { return description.titleInfo.getLang(); }
-    public  Annotation getAnnotation() { return description.titleInfo.getAnnotation(); }
-
-    private  Body getBody(String name) {
-=======
     public ArrayList<Person> getAuthors(
 )
 
@@ -164,7 +150,6 @@ public Map<String, Binary> getBinaries()
     }
 
     private Body getBody(String name) {
->>>>>>> ssd/master
         for (Body body : bodies) {
             if ((name + "").equals(body.getName() + "")) 
                 return body;

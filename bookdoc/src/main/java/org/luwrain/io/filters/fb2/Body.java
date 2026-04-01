@@ -55,42 +55,27 @@ public final class Body
         }
     }
 
+    //    @Nullable
     public Title getTitle() {
         return title;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public ArrayList<Epigraph> getEpigraphs() {
         return epigraphs;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public Image getImage() {
         return image;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public String getName() {
         return name;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public String getLang() {
         return lang;
     }

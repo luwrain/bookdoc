@@ -60,6 +60,7 @@ public class Cite extends Element {
         }
     }
 
+    //    @NotNull
     public ArrayList<TextAuthor> getTextAuthor() {
         return textAuthor == null ? new ArrayList<TextAuthor>() : textAuthor;
     }
@@ -69,12 +70,8 @@ public class Cite extends Element {
     }
 
 
-<<<<<<< HEAD
-    
-=======
 
     //    @NotNull
->>>>>>> ssd/master
     public ArrayList<Element> getElements() {
         return elements == null ? new ArrayList<Element>() : elements;
     }
@@ -90,20 +87,12 @@ public class Cite extends Element {
         return Element.getText(list, "\n");
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public String getId() {
         return id;
     }
 
-<<<<<<< HEAD
-    
-=======
     //    @Nullable
->>>>>>> ssd/master
     public String getLang() {
         return lang;
     }
