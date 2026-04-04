@@ -85,21 +85,19 @@ doc.setProperty("charset", charset);
 
     private List<ContainerItem> onNode(org.jsoup.nodes.Node node, boolean preMode)
     {
-	final List<ContainerItem> resItems = new ArrayList<>();
-	final List<Run> runs = new ArrayList<>();
+	final var resItems = new ArrayList<ContainerItem>();
+	final var runs = new ArrayList<Run>();
 	if (node.childNodes() == null)
-	    	    return Arrays.asList(new ContainerItem[0]);
-	for(org.jsoup.nodes.Node n: node.childNodes())
+	    	    return Arrays.asList();
+	for(var n: node.childNodes())
 	{
-	    if (n instanceof TextNode)
+	    if (n instanceof TextNode textNode)
 	    {
-		final TextNode textNode = (TextNode)n;
 		onTextNode(textNode, resItems, runs, preMode);
 		continue;
 	    }
-	    if (n instanceof Element)
+	    if (n instanceof Element el)
 	    {
-		final Element el = (Element)n;
 		onElement(el, resItems, runs, preMode);
 		continue;
 	    }
@@ -217,7 +215,7 @@ tagName = name.trim().toLowerCase();
 	    {
 	    commitParagraph(nodes, runs);
 	addAttrs(el);
-	final List<ContainerItem > nn = onNode(el, preMode);
+	final var nn = onNode(el, preMode);
 	releaseAttrs();
 	nodes.addAll(nn);
 	    }
@@ -313,32 +311,6 @@ tagName = name.trim().toLowerCase();
 	nodes.add(new Paragraph(runs, getAttributes()));
 	runs.clear();
     }
-
-    /*
-    private ContainerItem newContainerItem(String tagName, Container builder)
-    {
-	NullCheck.notEmpty(tagName, "tagName");
-	switch(tagName)
-	{
-	case "ul":
-	    return builder.newUnorderedList();
-	case "ol":
-	    return builder.newOrderedList();
-	case "li":
-	    return builder.newListItem();
-	case "table":
-	    return builder.newTable();
-	case "tr":
-	    return builder.newTableRow();
-	case "th":
-	case "td":
-	    return builder.newTableCell();
-	default:
-	    Log.warning(LOG_COMPONENT, "unable to create the node for tag \'" + tagName + "\'");
-	    return null;
-	}
-    }
-    */
 
     private void onImg(Element el, List<Run> runs)
     {
