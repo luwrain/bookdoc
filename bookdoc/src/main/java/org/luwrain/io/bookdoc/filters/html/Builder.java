@@ -77,211 +77,14 @@ doc.setProperty("charset", charset);
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
 	addAttrs(jsoupDoc.body());
-	root.getItems().addAll(onNode(jsoupDoc.body(), false));
+	//	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;
     }
 
-    private List<ContainerItem> onNode(org.jsoup.nodes.Node node, boolean preMode)
-    {
-	final var resItems = new ArrayList<ContainerItem>();
-	final var runs = new ArrayList<Run>();
-	if (node.childNodes() == null)
-	    	    return Arrays.asList();
-	for(var n: node.childNodes())
-	{
-	    if (n instanceof TextNode textNode)
-	    {
-		onTextNode(textNode, resItems, runs, preMode);
-		continue;
-	    }
-	    if (n instanceof Element el)
-	    {
-		onElement(el, resItems, runs, preMode);
-		continue;
-	    }
-	    if (n instanceof Comment)
-		continue;
-	    throw new IllegalStateException("unprocessed node of class " + n.getClass().getName());
-	}
-	commitParagraph(resItems, runs);
-	return resItems;
-    }
 
-    private void onTextElement(Element el, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
-    {
-	final String tagName;
-	{
-	    final String name = el.nodeName();
-	    if (name == null || name.isEmpty())
-		return;
-	    tagName = name.trim().toLowerCase();
-	}
-	if (tagName.equals("img"))
-	{
-	    onImg(el, runs);
-	    return;
-	}
-	final String href;
-	if (tagName.equals("a"))
-	    href = extractHref(el); else
-	    href = null;
-	if (href != null)
-	    hrefStack.add(href);
-	try {
-	    final List<org.jsoup.nodes.Node> nn = el.childNodes();
-	    if (nn == null)
-		return;
-	    for(org.jsoup.nodes.Node n: nn)
-	    {
-		if (n instanceof TextNode)
-		{
-		    onTextNode((TextNode)n, nodes, runs, preMode);
-		    continue;
-		}
-		if (n instanceof Element)
-		{
-		    onElement((Element)n, nodes, runs, preMode);
-		    continue;
-		}
-		if (n instanceof Comment)
-		    continue;
-throw new IllegalStateException("encountering unexpected node of class " + n.getClass().getName());
-	    }
-	}
-	finally
-	{
-	    if (href != null)
-		hrefStack.pollLast();
-	}
-    }
 
-    private void onElement(Element el, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
-    {
-	final String tagName;
-	{
-	final String name = el.nodeName();
-	if (name == null || name.trim().isEmpty())
-	    return;
-tagName = name.trim().toLowerCase();
-	}
-	if (tagName.startsWith("g:") ||
-	    tagName.startsWith("g-") ||
-	    tagName.startsWith("fb:"))
-	    return;
-	switch(tagName)
-	{
-	case "script":
-	case "style":
-	case "hr":
-	case "input":
-	case "button":
-	case "nobr":
-	case "wbr":
-	case "map":
-	case "svg":
-	    return;
-	case "pre":
-	    onPre(el, nodes, runs);
-	    break;
-	case "br":
-	    commitParagraph(nodes, runs);
-	    break;
-	case "p":
-	case "div":
-	case "main":
-	case "noscript":
-	case "header":
-	case "footer":
-	case "center":
-	case "blockquote":
-	case "tbody":
-	case "figure":
-	case "figcaption":
-	case "caption":
-	case "address":
-	case "nav":
-	case "article":
-	case "noindex":
-	case "iframe":
-	case "form":
-	case "section":
-	case "dl":
-	case "dt":
-	case "dd":
-	case "time":
-	case "aside":
-	    {
-	    commitParagraph(nodes, runs);
-	addAttrs(el);
-	final var nn = onNode(el, preMode);
-	releaseAttrs();
-	nodes.addAll(nn);
-	    }
-	break;
-	case "h1":
-	case "h2":
-	case "h3":
-	case "h4":
-	case "h5":
-	case "h66":
-	case "h7":
-	case "h8":
-	case "h9":
-	    {
-	    commitParagraph(nodes, runs);
-	addAttrs(el);
-	final Heading h = new Heading(tagName.trim().charAt(1) - '0');
-	h.getItems().addAll(onNode(el, preMode));
-	h.setAttributes(getAttributes());
-	releaseAttrs();
-	nodes.add(h);
-	    }
-	break;
-	case "ul":
-	case "ol":
-	case "li":
-	case "table":
-	case "th":
-	case "tr":
-	case "td":
-	    {
-	    commitParagraph(nodes, runs);
-	addAttrs(el);
-	final Heading h = new Heading(1);
-	h.getItems().addAll(onNode(el, preMode));
-	h.setAttributes(getAttributes());
-	releaseAttrs();
-	nodes.add(h);
-	    }
-	break;
-	case "img":
-	case "a":
-	case "tt":
-	case "code":
-	case "b":
-	case "s":
-	case "ins":
-	case "em":
-	case "i":
-	case "u":
-	case "big":
-	case "small":
-	case "strong":
-	case "span":
-	case "cite":
-	case "font":
-	case "sup":
-	case "label":
-	    addAttrs(el);
-	onTextElement(el, nodes, runs, preMode);
-	releaseAttrs();
-	break;
-	default:
-	    Log.warning(LOG_COMPONENT, "unprocessed tag:" + tagName);
-	}
-    }
 
     private void onTextNode(TextNode textNode, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
     {
@@ -299,18 +102,11 @@ tagName = name.trim().toLowerCase();
 	runs.add(new TextRun(lines[0], getLastHref(), getAttributes()));
 		    for(int i = 1;i < lines.length;i++)
 		    {
-			commitParagraph(nodes, runs);
+			//			commitParagraph(nodes, runs);
 			runs.add(new TextRun(lines[i], getLastHref(), getAttributes()));
 		    }
     }
 
-    private void commitParagraph(List<ContainerItem> nodes, List<Run> runs)
-    {
-	if (runs.isEmpty())
-	    return;
-	nodes.add(new Paragraph(runs, getAttributes()));
-	runs.clear();
-    }
 
     private void onImg(Element el, List<Run> runs)
     {
@@ -334,9 +130,10 @@ tagName = name.trim().toLowerCase();
 	}
     }
 
+    /*
     private void onPre(Element el, List<ContainerItem> items, List<Run> runs)
     {
-	commitParagraph(items, runs);
+	//	commitParagraph(items, runs);
 	addAttrs(el);
 	try {
 	    for(ContainerItem n: onNode(el, true))
@@ -347,6 +144,7 @@ tagName = name.trim().toLowerCase();
 	    releaseAttrs();
 	}
     }
+    */
 
     private String getLastHref()
     {
