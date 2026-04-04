@@ -2,6 +2,7 @@
 package org.luwrain.io.bookdoc.filters.html;
 
 import java.util.*;
+import java.net.*;
 import org.apache.logging.log4j.*;
 
 import org.jsoup.nodes.*;
@@ -52,6 +53,24 @@ class NodeParser
 
     void process(TextNode node)
     {
+		final String text = node.text();
+	if (text == null || text.isEmpty())
+	    return;
+	if (!preMode)
+	{
+	    runs.add(new TextRun(text, context.getActualAnchor(), context.getAttributes()));
+	    return;
+	}
+	final String[] lines = text.split("\n", -1);
+	if (lines.length == 0)
+	    return;
+	runs.add(new TextRun(lines[0], context.getActualAnchor(), context.getAttributes()));
+		    for(int i = 1;i < lines.length;i++)
+		    {
+						commitParagraph();
+			runs.add(new TextRun(lines[i], context.getActualAnchor(), context.getAttributes()));
+		    }
+
     }
 
     void process(Element el)
@@ -209,7 +228,18 @@ void processTextElement(Element el)
 
     String getAnchor(Element el)
     {
-	return null;
+	final String value = el.attr("href");
+	if (value == null)
+	    return null;
+	context.allAnchors.add(value);
+	try {
+	    return new URL(context.baseUrl, value).toString();
+	}
+	catch(MalformedURLException e)
+	{
+	    log.warn("Unable to construct an URL for base URL {} and anchor {}", context.baseUrl.toString(), value);
+	    return value;
+	}
     }
 
     void commitParagraph()

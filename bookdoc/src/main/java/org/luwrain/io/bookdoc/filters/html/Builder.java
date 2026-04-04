@@ -86,49 +86,17 @@ doc.setProperty("charset", charset);
 
 
 
-    private void onTextNode(TextNode textNode, List<ContainerItem> nodes, List<Run> runs, boolean preMode)
-    {
-	final String text = textNode.text();
-	if (text == null || text.isEmpty())
-	    return;
-	if (!preMode)
-	{
-	    runs.add(new TextRun(text, getLastHref(), getAttributes()));
-	    return;
-	}
-	final String[] lines = text.split("\n", -1);
-	if (lines.length == 0)
-	    return;
-	runs.add(new TextRun(lines[0], getLastHref(), getAttributes()));
-		    for(int i = 1;i < lines.length;i++)
-		    {
-			//			commitParagraph(nodes, runs);
-			runs.add(new TextRun(lines[i], getLastHref(), getAttributes()));
-		    }
-    }
 
 
+    /*
     private void onImg(Element el, List<Run> runs)
     {
 	 final String value = el.attr("alt");
 	 if (value != null && !value.isEmpty())
 	     runs.add(new TextRun("[" + value + "]", getLastHref(), getAttributes()));
 	 }
+    */
 
-    private String extractHref(Element el)
-    {
-	final String value = el.attr("href");
-	if (value == null)
-	    return null;
-	allHrefs.add(value);
-	try {
-	    return new URL(docUrl, value).toString();
-	}
-	catch(MalformedURLException e)
-	{
-	    return value;
-	}
-    }
 
     /*
     private void onPre(Element el, List<ContainerItem> items, List<Run> runs)
@@ -146,10 +114,4 @@ doc.setProperty("charset", charset);
     }
     */
 
-    private String getLastHref()
-    {
-	if (hrefStack.isEmpty())
-	    return null;
-	return hrefStack.getLast();
-    }
 }
