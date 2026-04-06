@@ -17,21 +17,19 @@ interface DocumentBuilder
 	    return new DocumentBuilder(){
 		@Override public     Doc buildDoc(File file, Properties props) throws IOException
 		{
-		    return new org.luwrain.io.filters.html2.Builder().buildDoc(file, props);
+		    return null;//new org.luwrain.io.filters.html2.Builder().buildDoc(file, props);
 		}
 	    };
 
-	/*
 		if (contentType.equals(ContentTypes.APP_DOCX))
 	    return new DocumentBuilder(){
 		@Override public     Doc buildDoc(File file, Properties props) throws IOException
 		{
-		    final DocxReader r = new DocxReader();
-		    r.read(file);
-		    return new Doc(r.output);
+		    //		    final DocxReader r = new DocxReader();
+		    //		    r.read(file);
+		    return null; //		    retur nunew Doc(r.output);
 		}
 	    };
-	*/
 		
 	return null;
     }

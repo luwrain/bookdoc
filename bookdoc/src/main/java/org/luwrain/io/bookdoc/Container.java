@@ -1,24 +1,28 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.bookdoc;
 
 import java.util.*;
 
-public class Container extends Node
-{
-    private List<ContainerItem> items = null;
-    private Geom geom = null;
+import static java.util.Objects.*;
 
-    public List<ContainerItem> getItems()
+public class Container<T extends ContainerItem> extends Node
+{
+    protected List<T> items = null;
+    protected Geom geom = null;
+    protected Attributes attr = null;
+
+    public List<T> getItems()
     {
 	if (this.items == null)
 	    this.items = new ArrayList<>();
-	return this.items;
+	return Collections.unmodifiableList(this.items);
     }
 
-    public void addItem(ContainerItem item)
+    public void addItem(T item)
     {
-	if (item == null)
-	    throw new NullPointerException("item can't be null");
+	requireNonNull(item, "item can't be null");
 	if (this.items == null)
 	    this.items = new ArrayList<>();
 	this.items.add(item);
@@ -26,6 +30,7 @@ public class Container extends Node
 
     public void setAttributes(Attributes attr)
     {
+	this.attr = requireNonNull(attr, "attr can't be null");
     }
 
         public Geom getGeom()

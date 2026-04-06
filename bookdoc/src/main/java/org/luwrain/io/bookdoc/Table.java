@@ -1,15 +1,10 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.bookdoc;
 
 import java.util.*;
 
-public final class Table implements ContainerItem
+public final class Table extends Container<TableRow> implements ContainerItem
 {
-    private final List<TableRow> rows = new ArrayList();
-
-    @Override public Geom getGeom()
-    {
-	return null;
-    }
-
 }

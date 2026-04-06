@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.filters.html2;
 
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import com.google.auto.service.*;
 
 import org.jsoup.*;
 import org.jsoup.nodes.*;
@@ -11,8 +14,10 @@ import org.jsoup.select.*;
 
 import org.luwrain.io.filters.*;
 import org.luwrain.io.bookdoc.*;
+import org.luwrain.io.bookdoc.filters.*;
 
-public final class Builder extends AttrsBase
+@AutoService(Filter.class)
+public final class HtmlFilter extends AttrsBase implements Filter
 {
     static private final String
 	DEFAULT_CHARSET = "UTF-8";
@@ -20,39 +25,7 @@ public final class Builder extends AttrsBase
     private org.jsoup.nodes.Document jsoupDoc = null;
     private URL docUrl = null;
 
-    private final LinkedList<String> hrefStack = new LinkedList();
-    private final List<String> allHrefs = new ArrayList<>();
-
-public Doc buildDoc(File file, Properties props) throws IOException
-    {
-	final InputStream is = new FileInputStream(file);
-	try {
-	    return buildDoc(is, props);
-	}
-	finally {
-	    is.close();
-	}
-    }
-
-public Doc buildDoc(String text, Properties props)
-{
-    final InputStream is = new ByteArrayInputStream(text.getBytes());
-    try {
-	try {
-	    return buildDoc(is, props);
-	}
-	finally {
-	    is.close();
-	}
-    }
-    catch(IOException e)
-    {
-	Log.error(LOG_COMPONENT, "unable to read HTML from a string:" + e.getClass().getName() + ":" + e.getMessage());
-	return null;
-    }
-    }
-
-public Doc buildDoc(InputStream is, Properties props) throws IOException
+@Override public Doc load(InputStream is, Properties props) throws IOException
     {
 		final String urlStr = props.getProperty("url");
 	if (urlStr == null || urlStr.isEmpty())
@@ -79,7 +52,7 @@ doc.setProperty("charset", charset);
 	addAttrs(jsoupDoc.body());
 	//	root.getItems().addAll(onNode(jsoupDoc.body(), false));
 	final Doc doc = new Doc(root, jsoupDoc.title());
-	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
+	//	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;
     }
 
@@ -114,4 +87,8 @@ doc.setProperty("charset", charset);
     }
     */
 
+    @Override public String getContentType()
+    {
+	return "text/html";
+    }
 }
