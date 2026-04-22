@@ -1,8 +1,9 @@
 
 plugins {
-id 'application'
+  id 'application'
   id 'java'
   id 'io.freefair.lombok' version '8.6'
+  id("com.adarshr.test-logger") version "4.0.0"
 }
 
 dependencies {
@@ -23,3 +24,6 @@ tasks.named('test') {
   useJUnitPlatform()
 }
 
+testlogger {
+    theme 'plain'
+    }

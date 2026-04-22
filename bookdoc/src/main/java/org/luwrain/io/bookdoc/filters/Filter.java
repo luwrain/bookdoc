@@ -12,6 +12,10 @@ import static java.util.Objects.*;
 
 public interface Filter
 {
+    static public final String
+	PROP_URL = "url",
+	PROP_CHARSET = "charset";
+    
     Doc load(InputStream is, Properties props) throws IOException;
     String getContentType();
 

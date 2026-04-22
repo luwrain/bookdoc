@@ -1,5 +1,5 @@
 
-package org.luwrain.io.filters.html2;
+package org.luwrain.io.bookdoc.filters.html;
 
 import java.util.*;
 import org.jsoup.nodes.Element;
