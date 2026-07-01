@@ -1,24 +1,11 @@
-/*
-   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
 
 package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
 import org.luwrain.io.bookdoc.*;
+
+import static java.util.Objects.*;
 
 final class RowPartsSplitter
 {
@@ -34,8 +21,8 @@ final class RowPartsSplitter
     //Removes spaces only on row breaks and only if after the break there are non-spacing chars
     void onRun(Run run, String text, int boundFrom, int boundTo, int maxRowLen)
     {
-	NullCheck.notNull(run, "run");
-	NullCheck.notNull(text, "text");
+	requireNonNull(run, "run can't be null");
+	requireNonNull(text, "text can't be null");
 	if (boundFrom < 0 || boundTo < 0)
 	    throw new IllegalArgumentException("boundFrom (" + boundFrom + ") and boundTo (" + boundTo + ") may not be negative");
 	if (boundFrom > text.length() || boundTo > text.length())
@@ -110,7 +97,7 @@ final class RowPartsSplitter
 
     private int findNextWord(int pos, String text, int boundTo)
     {
-	NullCheck.notNull(text, "text");
+	requireNonNull(text, "text can't be null");
 	int i = pos;
 	    while (i < boundTo && Character.isSpace(text.charAt(i)))
 		++i;
@@ -121,7 +108,7 @@ final class RowPartsSplitter
 
     private RowPart makeTextPart(Run run, int posFrom, int posTo)
     {
-	NullCheck.notNull(run, "run");
+	requireNonNull(run, "run can't be null");
 return new RowPart(run, posFrom, posTo, index);
     }
     }

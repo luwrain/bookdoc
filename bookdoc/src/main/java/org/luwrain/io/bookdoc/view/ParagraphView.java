@@ -7,4 +7,8 @@ public final class ParagraphView
     {
 	return new RowPart[0];
     }
+
+    void setRowParts(RowPart[] rowParts)
+    {
+    }
 }
