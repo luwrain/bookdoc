@@ -1,24 +1,13 @@
-/*
-   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
 import org.luwrain.io.bookdoc.*;
+
+import static java.util.Objects.*;
 
 final class TextExtractorFragment
 {
@@ -37,8 +26,8 @@ final class TextExtractorFragment
 			  Run runFrom, int posFrom,
 			  Run runTo, int posTo)
     {
-	NullCheck.notNull(runFrom, "runFrom");
-	NullCheck.notNull(runTo, "runTo");
+	requireNonNull(runFrom, "runFrom can't be null");
+	requireNonNull(runTo, "runTo can't be null");
 	if (width < 0)
 	    throw new IllegalArgumentException("width (" + width + ") may not be negative");
 	this.width = width;
@@ -50,7 +39,8 @@ final class TextExtractorFragment
 
     void onNode(Node node)
     {
-	NullCheck.notNull(node, "node");
+	requireNonNull(node, "node can't be null");
+	/*
 	if (node instanceof EmptyLine)
 	{
 	    final Paragraph para = (Paragraph)node;
@@ -59,18 +49,22 @@ final class TextExtractorFragment
 	    parts.add(part);
 	    return;
 	}
+	*/
    	if (node instanceof Paragraph)
 	{
 	    onParagraph((Paragraph)node);
 	    return;
 	}
+	/*
 	for(Node n: node.getSubnodes())
 	    onNode(n);
+	*/
     }
 
     private void onParagraph(Paragraph para)
     {
-	NullCheck.notNull(para, "para");
+	requireNonNull(para, "para can't be null");
+	/*
 	final Run boundingRun1 = searchForRun(runFrom, para.getRuns());
 	final Run boundingRun2 = searchForRun(runTo, para.getRuns());
 	if (!accepting && boundingRun1 == null && boundingRun2 == null)
@@ -81,7 +75,7 @@ final class TextExtractorFragment
 	    for(Run r: para.getRuns())
 	    {
 		final String text = r.text();
-		NullCheck.notNull(text, "text");
+		requireNonNull(text, "text can't be null");
 		splitter.onRun(r, text, 0, text.length(), width);
 	    }
 	} else
@@ -89,7 +83,7 @@ final class TextExtractorFragment
 	    final BoundingInfo boundingInfo = prepareBoundingInfo(para, boundingRun1, boundingRun2);
 	    boundingInfo.filter(para.getRuns(), (run, fromChar,toChar)->{
 		    final String text = run.text();
-		    NullCheck.notNull(text, "text");
+		    requireNonNull(text, "text can't be null");
 		    if (fromChar < 0 || fromChar >= text.length())
 			throw new RuntimeException("fromChar (" + fromChar + ") must be non-negative and less than " + text.length());
 	    	    if (toChar < 0 || toChar >= text.length())
@@ -101,6 +95,7 @@ final class TextExtractorFragment
 	    return;
 	for(RowPart p: splitter.res)
 	    parts.add(p);
+	*/
     }
 
     private BoundingInfo prepareBoundingInfo(Paragraph para, Run run1, Run run2)
@@ -111,8 +106,8 @@ final class TextExtractorFragment
     //Returns the run, if it is encountered in the runs, null otherwise
     static private Run searchForRun(Run run, Run[] runs)
     {
-	NullCheck.notNull(run, "run");
-	NullCheck.notNullItems(runs, "runs");
+	requireNonNull(run, "run can't be null");
+	//	NullCheck.notNullItems(runs, "runs");
 	for(Run r: runs)
 	    if (r == run)
 		return run;

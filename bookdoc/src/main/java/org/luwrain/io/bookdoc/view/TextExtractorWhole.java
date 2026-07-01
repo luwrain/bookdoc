@@ -1,24 +1,13 @@
-/*
-   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
 import org.luwrain.io.bookdoc.*;
+
+import static java.util.Objects.*;
 
 public final class TextExtractorWhole extends TextExtractor
 {
@@ -36,30 +25,34 @@ public final class TextExtractorWhole extends TextExtractor
 
     public void onNode(Node node)
     {
-	NullCheck.notNull(node, "node");
+	requireNonNull(node, "node can't be null");
+	/*
 	if (node instanceof EmptyLine)
 	{
 	    addEmptyLine();
 	    return;
 	}
+	*/
    	if (node instanceof Paragraph)
 	{
 	    onParagraph((Paragraph)node);
 	    addEmptyLine();
 	    return;
 	}
+	/*
 	for(Node n: node.getSubnodes())
 	    onNode(n);
+	*/
     }
 
     private void onParagraph(Paragraph para)
     {
-	NullCheck.notNull(para, "para");
+	requireNonNull(para, "para can't be null");
 	final RowPartsSplitter splitter = new RowPartsSplitter();
 	for(Run r: para.getRuns())
 	{
-	    final String text = r.text();
-	    NullCheck.notNull(text, "text");
+	    final String text = r.getText();
+	    requireNonNull(text, "text can't be null");
 	    splitter.onRun(r, text, 0, text.length(), width);
 	}
 	if (splitter.res.isEmpty())
