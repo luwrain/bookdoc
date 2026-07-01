@@ -3,15 +3,19 @@ package org.luwrain.io.bookdoc.view;
 
 import java.net.*;
 import java.util.*;
+import org.apache.logging.log4j.*;
 
 import org.luwrain.io.bookdoc.*;
 
+import static java.util.Objects.*;
+
 public class View
 {
+    static private final Logger log = LogManager.getLogger();
     static public final String DEFAULT_ITERATOR_INDEX_PROPERTY = "defaultiteratorindex";
 
     protected final Doc doc;
-    protected final Node root;
+    protected final Root root;
     protected final Paragraph[] paragraphs; //Only paragraphs which appear in document, no paragraphs without row parts
     protected final RowPart[] rowParts;
     protected final Row[] rows;
@@ -19,7 +23,7 @@ public class View
 
     public View(Doc doc, int width)
     {
-	NullCheck.notNull(doc, "doc");
+	requireNonNull(doc, "doc can't be null");
 	this.doc = doc;
 	this.root = doc.getRoot();
 	final NodeGeom geom = new NodeGeom();
@@ -27,7 +31,7 @@ public class View
 	final DefaultRowPartsBuilder rowPartsBuilder = new DefaultRowPartsBuilder();
 	rowPartsBuilder.onNode(root);
 	rowParts = rowPartsBuilder.getRowParts();
-	NullCheck.notNullItems(rowParts, "rowParts");
+	//	NullCheck.notNullItems(rowParts, "rowParts");
 	if (rowParts.length <= 0)
 	{
 	    paragraphs = new Paragraph[0];
@@ -47,20 +51,12 @@ public class View
     public Layout createLayout()
     {
 	final Layout layout = new Layout(doc, root, rows, rowParts, paragraphs, lineCount);
-
-	  try {
-	    org.luwrain.util.LinesSaver.saveLines(new java.io.File("/tmp/lines"), layout);
-	}
-	catch(Exception e)
-	{
-	}
-
 	return layout;
     }
 
     protected void calcAbsRowNums(RowPart[] parts)
     {
-	NullCheck.notNullItems(parts, "parts");
+	//	NullCheck.notNullItems(parts, "parts");
 	if (parts.length < 1)
 	    return;
 	RowPart first = parts[0];
@@ -79,7 +75,7 @@ public class View
 
     static protected Row[] buildRows(RowPart[] parts)
     {
-	NullCheck.notNullItems(parts, "parts");
+	//	NullCheck.notNullItems(parts, "parts");
 	final int rowCount = parts[parts.length - 1].absRowNum + 1;
 	final int[] fromParts = new int[rowCount];
 	final int[] toParts = new int[rowCount];
@@ -107,7 +103,7 @@ public class View
 
     protected int calcRowsPosition(Row[] rows)
     {
-	NullCheck.notNullItems(rows, "rows");
+	//	NullCheck.notNullItems(rows, "rows");
 	int maxLineNum = 0;
 	int lastX = 0;
 	int lastY = 0;
@@ -122,18 +118,18 @@ public class View
 	    //		continue;
 	    //	    }
 	    final Run run = r.getFirstRun();
-	    NullCheck.notNull(run, "run");
+	    requireNonNull(run, "run can't be null");
 	    final Node parent = run.getParentNode();
-	    NullCheck.notNull(parent, "parent");
+	    requireNonNull(parent, "parent can't be null");
 	    if (parent instanceof Paragraph)
 	    {
 		final Paragraph paragraph = (Paragraph)parent;
-		r.x = paragraph.getNodeX();
-		r.y = paragraph.getNodeY() + r.getRelNum();
+		r.x = paragraph.getGeom().x;
+		r.y = paragraph.getGeom().y + r.getRowY();
 	    } else 
 	    {
-		r.x = parent.getNodeX();
-		r.y = parent.getNodeY();
+		r.x = parent.getGeom().x;
+		r.y = parent.getGeom().y;
 	    }
 	    lastX = r.x;
 	    lastY = r.y;
@@ -170,14 +166,14 @@ public class View
 	final String id = doc.getProperty("startingref");
 	if (id.isEmpty())
 	    return;
-	Log.debug("doctree", "preparing default iterator index for " + id);
-	final org.luwrain.reader.view.Iterator it = getIterator();
+	log.trace("Preparing default iterator index for " + id);
+	final var it = getIterator();
 	while (it.canMoveNext())
 	{
 	    //	    if (!it.isEmptyRow())
 	    {
-		final ExtraInfo data = it.getNode().extraInfo;
-		if (data != null && data.hasIdInChain(id))
+		final var data = it.getNode().getAttr();
+		if (data != null && data.hasIdWithParents(id))
 		    break;
 		final Run[] runs = it.getRuns();
 		Run foundRun = null;
@@ -185,7 +181,7 @@ public class View
 		    if (r instanceof TextRun)
 		    {
 			final TextRun textRun = (TextRun)r;
-			if (textRun.extraInfo.hasIdInChain(id))
+			if (textRun.getAttrs().hasIdWithParents(id))
 			    foundRun = textRun;
 		    }
 		if (foundRun != null)
@@ -195,17 +191,17 @@ public class View
 	}
 	if (!it.canMoveNext())//FIXME:
 	{
-	    Log.debug("doctree", "no iterator position found for " + id);
+	    log.trace("No iterator position found for " + id);
 	    doc.setProperty(DEFAULT_ITERATOR_INDEX_PROPERTY, "");
 	    return;
 	}
 	doc.setProperty("defaultiteratorindex", "" + it.getIndex());
-	Log.debug("doctree", "default iterator index set to " + it.getIndex());
+	log.trace("Default iterator index set to " + it.getIndex());
     }
 
     static public String[] getParagraphLines(Paragraph para, int width)
     {
-	NullCheck.notNull(para, "para");
+	requireNonNull(para, "para can't be null");
 	final DefaultRowPartsBuilder builder = new DefaultRowPartsBuilder();
 	builder.onNode(para, width);
 	final RowPart[] parts = builder.getRowParts();

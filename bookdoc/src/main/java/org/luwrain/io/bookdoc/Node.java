@@ -7,6 +7,18 @@ public class Node
 {
     static public final EmptyNode EMPTY = new EmptyNode();
 
+    public Geom getGeom()
+    {
+	//FIXME:
+	return null;
+    }
+
+    public Attributes getAttr()
+    {
+	//FIXME:
+	return null;
+    }
+
     public String getText()
     {
 	final StringBuilder res = new StringBuilder();

@@ -25,6 +25,11 @@ public class TextRun implements Run
     @Override public String getHref() { return href; }
     @Override public Attributes getAttrs() { return attr; }
 
+    @Override public Node getParentNode()
+    {
+	return null;
+    }
+
     @Override public String toString()
     {
 	return text != null?text:"";

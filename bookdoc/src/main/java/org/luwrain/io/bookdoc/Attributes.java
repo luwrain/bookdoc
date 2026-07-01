@@ -61,6 +61,25 @@ public final class Attributes
 	    return res.toArray(new String[res.size()]);
     }
 
+    public boolean hasIdWithParents(String id)
+    {
+	if (attrMap != null)
+	{
+	    for(Map.Entry<String, Object> i: attrMap.entrySet())
+		if (i.getKey().equalsIgnoreCase(ID) && i.getValue().equals(id))
+		    return true;
+	    	}
+	if (parentAttr == null)
+	    return false;
+	for(Attributes a: parentAttr)
+	    if (a.attrMap != null)
+		for(Map.Entry<String, Object> i: a.attrMap.entrySet())
+		    if (i.getKey().equalsIgnoreCase(ID) && i.getValue().equals(id))
+			return true;
+	return false;
+    }
+
+
     @Override public String toString()
     {
 	final StringBuilder b = new StringBuilder();

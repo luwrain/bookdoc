@@ -27,6 +27,12 @@ public final class Paragraph extends Node implements ContainerItem
 	this(Arrays.asList(new Run[0]), null);
     }
 
+    public Node getParentNode()
+    {
+	//FIXME:
+	return null;
+    }
+
     public List<Run> getRuns()
     {
 	if (this.runs == null)

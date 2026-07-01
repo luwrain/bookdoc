@@ -54,12 +54,12 @@ boolean isEmpty()
     }
 
     //Checks relRowNum and parents of runs
-    /*
+
     boolean onTheSameRow(RowPart rowPart)
     {
 	if (isEmpty() || rowPart.isEmpty())
 	    return false;
 	return run.getParentNode() == rowPart.run.getParentNode() && relRowNum == rowPart.relRowNum;
     }
-    */
+
 }
