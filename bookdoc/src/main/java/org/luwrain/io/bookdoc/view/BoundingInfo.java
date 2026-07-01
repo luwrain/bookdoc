@@ -1,22 +1,8 @@
-/*
-   Copyright 2016-2023 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
 
 package org.luwrain.io.bookdoc.view;
 
 import org.luwrain.io.bookdoc.*;
+import static java.util.Objects.*;
 
 class BoundingInfo
 {
@@ -50,8 +36,8 @@ class BoundingInfo
 
     void filter(Run[] runs, Acceptor acceptor)
     {
-	NullCheck.notNullItems(runs, "runs");
-	NullCheck.notNull(acceptor, "acceptor");
+	//	NullCheck.notNullItems(runs, "runs");
+	requireNonNull(acceptor, "acceptor can't be null");
 	boolean accepting = runFrom == null;
 	for(Run r: runs)
 	{
@@ -59,10 +45,10 @@ class BoundingInfo
 	    {
 		if (r == runTo)
 		{
-		    acceptor.accept(r, 0, Math.min(r.text().length(), posTo));
+		    acceptor.accept(r, 0, Math.min(r.getText().length(), posTo));
 		    return;
 		}
-		acceptor.accept(r, 0, r.text().length());
+		acceptor.accept(r, 0, r.getText().length());
 		continue;
 	    }
 	    //not accepting
@@ -71,10 +57,10 @@ class BoundingInfo
 		if (r == runTo)
 		{
 		    //runFrom == runTo, nothing strange
-		    acceptor.accept(r, posFrom, Math.min(r.text().length(), posTo));
+		    acceptor.accept(r, posFrom, Math.min(r.getText().length(), posTo));
 		    return;
 		}
-		acceptor.accept(r, posFrom, r.text().length());
+		acceptor.accept(r, posFrom, r.getText().length());
 		accepting = true;
 		continue;
 	    } // encountering runFrom
