@@ -20,6 +20,11 @@ public class Container<T extends ContainerItem> extends Node
 	return Collections.unmodifiableList(this.items);
     }
 
+    public int getItemCount()
+    {
+	return items != null?items.size():0;
+    }
+
     public void addItem(T item)
     {
 	requireNonNull(item, "item can't be null");

@@ -6,36 +6,38 @@ package org.luwrain.io.bookdoc.filters.html;
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import org.apache.logging .log4j.*;
 import com.google.auto.service.*;
 
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
-import org.luwrain.io.filters.*;
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.filters.*;
 
 @AutoService(Filter.class)
 public final class HtmlFilter extends AttrsBase implements Filter
 {
-    static private final String
-	DEFAULT_CHARSET = "UTF-8";
+    static private final Logger log = LogManager.getLogger();
+    static private final String DEFAULT_CHARSET = "UTF-8";
 
     private org.jsoup.nodes.Document jsoupDoc = null;
     private URL docUrl = null;
 
 @Override public Doc load(InputStream is, Properties props) throws IOException
     {
-		final String urlStr = props.getProperty("url");
+		final String urlStr = props.getProperty(Filter.PROP_URL);
+		log.trace("Parsing HTML from {}", urlStr);
 	if (urlStr == null || urlStr.isEmpty())
 throw new IOException("no \'url\' property");
 	    this.docUrl = new URL(urlStr);
-	final String charsetValue = props.getProperty("charset");
+	final String charsetValue = props.getProperty(Filter.PROP_CHARSET);
 	final String charset;
 		if (charsetValue != null && !charsetValue.isEmpty())
 		    charset = charsetValue; else
 		    charset = DEFAULT_CHARSET;
+		log.trace("Charset is {}", charset);
 	this.jsoupDoc = Jsoup.parse(is, charset, docUrl.toString());
 	final Doc doc = constructDoc();
 doc.setProperty("url", docUrl.toString());
@@ -46,20 +48,14 @@ doc.setProperty("charset", charset);
 
 	    private Doc constructDoc()
     {
-	final Root root = new Root();
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
 	addAttrs(jsoupDoc.body());
-	//	root.getItems().addAll(onNode(jsoupDoc.body(), false));
+	final Root root = new Root(new NodeParser(jsoupDoc.body(), false).process().resNodes);
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	//	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;
     }
-
-
-
-
-
 
     /*
     private void onImg(Element el, List<Run> runs)

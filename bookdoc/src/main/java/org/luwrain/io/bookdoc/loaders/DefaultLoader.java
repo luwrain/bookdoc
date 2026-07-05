@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.zip.*;
 
 import org.luwrain.io.bookdoc.*;
-import org.luwrain.io.filters.*;
+//import org.luwrain.io.filters.*;
 
 import static java.util.Objects.*;
 import static org.luwrain.io.bookdoc.loaders.Utils.*;

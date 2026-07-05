@@ -12,11 +12,11 @@ import org.luwrain.io.bookdoc.*;
 
 import static java.util.Objects.*;
 
-class NodeParser
+final class NodeParser
 {
     static private final Logger log = LogManager.getLogger();
 
-    final Context context = null;
+    final Context context = new Context();
     final org.jsoup.nodes.Node source;
     		final List<ContainerItem> resNodes = new ArrayList<>();
 	final List<Run> runs = new ArrayList<>();
@@ -53,7 +53,7 @@ class NodeParser
     }
 
 
-    void process(TextNode node)
+    private void process(TextNode node)
     {
 		final String text = node.text();
 	if (text == null || text.isEmpty())
@@ -72,7 +72,6 @@ class NodeParser
 						commitParagraph();
 			runs.add(new TextRun(lines[i], context.getActualAnchor(), context.getAttributes()));
 		    }
-
     }
 
     void process(Element el)
