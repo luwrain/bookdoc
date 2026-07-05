@@ -7,6 +7,8 @@ import org.jsoup.nodes.Node;
 import org.luwrain.io.bookdoc.Attributes;
 import org.luwrain.io.filters.*;
 
+import static java.util.Objects.*;
+
 class AttrsBase
 {
     static final String
@@ -45,8 +47,8 @@ class AttrsBase
 
     static protected void collectMeta(Element el, Map<String, String> meta)
     {
-	NullCheck.notNull(el, "el");
-	NullCheck.notNull(meta, "meta");
+	requireNonNull(el, "el can't be null");
+	requireNonNull(meta, "meta can't be null");
 	if (el.nodeName().equals("meta"))
 	{
 	    final String name = el.attr("name");

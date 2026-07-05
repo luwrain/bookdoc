@@ -2,6 +2,7 @@
 package org.luwrain.io.filters;
 
 import java.util.*;
+import static java.util.Objects.*;
 
 public final class Log
 {
@@ -14,9 +15,9 @@ public final class Log
 	public final String message;
 	Message(Level level, String component, String message)
 	{
-	    NullCheck.notNull(level, "level");
-	    NullCheck.notNull(component, "component");
-	    NullCheck.notNull(message, "message");
+	    requireNonNull(level, "level can't be null");
+	    requireNonNull(component, "component can't be null");
+	    requireNonNull(message, "message can't be null");
 	    this.level = level;
 	    this.component = component;
 	    this.message = message;
@@ -34,7 +35,7 @@ public final class Log
 
     static public void addListener(Listener listener)
     {
-		    NullCheck.notNull(listener, "listener");
+		    requireNonNull(listener, "listener can't be null");
 	synchronized (syncObj) {
 	    for(int i = 0;i < listeners.size();++i)
 		if (listeners.get(i) == listener)
@@ -45,7 +46,7 @@ public final class Log
 
     static public void removeListener(Listener listener)
     {
-	NullCheck.notNull(listener, "listener");
+	requireNonNull(listener, "listener can't be null");
 	synchronized (syncObj) {
 	    for(int i = 0;i < listeners.size();++i)
 		if (listeners.get(i) == listener)

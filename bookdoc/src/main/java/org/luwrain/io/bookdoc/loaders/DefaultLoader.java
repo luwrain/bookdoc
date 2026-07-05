@@ -10,6 +10,7 @@ import java.util.zip.*;
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.filters.*;
 
+import static java.util.Objects.*;
 import static org.luwrain.io.bookdoc.loaders.Utils.*;
 
 public final class DefaultLoader extends Loader
@@ -120,7 +121,7 @@ public final class DefaultLoader extends Loader
 
     private void downloadToTmpFile(InputStream s) throws IOException
     {
-	NullCheck.notNull(s, "s");
+	requireNonNull(s, "s can't be null");
 	tmpFile = Files.createTempFile("tmplwr-reader-", ".dat");
 	Files.copy(s, tmpFile, StandardCopyOption.REPLACE_EXISTING);
     }

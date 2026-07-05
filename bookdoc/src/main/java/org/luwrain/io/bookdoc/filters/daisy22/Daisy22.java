@@ -15,6 +15,8 @@ import org.luwrain.io.bookdoc.Book.Section;
 import org.luwrain.io.filters.daisy22.Smil.Entry;
 import org.luwrain.io.filters.daisy22.Smil.Entry.Type;
 
+import static java.util.Objects.*;
+
 public final class Daisy22 implements Book
 {
     static private final String
@@ -323,8 +325,8 @@ private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long
 
     static private void collectAudioStartingAtEntry(Entry entry, List<Audio> audioInfos)
     {
-	NullCheck.notNull(entry, "entry");
-	NullCheck.notNull(audioInfos, "audioInfos");
+	requireNonNull(entry, "entry can't be null");
+	requireNonNull(audioInfos, "audioInfos can't be null");
 	switch(entry.type)
 	{
 	case AUDIO:

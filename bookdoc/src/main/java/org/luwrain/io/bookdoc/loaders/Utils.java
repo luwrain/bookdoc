@@ -73,7 +73,7 @@ final class Utils
     /*
     static private ParaStyle translateParaStyle(String str)
     {
-	NullCheck.notNull(str, "str");
+	requireNonNull(str, "str can't be null");
 	switch(str)
 	{
 	case "EMPTY_LINES":

@@ -7,4 +7,14 @@ import java.util.*;
 
 public final class TableCell extends Container<ContainerItem> implements ContainerItem
 {
+    public int getRowIndex()
+    {
+	throw new IllegalStateException("Not implemented");
+    }
+
+        public int getColIndex()
+    {
+	throw new IllegalStateException("Not implemented");
+    }
+
 }
