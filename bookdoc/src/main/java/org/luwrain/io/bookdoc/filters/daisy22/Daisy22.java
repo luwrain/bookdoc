@@ -7,8 +7,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import java.nio.file.*;
+import org.apache.logging.log4j.*;
 
-import org.luwrain.io.filters.*;
 import org.luwrain.io.bookdoc.*;
 
 import org.luwrain.io.bookdoc.Book.Section;
@@ -19,9 +19,8 @@ import static java.util.Objects.*;
 
 public final class Daisy22 implements Book
 {
-    static private final String
-	LOG_COMPONENT = "daisy";
-
+    static private final Logger log = LogManager.getLogger();
+    
     protected final Map<String, Doc> docs = new HashMap<>();
     protected final Map<String, Entry> smils = new HashMap<>();
     protected Doc nccDoc = null;
@@ -318,7 +317,7 @@ private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long
 	    }
 	    return null;
 	default:
-	    Log.warning("doctree-daisy", "unknown SMIL entry type:" + entry.type);
+	    log.warn("Unknown type of SMIL entry {}", entry.type);
 	    return null;
 	}
     }
@@ -344,7 +343,7 @@ private Entry findSmilEntryWithAudio(Smil.Entry entry, String audioFileUrl, long
 		collectAudioStartingAtEntry(entry.entries[0], audioInfos);
 	    return;
 	default:
-	    Log.warning("doctree-daisy", "unknown SMIL entry type:" + entry.type);
+	    log.warn("Unknown type of SMIL entry: {}", entry.type);
 	}
     }
 
