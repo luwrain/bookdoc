@@ -5,7 +5,7 @@ import java.util.*;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.luwrain.io.bookdoc.Attributes;
-import org.luwrain.io.filters.*;
+//import org.luwrain.io.filters.*;
 
 import static java.util.Objects.*;
 
