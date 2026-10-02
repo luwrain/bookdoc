@@ -5,11 +5,11 @@ package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import org.luwrain.io.bookdoc.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RowPartsSplitterTest
 {
