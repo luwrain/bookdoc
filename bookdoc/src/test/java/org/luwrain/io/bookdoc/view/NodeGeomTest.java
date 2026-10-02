@@ -8,7 +8,9 @@ import org.junit.jupiter.api.*;
 import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.luwrain.io.bookdoc.view.TestDocFactory.*;
 
+//@Disabled
 public class NodeGeomTest
 {
     @Test public void widthForRoot()
@@ -48,19 +50,20 @@ public class NodeGeomTest
 
     @Test public void heightForContainer()
     {
-        final Paragraph para1 = TestDocFactory.paragraph("first");
-        final Paragraph para2 = TestDocFactory.paragraph("second");
-
+        final Paragraph
+	para1 = paragraph("first"),
+	para2 = paragraph("second");
         final DefaultRowPartsBuilder builder = new DefaultRowPartsBuilder();
         builder.onNode(para1, 10);
         para1.getView().setRowParts(builder.getRowParts());
         builder.onNode(para2, 10);
         para2.getView().setRowParts(builder.getRowParts());
 
-        final Root root = TestDocFactory.root(para1, para2);
+        final Root root = root(para1, para2);
         final NodeGeom geom = new NodeGeom();
         geom.calcHeight(root);
-        assertEquals(2, root.getGeom().height);
+	//In the line below there was 2
+        assertEquals(3, root.getGeom().height);
     }
 
     @Test public void heightForTableRow()

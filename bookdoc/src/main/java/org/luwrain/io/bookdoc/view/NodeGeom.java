@@ -39,9 +39,8 @@ final class NodeGeom
     {
         final List<ContainerItem> items = c.getItems();
         final int numItems = items.size();
-        if (c instanceof TableRow)
+        if (c instanceof TableRow tableRow)
         {
-            final TableRow tableRow = (TableRow) c;
             final int cellWidth = (recommended - numItems + 1) >= numItems ? (recommended - numItems + 1) / numItems : 1;
             for (ContainerItem i : items)
                 calcWidth((Container) i, cellWidth);
@@ -56,7 +55,11 @@ final class NodeGeom
         c.getGeom().width = recommended;
         for (ContainerItem i : items)
         {
-            calcWidth((Container) i, recommended);
+	    if (i instanceof Container cont)
+		calcWidth(cont, recommended); else
+		if (i instanceof Paragraph p)
+		            p.getGeom().width = recommended; else
+		throw new IllegalStateException(i.getClass().getName() + " is not an instance of Container and not a paragraph");
             if (c.getGeom().width < i.getGeom().width)
                 c.getGeom().width = i.getGeom().width;
         }
@@ -104,9 +107,14 @@ final class NodeGeom
                     tableRow.getGeom().height = i.getGeom().height;
             return;
         }
-        //Not a paragraph and not a table row
+        //Not a table row
         for (ContainerItem i : items)
-            calcHeight((Container) i);
+	    if (i instanceof Container cont)
+            calcHeight(cont); else
+		if (i instanceof Paragraph paragraph)
+		    calcHeight(paragraph); else
+		    throw new IllegalStateException(i.getClass().getName() + " not a container and not a paragraph");
+	
         int height = 0;
         for (ContainerItem i : items)
             height += i.getGeom().height;
@@ -129,18 +137,17 @@ final class NodeGeom
         final Geom g = c.getGeom();
         if (c instanceof Root)
             g.setPos(0, 0);
-        //Assuming node.x and node.y already set appropriately
+	        //Assuming the x and y coordinates of the container set appropriately
         final int baseX = g.x, baseY = g.y;
-        if (c instanceof TableRow)
+        if (c instanceof TableRow tableRow)
         {
-            final TableRow tableRow = (TableRow) c;
             int offset = 0;
             for (ContainerItem i : items)
             {
                 i.getGeom().x = baseX + offset;
                 offset += (i.getGeom().width + 1);
                 i.getGeom().y = baseY;
-                calcPosition((Container) i);
+                calcPosition((TableCell) i);
             }
             return;
         } //table row
@@ -151,7 +158,10 @@ final class NodeGeom
             offset += i.getGeom().height;
             if (!i.getGeom().allSubnodesSingleLine)
                 offset++;
-            calcPosition((Container) i);
+	    if (i instanceof Container cont)
+            calcPosition(cont); else
+		if (!(i instanceof Paragraph))
+		    throw new IllegalStateException(i.getClass().getName() + " is not a container and not a paragraph");
         }
     }
 }

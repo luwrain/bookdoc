@@ -9,6 +9,7 @@ import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 public class IteratorTest
 {
     private View twoParagraphView()

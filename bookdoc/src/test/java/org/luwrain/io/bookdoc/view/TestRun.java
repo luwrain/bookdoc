@@ -5,12 +5,6 @@ package org.luwrain.io.bookdoc.view;
 
 import org.luwrain.io.bookdoc.*;
 
-/**
- * Test implementation of {@link Run} that keeps a reference to its parent
- * node. The standard {@link TextRun} returns null from
- * {@link Run#getParentNode()}, which makes it unsuitable for testing the
- * rendering pipeline that relies on correct parent references.
- */
 final class TestRun implements Run
 {
     private final String text;

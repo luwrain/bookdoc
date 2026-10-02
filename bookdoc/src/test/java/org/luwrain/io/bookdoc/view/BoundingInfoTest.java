@@ -11,6 +11,7 @@ import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@Disabled
 public class BoundingInfoTest
 {
     @Test public void singleRunRange()

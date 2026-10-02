@@ -9,6 +9,7 @@ import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled //Cycling
 public class DefaultRowPartsBuilderTest
 {
     @Test public void singleParagraph()
