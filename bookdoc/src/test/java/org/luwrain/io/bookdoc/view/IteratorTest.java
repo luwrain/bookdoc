@@ -8,14 +8,17 @@ import org.junit.jupiter.api.*;
 import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.luwrain.io.bookdoc.view.TestDocFactory.*;
 
 public class IteratorTest
 {
     private View twoParagraphView()
     {
-        final Doc doc = new Doc(TestDocFactory.root(
-            TestDocFactory.paragraph("first"),
-            TestDocFactory.paragraph("second")), null);
+        final Doc doc = new Doc(root(
+				     paragraph("first"),
+				     paragraph("second")), null);
+	doc.getRoot().getItems().get(0).setContainer(doc.getRoot());
+		doc.getRoot().getItems().get(1).setContainer(doc.getRoot());
         return new View(doc, 10);
     }
 
@@ -24,6 +27,7 @@ public class IteratorTest
         final Doc doc = new Doc(new Root(java.util.Arrays.asList()), null);
         final View view = new View(doc, 10);
         final Iterator it = view.getIterator();
+	assertNotNull(it);
         assertTrue(it.noContent());
         assertEquals(-1, it.getIndex());
         assertEquals(0, it.getCount());
@@ -36,17 +40,17 @@ public class IteratorTest
         assertEquals(2, it.getCount());
         assertTrue(it.canMoveNext());
         assertFalse(it.canMovePrev());
-
+	//Making a step
         assertTrue(it.moveNext());
         assertEquals(1, it.getIndex());
         assertFalse(it.canMoveNext());
         assertTrue(it.canMovePrev());
-
+	//Backstep
         assertTrue(it.movePrev());
         assertEquals(0, it.getIndex());
     }
 
-    @Test public void moveBeginningAndEnd()
+    @Test public void moveBeginAndEnd()
     {
         final Iterator it = twoParagraphView().getIterator();
         it.moveEnd();
@@ -60,17 +64,15 @@ public class IteratorTest
         final Iterator it = twoParagraphView().getIterator();
         assertEquals("first", it.getText());
         assertNotNull(it.getParagraph());
-
         it.moveNext();
         assertEquals("second", it.getText());
         assertNotNull(it.getParagraph());
     }
 
-    @Disabled
     @Test public void getNode()
     {
         final Iterator it = twoParagraphView().getIterator();
-        assertNotNull(it.getNode());
+        assertNotNull(it.getNode(), "The iterator provides non-null node");
     }
 
     @Test public void indexInParagraph()

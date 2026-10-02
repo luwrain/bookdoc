@@ -7,8 +7,19 @@ public class Node
 {
     static public final EmptyNode EMPTY = new EmptyNode();
 
+    protected Container container = null;
         protected Geom geom = null;
     protected Attributes attributes = null;
+
+    public Container getContainer()
+    {
+	return container;
+    }
+
+    public void setContainer(Container container)
+    {
+	this.container = container;
+    }
 
     public Geom getGeom()
     {

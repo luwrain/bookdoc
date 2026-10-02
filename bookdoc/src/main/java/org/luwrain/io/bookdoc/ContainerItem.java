@@ -5,6 +5,8 @@ package org.luwrain.io.bookdoc;
 
 public interface ContainerItem
 {
+    Container getContainer();
+    void setContainer(Container container);
     Geom getGeom();
     Attributes getAttributes();
 }

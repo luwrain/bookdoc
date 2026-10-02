@@ -413,7 +413,7 @@ public final class Iterator
      *
      * @return The parent node of the current paragraph, or null if there is no content
      */
-    public Node getNode()
+    public Container getNode()
     {
         return getParaContainer();
     }
@@ -437,12 +437,12 @@ public final class Iterator
      *
      * @return The parent container, or null if there is no content
      */
-    protected Node getParaContainer()
+    protected Container getParaContainer()
     {
         if (noContent())
             return null;
         final Paragraph para = getParagraph();
-        return para != null ? para.getParentNode() : null;
+        return para != null ? para.getContainer() : null;
     }
 
     /**

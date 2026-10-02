@@ -31,8 +31,10 @@ public class Container<T extends ContainerItem> extends Node
 	this.items.add(item);
     }
 
+    /*
     public void setAttributes(Attributes attr)
     {
 	this.attributes = requireNonNull(attr, "attr can't be null");
     }
+    */
 }

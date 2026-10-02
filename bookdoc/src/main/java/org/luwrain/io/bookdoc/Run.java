@@ -3,6 +3,7 @@
 
 package org.luwrain.io.bookdoc;
 
+//Must not be a node
 public interface Run
 {
     String getText();
