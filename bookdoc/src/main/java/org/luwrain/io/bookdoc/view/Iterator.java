@@ -291,7 +291,7 @@ public final class Iterator
             final Run firstRun = row.getFirstRun();
             if (firstRun == null)
                 continue;
-            final Node parent = firstRun.getParentNode();
+            final Paragraph parent = firstRun.getParagraph();
             final Paragraph para;
             final Node node;
             if (parent instanceof Paragraph)
@@ -428,7 +428,7 @@ public final class Iterator
     {
         if (noContent())
             return null;
-        final Node parent = getFirstRunOfRow().getParentNode();
+        final Paragraph parent = getFirstRunOfRow().getParagraph();
         return (parent instanceof Paragraph) ? (Paragraph) parent : null;
     }
 

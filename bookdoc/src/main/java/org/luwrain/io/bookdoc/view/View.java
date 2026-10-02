@@ -177,7 +177,7 @@ public class View
         {
             final Run run = r.getFirstRun();
             requireNonNull(run, "run can't be null");
-            final Node parent = run.getParentNode();
+            final Paragraph parent = run.getParagraph();
             requireNonNull(parent, "parent can't be null");
             if (parent instanceof Paragraph)
             {

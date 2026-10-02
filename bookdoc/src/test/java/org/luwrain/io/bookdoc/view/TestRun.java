@@ -11,12 +11,12 @@ final class TestRun implements Run
     private final Node parent;
     private final Attributes attrs;
 
-    TestRun(String text, Node parent)
+    TestRun(String text, Paragraph parent)
     {
         this(text, parent, null);
     }
 
-    TestRun(String text, Node parent, Attributes attrs)
+    TestRun(String text, Paragraph parent, Attributes attrs)
     {
         if (text == null)
             throw new NullPointerException("text can't be null");
@@ -30,9 +30,9 @@ final class TestRun implements Run
         return text;
     }
 
-    @Override public Node getParentNode()
+    @Override public Paragraph getParagraph()
     {
-        return parent;
+        return (Paragraph)parent;
     }
 
     @Override public String getHref()

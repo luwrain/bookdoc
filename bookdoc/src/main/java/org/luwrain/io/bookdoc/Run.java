@@ -6,7 +6,7 @@ package org.luwrain.io.bookdoc;
 public interface Run
 {
     String getText();
-    Node getParentNode();
+    Paragraph getParagraph();
     String getHref();
     Attributes getAttrs();
 }

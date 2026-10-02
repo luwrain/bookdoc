@@ -107,6 +107,6 @@ public final class RowPart
     {
         if (isEmpty() || rowPart.isEmpty())
             return false;
-        return run.getParentNode() == rowPart.run.getParentNode() && relRowNum == rowPart.relRowNum;
+        return run.getParagraph() == rowPart.run.getParagraph() && relRowNum == rowPart.relRowNum;
     }
 }

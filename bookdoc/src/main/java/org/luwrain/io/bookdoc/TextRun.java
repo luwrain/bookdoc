@@ -6,22 +6,33 @@ package org.luwrain.io.bookdoc;
 public class TextRun implements Run
 {
     private String text = null;
-    private Node parentNode = null;
+    private Paragraph paragraph = null;
     private String href = null;
     private Attributes attr = null;
 
-    public TextRun(String text, String href, Attributes attr)
+    public TextRun(String text)
+    {
+	this(text, null, null, null);
+    }
+
+    public TextRun(String text, Paragraph paragraph)
+    {
+	this(text, paragraph, null, null);
+    }
+
+        public TextRun(String text, String href, Attributes attr)
+    {
+	this(text, null, href, attr);
+    }
+    
+    public TextRun(String text, Paragraph paragraph, String href, Attributes attr)
     {
 	if (text == null)
 	    throw new NullPointerException("text can't be null");
 	this.text = text;
+	this.paragraph = paragraph;
 	this.href = href;
 	this.attr = attr;
-    }
-
-    public TextRun(String text)
-    {
-	this(text, null, null);
     }
 
     @Override public String getText() {
@@ -36,14 +47,14 @@ public class TextRun implements Run
 	return attr;
     }
     
-    public void setParentNode(Node parentNode)
+    public void setParagraph(Paragraph parentNode)
     {
-	this.parentNode = parentNode;
+	this.paragraph = paragraph;
     }
     
-    @Override public Node getParentNode()
+    @Override public Paragraph getParagraph()
     {
-	return parentNode;
+	return paragraph;
     }
 
     @Override public String toString()
