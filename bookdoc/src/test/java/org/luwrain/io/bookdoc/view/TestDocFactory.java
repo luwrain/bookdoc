@@ -24,7 +24,7 @@ final class TestDocFactory
     static Paragraph paragraph(String text)
     {
         final Paragraph para = new Paragraph();
-        para.getRuns().add(new TestRun(text, para));
+        para.getRuns().add(new TextRun(text, para));
         return para;
     }
 
@@ -35,7 +35,7 @@ final class TestDocFactory
     {
         final Paragraph para = new Paragraph();
         for (String t : texts)
-            para.getRuns().add(new TestRun(t, para));
+            para.getRuns().add(new TextRun(t, para));
         return para;
     }
 
@@ -46,7 +46,7 @@ final class TestDocFactory
     static Paragraph paragraph(String text, Attributes attrs)
     {
         final Paragraph para = new Paragraph();
-        para.getRuns().add(new TestRun(text, para, attrs));
+        para.getRuns().add(new TextRun(text, para, null, attrs));
         return para;
     }
 
