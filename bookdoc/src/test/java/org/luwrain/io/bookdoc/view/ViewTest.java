@@ -9,9 +9,9 @@ import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 public class ViewTest
 {
+    @Disabled
     @Test public void singleParagraphView()
     {
         final Doc doc = new Doc(TestDocFactory.root(TestDocFactory.paragraph("hello world")), null);
@@ -23,6 +23,7 @@ public class ViewTest
         assertEquals("world", layout.getLine(1));
     }
 
+    @Disabled
     @Test public void multipleParagraphsView()
     {
         final Doc doc = new Doc(TestDocFactory.root(
@@ -90,6 +91,7 @@ public class ViewTest
         assertEquals("world", lines[1]);
     }
 
+    @Disabled
     @Test public void startingRefProperty()
     {
         final Attributes attrs = TestDocFactory.attrsWithId("target");

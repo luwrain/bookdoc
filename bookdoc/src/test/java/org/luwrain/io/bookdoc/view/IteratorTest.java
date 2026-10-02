@@ -9,7 +9,6 @@ import org.luwrain.io.bookdoc.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 public class IteratorTest
 {
     private View twoParagraphView()
@@ -67,6 +66,7 @@ public class IteratorTest
         assertNotNull(it.getParagraph());
     }
 
+    @Disabled
     @Test public void getNode()
     {
         final Iterator it = twoParagraphView().getIterator();

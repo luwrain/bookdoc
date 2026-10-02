@@ -7,16 +7,21 @@ public class Node
 {
     static public final EmptyNode EMPTY = new EmptyNode();
 
+        protected Geom geom = null;
+    protected Attributes attributes = null;
+
     public Geom getGeom()
     {
-	//FIXME:
-	return null;
+	if (geom ==null)
+	    geom = new Geom();
+	return geom;
     }
 
-    public Attributes getAttr()
+    public Attributes getAttributes()
     {
-	//FIXME:
-	return null;
+	if (attributes == null)
+	    attributes = new Attributes();
+	return attributes;
     }
 
     public String getText()

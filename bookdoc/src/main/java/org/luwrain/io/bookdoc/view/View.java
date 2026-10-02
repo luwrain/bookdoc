@@ -252,7 +252,7 @@ public class View
                 final var data = it.getNode();
                 if (data != null)
                 {
-                    final var attr = data.getAttr();
+                    final var attr = data.getAttributes();
                     if (attr != null && attr.hasIdWithParents(id))
                         break;
                 }

@@ -10,8 +10,6 @@ import static java.util.Objects.*;
 public class Container<T extends ContainerItem> extends Node
 {
     protected List<T> items = null;
-    protected Geom geom = null;
-    protected Attributes attr = null;
 
     public List<T> getItems()
     {
@@ -35,13 +33,6 @@ public class Container<T extends ContainerItem> extends Node
 
     public void setAttributes(Attributes attr)
     {
-	this.attr = requireNonNull(attr, "attr can't be null");
-    }
-
-        public Geom getGeom()
-    {
-	if (geom == null)
-	    geom = new Geom();
-	return geom;
+	this.attributes = requireNonNull(attr, "attr can't be null");
     }
 }
