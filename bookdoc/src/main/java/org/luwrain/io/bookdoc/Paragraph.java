@@ -11,26 +11,18 @@ import org.luwrain.io.bookdoc.view.ParagraphView;
 public final class Paragraph extends Node implements ContainerItem
 {
     private List<Run> runs = null;
-    private Attributes attrs = null;
-        private ParagraphView view = null;
-    private Geom geom = null;
-
-    public Paragraph(List<Run> runs, Attributes attrs)
+    private ParagraphView view = null;
+    
+    public Paragraph(List<Run> runs, Attributes attributes)
     {
 	this.runs = new ArrayList<>();
 	this.runs.addAll(runs);
-	this.attrs = attrs;
+	this.attributes = attributes;
     }
 
     public Paragraph()
     {
 	this(Arrays.asList(new Run[0]), null);
-    }
-
-    public Node getParentNode()
-    {
-	//FIXME:
-	return null;
     }
 
     public List<Run> getRuns()
@@ -40,30 +32,11 @@ public final class Paragraph extends Node implements ContainerItem
 	return this.runs;
     }
 
-    public void setAttributes(Attributes attrs)
-    {
-	this.attrs = attrs;
-    }
-
-    public Attributes getAttributes()
-    {
-	if (attrs == null)
-	    attrs = new Attributes();
-	return attrs;
-    }
-
     public ParagraphView getView()
     {
 	if (view == null)
 	    view = new ParagraphView();
 	return view;
-    }
-
-    @Override public Geom getGeom()
-    {
-	if (geom == null)
-	    geom = new Geom();
-	return geom;
     }
 
     public String getText()
@@ -76,8 +49,8 @@ public final class Paragraph extends Node implements ContainerItem
 	return new String(b);
     }
 
-        @Override public String toString()
+    @Override public String toString()
     {
 	return getText();
     }
-    }
+}

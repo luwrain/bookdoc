@@ -11,31 +11,31 @@ public class Node
         protected Geom geom = null;
     protected Attributes attributes = null;
 
-    public Container getContainer()
+    public final Container getContainer()
     {
 	return container;
     }
 
-    public void setContainer(Container container)
+    public final void setContainer(Container container)
     {
 	this.container = container;
     }
 
-    public Geom getGeom()
+    public final Geom getGeom()
     {
 	if (geom ==null)
 	    geom = new Geom();
 	return geom;
     }
 
-    public Attributes getAttributes()
+    public final Attributes getAttributes()
     {
 	if (attributes == null)
 	    attributes = new Attributes();
 	return attributes;
     }
 
-    public String getText()
+    public final String collectText()
     {
 	final StringBuilder res = new StringBuilder();
 	final Visitor textVisitor = new Visitor(){

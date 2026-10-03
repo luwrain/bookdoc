@@ -249,7 +249,7 @@ public class View
         while (it.canMoveNext())
         {
             {
-                final var data = it.getNode();
+                final var data = it.getContainer();
                 if (data != null)
                 {
                     final var attr = data.getAttributes();

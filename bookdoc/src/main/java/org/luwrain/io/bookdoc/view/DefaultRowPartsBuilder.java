@@ -25,10 +25,8 @@ import org.luwrain.io.bookdoc.*;
  * @see RowPartsSplitter
  * @see View
  */
-final class DefaultRowPartsBuilder
+public final class DefaultRowPartsBuilder
 {
-    static private final String LOG_COMPONENT = "doctree";
-
     private final List<RowPart> parts = new ArrayList();
     private final List<Paragraph> paragraphs = new ArrayList();
 
@@ -39,7 +37,7 @@ final class DefaultRowPartsBuilder
      *
      * @param node The node to process; must not be null
      */
-    void onNode(Node node)
+    public void onNode(Node node)
     {
         onNode(node, 0);
     }
@@ -51,16 +49,16 @@ final class DefaultRowPartsBuilder
      * @param width The width to use for paragraphs; 0 means use the paragraph's
      *              own geometry width
      */
-    void onNode(Node node, int width)
+    public void onNode(Node node, int width)
     {
-        if (node instanceof Container)
+        if (node instanceof Container cont)
         {
-            onContainer((Container) node, width);
+            onContainer(cont, width);
             return;
         }
-        if (node instanceof Paragraph)
+        if (node instanceof Paragraph paragraph)
         {
-            onParagraph((Paragraph) node, width);
+            onParagraph(paragraph, width);
             return;
         }
     }
@@ -72,7 +70,7 @@ final class DefaultRowPartsBuilder
      * @param c     The container to process
      * @param width The width to use for paragraphs
      */
-    <E extends ContainerItem> void onContainer(Container<E> c, int width)
+    public <E extends ContainerItem> void onContainer(Container<E> c, int width)
     {
         for (ContainerItem i : c.getItems())
             onNode((Node) i);
@@ -85,20 +83,23 @@ final class DefaultRowPartsBuilder
      * @param para  The paragraph to process
      * @param width The width to use; 0 means use the paragraph's own geometry width
      */
-    private void onParagraph(Paragraph para, int width)
+    public void onParagraph(Paragraph paragraph, int width)
     {
-        final RowPartsSplitter splitter = new RowPartsSplitter();
-        for (Run r : para.getRuns())
+	if (width < 0)
+	    throw new IllegalArgumentException("width can't be negative (" + width + ")");
+	if (width == 0 && paragraph.getGeom().width <= 0)
+	    throw new IllegalStateException("Paragraph's own width is equal or less than zero (" + paragraph.getGeom().width + ")");
+        final var splitter = new RowPartsSplitter();
+        for (Run r : paragraph.getRuns())
         {
             final String text = r.getText();
-            splitter.onRun(r, text, 0, text.length(), width > 0 ? width : para.getGeom().width);
+            splitter.onRun(r, text, 0, text.length(), width > 0 ? width : paragraph.getGeom().width);
         }
         if (!splitter.res.isEmpty())
         {
-            para.getView().setRowParts(splitter.res.toArray(new RowPart[splitter.res.size()]));
-            paragraphs.add(para);
-            for (RowPart p : splitter.res)
-                parts.add(p);
+            paragraph.getView().setRowParts(splitter.res.toArray(new RowPart[splitter.res.size()]));
+            paragraphs.add(paragraph);
+                parts.addAll(splitter.res);
         }
     }
 
@@ -107,7 +108,7 @@ final class DefaultRowPartsBuilder
      *
      * @return A non-null array of row parts
      */
-    RowPart[] getRowParts()
+    public RowPart[] getRowParts()
     {
         return parts.toArray(new RowPart[parts.size()]);
     }
@@ -117,7 +118,7 @@ final class DefaultRowPartsBuilder
      *
      * @return A non-null array of paragraphs
      */
-    Paragraph[] getParagraphs()
+    public Paragraph[] getParagraphs()
     {
         return paragraphs.toArray(new Paragraph[paragraphs.size()]);
     }

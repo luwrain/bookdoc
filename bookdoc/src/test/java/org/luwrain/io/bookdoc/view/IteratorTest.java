@@ -69,10 +69,10 @@ public class IteratorTest
         assertNotNull(it.getParagraph());
     }
 
-    @Test public void getNode()
+    @Test public void getContainer()
     {
         final Iterator it = twoParagraphView().getIterator();
-        assertNotNull(it.getNode(), "The iterator provides non-null node");
+        assertNotNull(it.getContainer(), "The iterator provides non-null node");
     }
 
     @Test public void indexInParagraph()

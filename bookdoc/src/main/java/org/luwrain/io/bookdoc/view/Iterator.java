@@ -297,7 +297,7 @@ public final class Iterator
             if (parent instanceof Paragraph)
             {
                 para = (Paragraph) parent;
-                node = para.getParentNode();
+                node = para.getContainer();
             } else
             {
                 para = null;
@@ -413,7 +413,7 @@ public final class Iterator
      *
      * @return The parent node of the current paragraph, or null if there is no content
      */
-    public Container getNode()
+    public Container getContainer()
     {
         return getParaContainer();
     }

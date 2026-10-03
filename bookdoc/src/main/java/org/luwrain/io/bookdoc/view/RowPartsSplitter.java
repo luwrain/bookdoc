@@ -22,10 +22,8 @@ import static java.util.Objects.*;
  * @see RowPart
  * @see DefaultRowPartsBuilder
  */
-final class RowPartsSplitter
+public final class RowPartsSplitter
 {
-    static private final String LOG_COMPONENT = "doctree";
-
     /** Accumulated row parts, in order. */
     final List<RowPart> res = new ArrayList();
 
@@ -60,6 +58,8 @@ final class RowPartsSplitter
             throw new IllegalArgumentException("boundFrom (" + boundFrom + ") may not be greater than boundTo (" + boundTo + ")");
         if (offset > maxRowLen)
             throw new RuntimeException("offset (" + offset + ") may not be greater than maxRowLen (" + maxRowLen + ")");
+	if (maxRowLen <= 0)
+	    throw new IllegalArgumentException("maxRowLen must be greater than zero (" + maxRowLen + ")");
         if (boundFrom == boundTo)
             return;
         int nextStepFrom = boundFrom;
