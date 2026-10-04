@@ -81,7 +81,7 @@ final class OkHttpFetch implements AutoCloseable
 	return contentLength;
     }
 
-    Path getFile()
+    Path getPath()
     {
 	return tmpFile;
     }
@@ -89,15 +89,5 @@ final class OkHttpFetch implements AutoCloseable
     @Override public void close()
     {
 	tempDir.close();
-    }
-
-    static private OkHttpClient newHttpClient()
-    {
-	return new OkHttpClient.Builder()
-	.followRedirects(true)
-	.followSslRedirects(true)
-	.connectTimeout(15, TimeUnit.SECONDS)
-	.readTimeout(15, TimeUnit.SECONDS)
-	.build();
     }
 }

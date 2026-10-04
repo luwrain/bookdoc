@@ -14,6 +14,6 @@ public abstract class Loader
 
     static public Loader newDefaultLoader(URI uri, String contentType)
     {
-	return new DefaultLoader(uri, contentType);
+	return new LoaderImpl(uri, contentType);
     }
 }
