@@ -1,61 +1,74 @@
 
 package org.luwrain.io.bookdoc.loaders;
 
-import java.net.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.zip.*;
 import java.io.*;
 import java.nio.file.*;
-import java.util.*;
-import java.util.zip.*;
+import java.net.*;
+
+import org.apache.logging.log4j.*;
+import org.apache.tika.Tika;
+import okhttp3.*;
 
 import org.luwrain.io.bookdoc.*;
-//import org.luwrain.io.filters.*;
+import org.luwrain.util.*;
 
 import static java.util.Objects.*;
 import static org.luwrain.io.bookdoc.loaders.Utils.*;
 
-public final class DefaultLoader extends Loader
+public final class DefaultLoader extends Loader implements AutoCloseable
 {
-    static private final String
-	LOG_COMPONENT = "bookdoc",
-	DEFAULT_CHARSET = "UTF-8";
+    static private final Logger log = LogManager.getLogger();
+    static private final String DEFAULT_CHARSET = "UTF-8";
 
+    final Tika tika = new Tika();
+    final OkHttpClient client;
     final URL requestedUrl;
     final String requestedContentType;
     final String requestedTagRef;
+    private final TempDir tempDir;
+        private final Path tmpFile;
+    
     private String requestedCharset = "";
-
-    private URL responseUrl = null;
+        private URL responseUrl = null;
     private String responseContentType = "";
     private String responseContentEncoding = "";
-
     private String selectedContentType = "";
     private String selectedCharset = "";
 
-    private Path tmpFile;
 
-    public DefaultLoader(URI uri, String contentType)
+
+    public DefaultLoader(OkHttpClient client, URI uri, String contentType)
     {
-	if (uri == null)
-	    throw new NullPointerException("uri can't be null");
-	this.requestedContentType = contentType != null?contentType:"";
+	this.client = requireNonNull(client, "client can't be null");
+	requireNonNull(uri, "uri can't be null");
+	this.requestedContentType = requireNonNullElse(contentType, "");
 	try {
-	    final URL url = uri.toURL();
-	    this.requestedTagRef = url.getRef();
-	    this.requestedUrl = new URL(url.getProtocol(), IDN.toASCII(url.getHost()),
-					url.getPort(), url.getFile());
+this.requestedUrl = uri.toURL();
 	}
 	catch(MalformedURLException e)
 	{
+	    log.error("Unable to convert the address {} to URL", uri.toString(), e);
 	    throw new IllegalArgumentException(e);
 	}
+		    this.requestedTagRef = requestedUrl.getRef();
+		    this.tempDir = new TempDir();
+		    this.tmpFile = tempDir.getPath().resolve("download");
+    }
+
+    public DefaultLoader(URI uri, String contentType)
+    {
+	this(newHttpClient(), uri, contentType);
     }
 
     @Override public Doc load() throws IOException
     {
 	try {
 	    fetch();
-	    this.selectedContentType = requestedContentType.isEmpty()?responseContentType:requestedContentType;
-	    if (selectedContentType.isEmpty() || selectedContentType.toLowerCase().equals(ContentTypes.UNKNOWN))
+	    this.selectedContentType = requestedContentType.isBlank()?responseContentType:requestedContentType.trim();
+	    if (selectedContentType.isEmpty() || selectedContentType.equalsIgnoreCase(ContentTypes.UNKNOWN))
 		this.selectedContentType = new ContentTypes().suggest(requestedUrl.getFile());
 	    if (selectedContentType.isEmpty())
 		throw new IOException("Unable to understand the content type");
@@ -81,48 +94,44 @@ public final class DefaultLoader extends Loader
 	    return doc;
 	}
 	finally {
-	    if (tmpFile != null)
-	    {
-		Files.delete(tmpFile);
-		tmpFile = null;
-	    }
 	}
     }
 
     private void fetch() throws IOException
     {
-	final URLConnection con;
-	try {
-	    con = Connections.connect(requestedUrl.toURI(), 0);
-	}
-	catch(URISyntaxException e)
-	{
-	    throw new IOException(e);
-	}
-	final InputStream responseStream = con.getInputStream();
-	try {
-	    this.responseUrl = con.getURL();
-	    if (responseUrl == null)
-		this.responseUrl = requestedUrl;
-	    this.responseContentType = con.getContentType();
-	    if (responseContentType == null)
-		responseContentType = "";
-	    this.responseContentEncoding = con.getContentEncoding();
-	    if (responseContentEncoding == null)
-		responseContentEncoding = "";
-	    if (responseContentEncoding.toLowerCase().trim().equals("gzip"))
-		downloadToTmpFile(new GZIPInputStream(responseStream)); else
-		downloadToTmpFile(responseStream);
-	}
-	finally {
-	    responseStream.close();
+	final Request.Builder requestBuilder = new Request.Builder()
+	.url(requestedUrl)
+	    .header("User-Agent", Connections.DEFAULT_USER_AGENT);
+	final Request request = requestBuilder.build();
+	final Call call = client.newCall(request);
+	try (final Response response = call.execute()) {
+	    final int code = response.code();
+	    log.trace("Response code {} for {}", code, requestedUrl.toString());
+	    if (code != 200)
+	    {
+		log.error("Response code {} for {}", code, requestedUrl.toString());
+		throw new IOException("Invalid response code: " + code);
+	    } else
+				log.trace("Response code {} for {}", code, requestedUrl.toString());
+	    final ResponseBody body = response.body();
+	    if (body == null)
+	    {
+		log.error("Empty response body for {}", requestedUrl.toString());
+		throw new IOException("Empty response body for " + requestedUrl.toString());
+	    }
+	    final long contentLength = body.contentLength();
+	    body.contentType();
+	    log.trace("Content length is {}", contentLength);
+	    try (final InputStream is = body.byteStream();
+final OutputStream os = Files.newOutputStream(tmpFile)) {
+		StreamUtils.copyAllBytes(is, os, null, null);
+	    }
 	}
     }
 
     private void downloadToTmpFile(InputStream s) throws IOException
     {
 	requireNonNull(s, "s can't be null");
-	tmpFile = Files.createTempFile("tmplwr-reader-", ".dat");
 	Files.copy(s, tmpFile, StandardCopyOption.REPLACE_EXISTING);
     }
 
@@ -160,5 +169,20 @@ public final class DefaultLoader extends Loader
 	{
 	    return fileName;
 	}
+    }
+
+    @Override public void close()
+    {
+	tempDir.close();
+    }
+
+        static private OkHttpClient newHttpClient()
+    {
+	return new OkHttpClient.Builder()
+	    .followRedirects(true)
+	    .followSslRedirects(true)
+	    .connectTimeout(15, TimeUnit.SECONDS)
+	    .readTimeout(15, TimeUnit.SECONDS)
+	    .build();
     }
 }
