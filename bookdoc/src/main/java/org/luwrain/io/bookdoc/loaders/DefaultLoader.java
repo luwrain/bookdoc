@@ -13,6 +13,7 @@ import org.apache.tika.Tika;
 import okhttp3.*;
 
 import org.luwrain.io.bookdoc.*;
+import org.luwrain.io.bookdoc.filters.*;
 import org.luwrain.util.*;
 
 import static java.util.Objects.*;
@@ -77,13 +78,16 @@ this.requestedUrl = uri.toURL();
 		this.selectedCharset = this.requestedCharset;
 	    if (this.selectedCharset.isEmpty())
 		this.selectedCharset = DEFAULT_CHARSET;
-		final DocumentBuilder builder = DocumentBuilder.newBuilder(extractBaseContentType(selectedContentType));
-		if (builder == null)
+		final var filter = Filter.loadForContentType(extractBaseContentType(selectedContentType));
+		if (filter == null)
 		    throw new IOException("No suitable handler for the content type: " + selectedContentType);
 		final Properties props = new Properties();
 		props.setProperty("url", responseUrl.toString());
 		props.setProperty("charset", selectedCharset);
-		final Doc doc = builder.buildDoc(tmpFile.toFile(), props);
+		final Doc doc;
+		try (final InputStream is = Files.newInputStream(tmpFile)) {
+doc = filter.load(is, props);
+		}
 	    if (doc == null)
 		throw new IOException("No suitable handler for the content type: " + selectedContentType);
 	    //	    res.doc.setProperty("hash", getTmpFileHash());
