@@ -24,6 +24,7 @@ final class OkHttpFetch implements AutoCloseable
     private final Path tmpFile;
     private MediaType contentType = null;
     private long contentLength = -1;
+    private String responseUrl = null;
 
     public OkHttpFetch(OkHttpClient client, String url)
     {
@@ -59,7 +60,8 @@ final class OkHttpFetch implements AutoCloseable
 	    }
 	    contentLength = body.contentLength();
 	    contentType = body.contentType();
-	    log.trace("Content length={}, contentType={}", contentLength, contentType);
+	    responseUrl = response.request().url().toString();
+	    log.trace("Content length={}, contentType={}, responseUrl={}", contentLength, contentType, responseUrl);
 	    try (final InputStream is = body.byteStream();
 		 final OutputStream os = Files.newOutputStream(tmpFile)) {
 		StreamUtils.copyAllBytes(is, os, null, null);
@@ -79,6 +81,13 @@ final class OkHttpFetch implements AutoCloseable
 	if (contentLength < 0)
 	    throw new IllegalStateException("The file is not fetched");
 	return contentLength;
+    }
+
+    String getResponseUrl()
+    {
+	if (responseUrl == null)
+	    throw new IllegalStateException("The file is not fetched");
+	return responseUrl;
     }
 
     Path getPath()

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.io.bookdoc.loaders;
 
@@ -32,12 +34,10 @@ public final class LoaderImpl extends Loader
     final String requestedContentType;
     final String requestedTagRef;
 
-        private String contentType = null;
+    private String contentType = null;
     private Charset charset = null;
-    
-    private String requestedCharset = "";
-        private URL responseUrl = null;
-    private String responseContentEncoding = "";
+
+    private String responseUrl = null;
 
     LoaderImpl(OkHttpClient client, URL url, String contentType)
     {
@@ -45,17 +45,7 @@ public final class LoaderImpl extends Loader
 	requireNonNull(url, "url can't be null");
 	this.requestedContentType = requireNonNullElse(contentType, "").trim();
 	this.requestedUrl = url;
-	/*
-	try {
-this.requestedUrl = uri.toURL();
-	}
-	catch(MalformedURLException e)
-	{
-	    log.error("Unable to convert the address {} to URL", uri.toString(), e);
-	    throw new IllegalArgumentException(e);
-	}
-	*/
-		    this.requestedTagRef = requestedUrl.getRef();
+	this.requestedTagRef = requestedUrl.getRef();
     }
 
     public LoaderImpl(URL url, String contentType)
@@ -63,72 +53,98 @@ this.requestedUrl = uri.toURL();
 	this(newHttpClient(), url, contentType);
     }
 
-        public LoaderImpl(HttpUrl url, String contentType)
+    public LoaderImpl(HttpUrl url, String contentType)
     {
 	this(newHttpClient(), url.url(), contentType);
     }
-
 
     @Override public Doc load() throws IOException
     {
 	try (final var fetch = new OkHttpFetch(client, requestedUrl.toString())) {
 	    log.trace("Fetching {}", requestedUrl);
 	    fetch.fetch();
-	    final String responseContentType;
-	    if (fetch.getContentType() != null)
-	    {
-		final var b = new StringBuilder();
-		b.append(fetch.getContentType().type());
-		if (!requireNonNullElse(fetch.getContentType().subtype(), "").isBlank())
-		    b.append("/").append(fetch.getContentType().subtype());
-		responseContentType = new String(b);
-	    } else
-		responseContentType = null;
-	    log.trace("Response content type is {}", responseContentType);
-	    this.contentType =requireNonNullElse( requestedContentType.isBlank()?responseContentType:requestedContentType.trim(), "");
-	    		log.trace("Content type is {}", contentType);
-	    if (contentType.isBlank())
+
+	    // The actual URL of the response, taking redirects into account.
+	    responseUrl = fetch.getResponseUrl();
+
+	    // Content type and charset from the response headers.
+	    final MediaType responseMediaType = fetch.getContentType();
+	    final String responseContentType = mediaTypeToContentType(responseMediaType);
+	    final Charset responseCharset = responseMediaType != null?responseMediaType.charset():null;
+	    log.trace("Response content type is {}, charset is {}", responseContentType, responseCharset);
+
+	    // Content type and charset from the explicitly requested content type.
+	    final MediaType requestedMediaType = requestedContentType.isBlank()?null:MediaType.parse(requestedContentType);
+	    final String requestedContentTypeOnly = mediaTypeToContentType(requestedMediaType);
+	    final Charset requestedCharset = requestedMediaType != null?requestedMediaType.charset():null;
+	    log.trace("Requested content type is {}, charset is {}", requestedContentTypeOnly, requestedCharset);
+
+	    // Determine the effective content type: explicit request wins,
+	    // then the response header, then Tika autodetection.
+	    if (!requestedContentTypeOnly.isBlank())
+		contentType = requestedContentTypeOnly;
+	    else if (responseContentType != null && !responseContentType.isBlank())
+		contentType = responseContentType;
+	    else
 	    {
 		final String detected = tika.detect(requestedUrl.toString());
 		log.trace("Trying to autodetect the content type, detecting {}", detected);
 		contentType = detected;
 	    }
-	    if (contentType.isBlank())
+	    log.trace("Content type is {}", contentType);
+
+	    if (contentType == null || contentType.isBlank())
 		throw new IOException("Unable to choose the content type for " + requestedUrl.toString());
-	    charset = fetch.getContentType().charset();
-	    /*
-	    if (!this.requestedCharset.isEmpty())
-		this.selectedCharset = this.requestedCharset;
-	    */
-	    if (charset == null)
+
+	    // Determine the effective charset: explicit request wins,
+	    // then the response header, then UTF-8.
+	    if (requestedCharset != null)
+		charset = requestedCharset;
+	    else if (responseCharset != null)
+		charset = responseCharset;
+	    else
 		charset = StandardCharsets.UTF_8;
-		final var filter = Filter.loadForContentType(contentType);
-		if (filter == null)
-		    throw new IOException("No suitable handler for the content type: " + contentType);
-		responseUrl = requestedUrl;//FIXME:
-		final Properties props = new Properties();
-		props.setProperty("url", responseUrl.toString());
-		props.setProperty("charset", charset.toString());
-		final Doc doc;
-		try (final InputStream is = Files.newInputStream(fetch.getPath())) {
-doc = filter.load(is, props);
-		}
+	    log.trace("Charset is {}", charset);
+
+	    final var filter = Filter.loadForContentType(contentType);
+	    if (filter == null)
+		throw new IOException("No suitable handler for the content type: " + contentType);
+
+	    final Properties props = new Properties();
+	    props.setProperty(Filter.PROP_URL, responseUrl);
+	    props.setProperty(Filter.PROP_CHARSET, charset.toString());
+
+	    final Doc doc;
+	    try (final InputStream is = Files.newInputStream(fetch.getPath())) {
+		doc = filter.load(is, props);
+	    }
 	    if (doc == null)
 		throw new IOException("No suitable handler for the content type: " + contentType);
-	    //	    res.doc.setProperty("hash", getTmpFileHash());
-	    doc.setProperty("url", responseUrl.toString());
+
+	    doc.setProperty(Doc.PROP_URL, responseUrl);
 	    doc.setProperty("contenttype", contentType);
 	    if (requestedTagRef != null)
-		doc.setProperty("startingref", requestedTagRef);
+		doc.setProperty(Doc.PROP_STARTING_REF, requestedTagRef);
 	    return doc;
 	}
     }
 
+    static private String mediaTypeToContentType(MediaType mediaType)
+    {
+	if (mediaType == null)
+	    return null;
+	final var b = new StringBuilder();
+	b.append(mediaType.type());
+	if (!requireNonNullElse(mediaType.subtype(), "").isBlank())
+	    b.append("/").append(mediaType.subtype());
+	return new String(b);
+    }
+
     private String makeTitleFromUrl()
     {
-	final String path = responseUrl.getPath();
+	final String path = requestedUrl.getPath();
 	if (path == null || path.isEmpty())
-	    return responseUrl.toString();
+	    return requestedUrl.toString();
 	final int lastSlashPos = path.lastIndexOf("/");
 	final String fileName = (lastSlashPos >= 0 && lastSlashPos + 1 < path.length())?path.substring(lastSlashPos + 1):path;
 	try {
@@ -140,7 +156,7 @@ doc = filter.load(is, props);
 	}
     }
 
-        static private OkHttpClient newHttpClient()
+    static private OkHttpClient newHttpClient()
     {
 	return new OkHttpClient.Builder()
 	    .followRedirects(true)
