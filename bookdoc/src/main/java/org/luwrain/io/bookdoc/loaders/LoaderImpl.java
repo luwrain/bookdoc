@@ -12,6 +12,7 @@ import java.net.*;
 import org.apache.logging.log4j.*;
 import org.apache.tika.Tika;
 import okhttp3.*;
+import okhttp3.HttpUrl;
 
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.filters.*;
@@ -38,11 +39,13 @@ public final class LoaderImpl extends Loader
         private URL responseUrl = null;
     private String responseContentEncoding = "";
 
-    LoaderImpl(OkHttpClient client, URI uri, String contentType)
+    LoaderImpl(OkHttpClient client, URL url, String contentType)
     {
 	this.client = requireNonNull(client, "client can't be null");
-	requireNonNull(uri, "uri can't be null");
+	requireNonNull(url, "url can't be null");
 	this.requestedContentType = requireNonNullElse(contentType, "").trim();
+	this.requestedUrl = url;
+	/*
 	try {
 this.requestedUrl = uri.toURL();
 	}
@@ -51,13 +54,20 @@ this.requestedUrl = uri.toURL();
 	    log.error("Unable to convert the address {} to URL", uri.toString(), e);
 	    throw new IllegalArgumentException(e);
 	}
+	*/
 		    this.requestedTagRef = requestedUrl.getRef();
     }
 
-    public LoaderImpl(URI uri, String contentType)
+    public LoaderImpl(URL url, String contentType)
     {
-	this(newHttpClient(), uri, contentType);
+	this(newHttpClient(), url, contentType);
     }
+
+        public LoaderImpl(HttpUrl url, String contentType)
+    {
+	this(newHttpClient(), url.url(), contentType);
+    }
+
 
     @Override public Doc load() throws IOException
     {
@@ -95,6 +105,7 @@ this.requestedUrl = uri.toURL();
 		final var filter = Filter.loadForContentType(contentType);
 		if (filter == null)
 		    throw new IOException("No suitable handler for the content type: " + contentType);
+		responseUrl = requestedUrl;//FIXME:
 		final Properties props = new Properties();
 		props.setProperty("url", responseUrl.toString());
 		props.setProperty("charset", charset.toString());

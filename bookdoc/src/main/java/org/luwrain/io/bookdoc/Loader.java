@@ -3,7 +3,7 @@
 
 package org.luwrain.io.bookdoc;
 
-import java.net.URI;
+import java.net.*;
 import java.io.IOException;
 
 import org.luwrain.io.bookdoc.loaders.*;
@@ -12,8 +12,19 @@ public abstract class Loader
 {
     public abstract Doc load() throws IOException;
 
-    static public Loader newDefaultLoader(URI uri, String contentType)
+    static public Loader newDefaultLoader(String url, String contentType)
     {
-	return new LoaderImpl(uri, contentType);
+	try {
+	    return new LoaderImpl(new URL(url), contentType);
+	}
+	catch(MalformedURLException ex)
+	{
+	    throw new IllegalArgumentException(ex);
+	}
     }
+
+        static public Loader newDefaultLoader(URL url, String contentType)
+    {
+	return new LoaderImpl(url, contentType);
+	    }
 }

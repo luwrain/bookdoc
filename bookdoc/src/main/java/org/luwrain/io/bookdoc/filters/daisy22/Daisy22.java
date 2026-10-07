@@ -240,7 +240,7 @@ public final class Daisy22 implements Book
 	    return;
 	final Doc doc;
 		try {
-	final Loader loader = Loader.newDefaultLoader(new URI(url), null);
+	final Loader loader = Loader.newDefaultLoader(url, null);
 doc = loader.load();
 		}
 	catch(Exception e)

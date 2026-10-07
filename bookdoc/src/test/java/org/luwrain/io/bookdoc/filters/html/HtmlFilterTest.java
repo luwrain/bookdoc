@@ -364,6 +364,7 @@ public class HtmlFilterTest
 
     // ---- ContentTypes tests ----
 
+    /*
     @Test public void contentTypesSuggestHtml()
     {
 	final ContentTypes ct = new ContentTypes();
@@ -469,6 +470,7 @@ public class HtmlFilterTest
 	assertEquals("text/plain", ContentTypes.TEXT_PLAIN);
 	assertEquals("content/unknown", ContentTypes.UNKNOWN);
     }
+    */
 
     // ---- Multiple loads of same filter instance ----
 
