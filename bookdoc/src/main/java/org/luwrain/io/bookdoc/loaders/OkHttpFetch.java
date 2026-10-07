@@ -12,7 +12,6 @@ import okhttp3.*;
 import org.luwrain.util.*;
 
 import static java.util.Objects.*;
-import static org.luwrain.io.bookdoc.loaders.Utils.*;
 
 final class OkHttpFetch implements AutoCloseable
 {

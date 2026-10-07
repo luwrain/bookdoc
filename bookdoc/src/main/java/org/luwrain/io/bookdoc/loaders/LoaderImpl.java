@@ -21,7 +21,6 @@ import org.luwrain.io.bookdoc.filters.*;
 import org.luwrain.util.*;
 
 import static java.util.Objects.*;
-import static org.luwrain.io.bookdoc.loaders.Utils.*;
 
 public final class LoaderImpl extends Loader
 {
@@ -81,7 +80,7 @@ public final class LoaderImpl extends Loader
 
 	    // Determine the effective content type: explicit request wins,
 	    // then the response header, then Tika autodetection.
-	    if (!requestedContentTypeOnly.isBlank())
+	    if (requestedContentTypeOnly != null && !requestedContentTypeOnly.isBlank())
 		contentType = requestedContentTypeOnly;
 	    else if (responseContentType != null && !responseContentType.isBlank())
 		contentType = responseContentType;

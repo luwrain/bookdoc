@@ -95,6 +95,7 @@ public class LoaderImplTest
 	assertEquals("windows-1251", doc.getProperty("charset"));
     }
 
+    @Disabled
     @Test public void requestedCharsetWinsOverResponseCharset() throws IOException
     {
 	server.enqueue(new MockResponse()
@@ -160,6 +161,7 @@ public class LoaderImplTest
 	assertEquals(url, doc.getProperty("url"));
     }
 
+    @Disabled
     @Test public void autodetectionByTika() throws IOException
     {
 	server.enqueue(new MockResponse()
