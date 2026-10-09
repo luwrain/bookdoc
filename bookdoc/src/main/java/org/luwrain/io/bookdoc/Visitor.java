@@ -19,23 +19,22 @@ public class Visitor
 	if (visitor == null)
 	    throw new NullPointerException("visitor can't be null");
 	visitor.visitEveryNode(node);
-	if (node instanceof Paragraph)
+	if (node instanceof Paragraph paragraph)
 	{
-	    final Paragraph paragraph = (Paragraph)node;
 	    visitor.visit(paragraph);
 	    for(Run r: paragraph.getRuns())
 		visitor.visit(r);
 	    return;
 	}
-	if (node instanceof Heading)
-	    visitor.visit((Heading)node);
+	if (node instanceof Heading heading)
+	    visitor.visit(heading);
 	if (node instanceof Container)
 	{
 	    final Container cont = (Container)node;
 	    final List<ContainerItem> items = cont.getItems();
 	    for(ContainerItem i: items)
-		if (i instanceof Node)
-		    walk((Node)i, visitor);
+		if (i instanceof Node childNode)
+		    walk(childNode, visitor);
 	}
     }
 }
