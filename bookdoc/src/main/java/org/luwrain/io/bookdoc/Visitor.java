@@ -4,9 +4,14 @@
 package org.luwrain.io.bookdoc;
 
 import java.util.*;
+import org.apache.logging.log4j.*;
+
+import static java.util.Objects.*;
 
 public class Visitor
 {
+    static private final Logger log = LogManager.getLogger();
+    
     public void visitEveryNode(Node node) {}
     public void visit(Heading heading) {}
     public void visit(Paragraph paragraph) {}
@@ -14,10 +19,8 @@ public class Visitor
 
     static public void walk(Node node, Visitor visitor)
     {
-	if (node == null)
-	    throw new NullPointerException("node can't be null");
-	if (visitor == null)
-	    throw new NullPointerException("visitor can't be null");
+	requireNonNull(node, "node can't be null");
+	requireNonNull(visitor, "visitor can't be null");
 	visitor.visitEveryNode(node);
 	if (node instanceof Paragraph paragraph)
 	{
@@ -28,13 +31,14 @@ public class Visitor
 	}
 	if (node instanceof Heading heading)
 	    visitor.visit(heading);
-	if (node instanceof Container)
+	//TODO: Other classes
+	if (node instanceof Container cont)
 	{
-	    final Container cont = (Container)node;
 	    final List<ContainerItem> items = cont.getItems();
 	    for(ContainerItem i: items)
 		if (i instanceof Node childNode)
-		    walk(childNode, visitor);
+		    walk(childNode, visitor); else
+		    log.warn("Unvisited container item of the class {}", i.getClass().getName());
 	}
     }
 }

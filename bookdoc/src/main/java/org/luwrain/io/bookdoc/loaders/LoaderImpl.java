@@ -120,6 +120,8 @@ public final class LoaderImpl extends Loader
 	    if (doc == null)
 		throw new IOException("No suitable handler for the content type: " + contentType);
 
+	    log.trace("Running SetContainerVisitor");
+	    SetContainerVisitor.walk(doc.getRoot(), new SetContainerVisitor());
 	    doc.setProperty(Doc.PROP_URL, responseUrl);
 	    doc.setProperty("contenttype", contentType);
 	    if (requestedTagRef != null)

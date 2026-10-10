@@ -4,6 +4,7 @@
 package org.luwrain.io.bookdoc.view;
 
 import java.util.*;
+import org.apache.logging.log4j.*;
 import org.luwrain.io.bookdoc.*;
 
 /**
@@ -27,6 +28,8 @@ import org.luwrain.io.bookdoc.*;
  */
 public final class DefaultRowPartsBuilder
 {
+    static private final Logger log = LogManager.getLogger();
+    
     private final List<RowPart> parts = new ArrayList();
     private final List<Paragraph> paragraphs = new ArrayList();
 
@@ -51,6 +54,12 @@ public final class DefaultRowPartsBuilder
      */
     public void onNode(Node node, int width)
     {
+	if (!(node instanceof Root) && node instanceof ContainerItem contItem)
+	    if (contItem.getContainer() == null)
+	    {
+		log.error("No parent container in container item of the class {} ({})", contItem.getClass().getName(), contItem.toString());
+		throw new IllegalArgumentException("All container items must have a link to its parent container (" + contItem.getClass().getName() + ")");
+	    }
         if (node instanceof Container cont)
         {
             onContainer(cont, width);
@@ -92,6 +101,8 @@ public final class DefaultRowPartsBuilder
         final var splitter = new RowPartsSplitter();
         for (Run r : paragraph.getRuns())
         {
+	    if (r.getParagraph() == null)
+		throw new IllegalStateException("All runs must have a link to its parent paragraph (" + r.getClass().getName() + ")");
             final String text = r.getText();
             splitter.onRun(r, text, 0, text.length(), width > 0 ? width : paragraph.getGeom().width);
         }

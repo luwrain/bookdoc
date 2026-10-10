@@ -47,7 +47,7 @@ public class TextRun implements Run
 	return attr;
     }
     
-    public void setParagraph(Paragraph parentNode)
+    public void setParagraph(Paragraph paragraph)
     {
 	this.paragraph = paragraph;
     }

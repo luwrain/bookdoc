@@ -29,8 +29,7 @@ public final class Row
     int y = 0;
 
     private final RowPart[] parts;
-    private final int partsFrom;
-    private final int partsTo;
+    private final int partsFrom, partsTo;
 
     /**
      * Creates a new row from a slice of the row parts array.
@@ -74,7 +73,7 @@ public final class Row
      * @param pos The character position relative to the row start; must not be negative
      * @return The run at the given position, or null if no run matches
      */
-    Run getRunUnderPos(int pos)
+    Run getRunUnderPos(int pos) //TODO: runAtPos()
     {
         if (pos < 0)
             throw new IllegalArgumentException("pos may not be negative");

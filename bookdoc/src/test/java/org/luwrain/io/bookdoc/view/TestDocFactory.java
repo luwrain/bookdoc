@@ -25,6 +25,8 @@ final class TestDocFactory
     {
         final Paragraph para = new Paragraph();
         para.getRuns().add(new TextRun(text, para));
+	SetContainerVisitor.walk(para, new SetContainerVisitor());
+					para.setContainer(new Root(List.of(para)));
         return para;
     }
 
@@ -36,6 +38,8 @@ final class TestDocFactory
         final Paragraph para = new Paragraph();
         for (String t : texts)
             para.getRuns().add(new TextRun(t, para));
+		SetContainerVisitor.walk(para, new SetContainerVisitor());
+				para.setContainer(new Root(List.of(para)));
         return para;
     }
 
@@ -47,6 +51,8 @@ final class TestDocFactory
     {
         final Paragraph para = new Paragraph();
         para.getRuns().add(new TextRun(text, para, null, attrs));
+		SetContainerVisitor.walk(para, new SetContainerVisitor());
+				para.setContainer(new Root(List.of(para)));
         return para;
     }
 
@@ -55,7 +61,9 @@ final class TestDocFactory
      */
     static Root root(ContainerItem... items)
     {
-        return new Root(Arrays.asList(items));
+	final var root = new Root(Arrays.asList(items));
+			SetContainerVisitor.walk(root, new SetContainerVisitor());
+        return  root;
     }
 
     /**
@@ -66,6 +74,8 @@ final class TestDocFactory
         final Heading h = new Heading(level);
         for (ContainerItem i : items)
             h.addItem(i);
+		SetContainerVisitor.walk(h, new SetContainerVisitor());
+				h.setContainer(new Root(List.of(h)));
         return h;
     }
 
@@ -77,6 +87,8 @@ final class TestDocFactory
         final TableCell c = new TableCell();
         for (ContainerItem i : items)
             c.addItem(i);
+		SetContainerVisitor.walk(c, new SetContainerVisitor());
+				c.setContainer(new Root(List.of(c)));
         return c;
     }
 
@@ -88,6 +100,8 @@ final class TestDocFactory
         final TableRow r = new TableRow();
         for (TableCell c : cells)
             r.addItem(c);
+		SetContainerVisitor.walk(r, new SetContainerVisitor());
+				r.setContainer(new Root(List.of(r)));
         return r;
     }
 
@@ -99,6 +113,8 @@ final class TestDocFactory
         final Table t = new Table();
         for (TableRow r : rows)
             t.addItem(r);
+		SetContainerVisitor.walk(t, new SetContainerVisitor());
+		t.setContainer(new Root(List.of(t)));
         return t;
     }
 

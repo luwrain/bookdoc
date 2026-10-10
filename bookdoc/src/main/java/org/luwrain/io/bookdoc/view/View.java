@@ -68,9 +68,12 @@ public class View
         requireNonNull(doc, "doc can't be null");
         this.doc = doc;
         this.root = doc.getRoot();
+	//	SetContainerVisitor.walk(this.root, new SetContainerVisitor());
         final NodeGeom geom = new NodeGeom();
         geom.calcWidth(root, width);
+	//		SetContainerVisitor.walk(this.root, new SetContainerVisitor());
         final DefaultRowPartsBuilder rowPartsBuilder = new DefaultRowPartsBuilder();
+	//			SetContainerVisitor.walk(this.root, new SetContainerVisitor());
         rowPartsBuilder.onNode(root);
         rowParts = rowPartsBuilder.getRowParts();
         if (rowParts.length <= 0)

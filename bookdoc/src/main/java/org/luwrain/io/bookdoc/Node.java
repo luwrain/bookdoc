@@ -7,7 +7,7 @@ public class Node
 {
     static public final EmptyNode EMPTY = new EmptyNode();
 
-    protected Container container = null;
+    private Container container = null;
         protected Geom geom = null;
     protected Attributes attributes = null;
 

@@ -31,6 +31,7 @@ public class DefaultRowPartsBuilderTest
         final Paragraph para = new Paragraph();
 	para.getGeom().width = 10;
         final Root root = root(para);
+	para.setContainer(root);
         final DefaultRowPartsBuilder builder = new DefaultRowPartsBuilder();
         builder.onNode(root, 10);
         assertEquals(0, builder.getRowParts().length);
