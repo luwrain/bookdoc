@@ -41,10 +41,10 @@ public final class LoaderImpl extends Loader
     LoaderImpl(OkHttpClient client, URL url, String contentType)
     {
 	this.client = requireNonNull(client, "client can't be null");
-	requireNonNull(url, "url can't be null");
+		this.requestedUrl = requireNonNull(url, "url can't be null");
 	this.requestedContentType = requireNonNullElse(contentType, "").trim();
-	this.requestedUrl = url;
 	this.requestedTagRef = requestedUrl.getRef();
+	log.trace("Loader created: url={}, contentType={}", requestedUrl.toString(), requestedContentType.toString());
     }
 
     public LoaderImpl(URL url, String contentType)
@@ -73,9 +73,18 @@ public final class LoaderImpl extends Loader
 	    log.trace("Response content type is {}, charset is {}", responseContentType, responseCharset);
 
 	    // Content type and charset from the explicitly requested content type.
-	    final MediaType requestedMediaType = requestedContentType.isBlank()?null:MediaType.parse(requestedContentType);
-	    final String requestedContentTypeOnly = mediaTypeToContentType(requestedMediaType);
-	    final Charset requestedCharset = requestedMediaType != null?requestedMediaType.charset():null;
+	    final String requestedContentTypeOnly;
+	    final Charset requestedCharset;
+	    if (!requestedContentType.isBlank())
+	    {
+	    final MediaType requestedMediaType = MediaType.parse(requestedContentType);
+requestedContentTypeOnly = mediaTypeToContentType(requestedMediaType);
+requestedCharset = requestedMediaType.charset();
+	    } else
+	    {
+		requestedContentTypeOnly = null;
+		requestedCharset = null;
+	    }
 	    log.trace("Requested content type is {}, charset is {}", requestedContentTypeOnly, requestedCharset);
 
 	    // Determine the effective content type: explicit request wins,

@@ -39,7 +39,7 @@ final class OkHttpFetch implements AutoCloseable
     {
 	final Request.Builder requestBuilder = new Request.Builder()
 	.url(url)
-	.header("User-Agent", Connections.DEFAULT_USER_AGENT);
+	.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
 	final Request request = requestBuilder.build();
 	final Call call = client.newCall(request);
 	try (final Response response = call.execute()) {
