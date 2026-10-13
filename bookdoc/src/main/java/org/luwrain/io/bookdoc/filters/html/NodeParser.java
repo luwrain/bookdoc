@@ -16,14 +16,15 @@ final class NodeParser
 {
     static private final Logger log = LogManager.getLogger();
 
-    final Context context = new Context();
+    final Context context;
     final org.jsoup.nodes.Node source;
     		final List<ContainerItem> resNodes = new ArrayList<>();
 	final List<Run> runs = new ArrayList<>();
     final boolean preMode;
 
-    NodeParser(org.jsoup.nodes.Node source, boolean preMode)
+    NodeParser(Context context, org.jsoup.nodes.Node source, boolean preMode)
     {
+	this.context = requireNonNull(context, "context can't be null");
 	this.source = requireNonNull(source, "source can't be null");
 	this.preMode = preMode;
     }
@@ -56,7 +57,8 @@ final class NodeParser
     private void process(TextNode node)
     {
 		final String text = node.text();
-	if (text == null || text.isEmpty())
+			    log.trace("Run {}", text);
+	if (text == null || text.isBlank())
 	    return;
 	if (!preMode)
 	{
@@ -86,6 +88,7 @@ final class NodeParser
 	    tagName.startsWith("g-") ||
 	    tagName.startsWith("fb:"))
 	    return;
+	log.trace("{}", tagName);
 	switch(tagName)
 	{
 	case "script":
@@ -98,20 +101,24 @@ final class NodeParser
 	case "map":
 	case "svg":
 	    return;
+	    
 	    /*
 	case "pre":
 	    onPre(el, nodes, runs);
 	    break;
 	    */
+	    
 	case "br":
 	    commitParagraph();
 	    break;
+	    
 	case "p":
 	case "div":
 	case "main":
 	case "noscript":
 	case "header":
 	case "footer":
+	case "navbar":
 	case "center":
 	case "blockquote":
 	case "tbody":
@@ -132,11 +139,13 @@ final class NodeParser
 	case "aside": {
 	    commitParagraph();
 	context.addAttributes(el);
-	final var p = new NodeParser(el, preMode).process();
+	final var p = new NodeParser(context, el, preMode).process();
 	context.releaseAttributes();
+	log.trace("Parsed, {} nodes", p.getResultNodes().size());
 	resNodes.addAll(p.getResultNodes());
+		break;
 	    }
-	break;
+
 	case "h1":
 	case "h2":
 	case "h3":
@@ -157,25 +166,48 @@ final class NodeParser
 	//	nodes.add(h);
 	    }
 	break;
-	case "ul":
+	
+	case "li": {
+	    	    commitParagraph();
+	context.addAttributes(el);
+	    final var listItem = new ListItem();
+	    listItem.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
+	    //	    	h.setAttributes(getAttributes());
+	context.releaseAttributes();
+	    resNodes.add(listItem);
+	    		    break;
+	}
+	    
+	    	case "ul": {
+	    	    commitParagraph();
+	context.addAttributes(el);
+	    final var ul = new UnorderedList();
+	    ul.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
+	    //	    	h.setAttributes(getAttributes());
+	context.releaseAttributes();
+	    resNodes.add(ul);
+	    		    break;
+	}
+
+
 	case "ol":
-	case "li":
 	case "table":
 	case "th":
 	case "tr":
 	case "td":
 	    {
+			/*
 	    commitParagraph();
 	context.addAttributes(el);
-	/*
-	final Heading h = new Heading(1);
+		final Heading h = new Heading(1);
 	h.getItems().addAll(onNode(el, preMode));
 	h.setAttributes(getAttributes());
 	releaseAttrs();
 	nodes.add(h);
+	break;
 	*/
 	    }
-	break;
+	    
 	case "img":
 	case "a":
 	case "tt":
@@ -195,13 +227,13 @@ final class NodeParser
 	case "sup":
 	case "label":
 	    context.addAttributes(el);
-	    //	onTextElement(el, nodes, runs, preMode);
+	    processTextElement(el);
 	context.releaseAttributes();
 	break;
+	
 	default:
 	    log.warn("unprocessed tag {}", tagName);
 	}
-
     }
 
 void processTextElement(Element el)
@@ -215,10 +247,11 @@ void processTextElement(Element el)
 	//	if (tagName.equals("img"))
 	    //	    onImg(el, runs);
 	    final String anchor = tagName.equals("a")?getAnchor(el):null;
+	    log.trace("Anchor {}", anchor);
 	if (anchor != null)
 	    context.anchorStack.add(anchor);
 	try {
-	    resNodes.addAll(new NodeParser(el, preMode).getResultNodes());
+	    resNodes.addAll(new NodeParser(context, el, preMode).process().getResultNodes());
 	}
 	finally
 	{

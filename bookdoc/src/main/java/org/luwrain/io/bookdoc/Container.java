@@ -31,6 +31,14 @@ public class Container<T extends ContainerItem> extends Node
 	this.items.add(item);
     }
 
+        public void addAllItems(List<T> items)
+    {
+	requireNonNull(items, "items can't be null");
+	if (this.items == null)
+	    this.items = new ArrayList<>();
+	this.items.addAll(items);
+    }
+
     /*
     public void setAttributes(Attributes attr)
     {

@@ -10,12 +10,19 @@ import org.apache.logging.log4j.*;
 import org.jsoup.nodes.Node;
 import org.luwrain.io.bookdoc.Attributes;
 
+import static java.util.Objects.*;
+
 final class Context
 {
+        final URL baseUrl;
     final LinkedList<String> anchorStack = new LinkedList<>();
     final Set<String> allAnchors = new HashSet<>();
-    final URL baseUrl = null;
     final LinkedList<Attributes> attributesStack = new LinkedList<>();
+
+    Context(URL baseUrl)
+    {
+	this.baseUrl = requireNonNull(baseUrl, "baseUrl");
+    }
     
     void addAttributes(Node node)
     {

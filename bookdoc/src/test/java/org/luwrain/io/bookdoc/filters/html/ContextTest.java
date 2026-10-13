@@ -7,37 +7,50 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
+import java.net.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 
 public class ContextTest
 {
+    static private final URL url;
+
+    static {
+	try {
+	url = new URL("http://localhost");
+	}
+	catch(MalformedURLException ex)
+	{
+	    throw new RuntimeException(ex);
+	}
+    }
+    
     // ---- anchorStack ----
 
     @Test public void anchorStackInitiallyEmpty()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	assertNotNull(ctx.anchorStack);
 	assertTrue(ctx.anchorStack.isEmpty());
     }
 
     @Test public void getActualAnchorReturnsNullWhenEmpty()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	assertNull(ctx.getActualAnchor());
     }
 
     @Test public void getActualAnchorReturnsLastPushed()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	ctx.anchorStack.add("https://example.com");
 	assertEquals("https://example.com", ctx.getActualAnchor());
     }
 
     @Test public void getActualAnchorWithMultipleAnchors()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	ctx.anchorStack.add("https://first.com");
 	ctx.anchorStack.add("https://second.com");
 	assertEquals("https://second.com", ctx.getActualAnchor());
@@ -45,7 +58,7 @@ public class ContextTest
 
     @Test public void getActualAnchorAfterPoll()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	ctx.anchorStack.add("https://first.com");
 	ctx.anchorStack.add("https://second.com");
 	ctx.anchorStack.pollLast();
@@ -56,14 +69,14 @@ public class ContextTest
 
     @Test public void allAnchorsInitiallyEmpty()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	assertNotNull(ctx.allAnchors);
 	assertTrue(ctx.allAnchors.isEmpty());
     }
 
     @Test public void allAnchorsCollectsValues()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	ctx.allAnchors.add("https://example.com");
 	ctx.allAnchors.add("https://test.org");
 	assertEquals(2, ctx.allAnchors.size());
@@ -75,14 +88,14 @@ public class ContextTest
 
     @Test public void attributesStackInitiallyEmpty()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	assertNotNull(ctx.attributesStack);
 	assertTrue(ctx.attributesStack.isEmpty());
     }
 
     @Test public void addAttributesSingleElement()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<div id=\"wrapper\" class=\"main\">Text</div>";
 	final Document doc = Jsoup.parse(html);
 	final Element div = doc.select("div").first();
@@ -96,7 +109,7 @@ public class ContextTest
 
     @Test public void addAttributesNestedElements()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<div id=\"outer\"><p id=\"inner\">Text</p></div>";
 	final Document doc = Jsoup.parse(html);
 	final Element div = doc.select("div").first();
@@ -112,7 +125,7 @@ public class ContextTest
 
     @Test public void releaseAttributesRemovesTop()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<div id=\"a\"><span id=\"b\">Text</span></div>";
 	final Document doc = Jsoup.parse(html);
 	final Element div = doc.select("div").first();
@@ -127,13 +140,13 @@ public class ContextTest
 
     @Test public void releaseAttributesOnEmptyStackDoesNotThrow()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	assertDoesNotThrow(() -> ctx.releaseAttributes());
     }
 
     @Test public void getAttributesReturnsNull()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	// Context.getAttributes() always returns null in current implementation
 	assertNull(ctx.getAttributes());
     }
@@ -142,7 +155,7 @@ public class ContextTest
 
     @Test public void addAttributesPreservesJsoupAttributes()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<a href=\"https://luwrain.org\" id=\"link1\" class=\"external\">Link</a>";
 	final Document doc = Jsoup.parse(html);
 	final Element a = doc.select("a").first();
@@ -157,7 +170,7 @@ public class ContextTest
 
     @Test public void addAttributesElementWithoutAttributes()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<br>";
 	final Document doc = Jsoup.parse(html);
 	final Element br = doc.select("br").first();
@@ -170,7 +183,7 @@ public class ContextTest
 
     @Test public void addAttributesDeepNesting()
     {
-	final Context ctx = new Context();
+	final Context ctx = new Context(url);
 	final String html = "<html><body><section><div><p>Deep</p></div></section></body></html>";
 	final Document doc = Jsoup.parse(html);
 	final Element p = doc.select("p").first();

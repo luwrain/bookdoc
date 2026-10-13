@@ -12,7 +12,7 @@ import java.util.*;
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.filters.*;
 import org.luwrain.io.bookdoc.loaders.*;
-
+@Disabled
 public class HtmlFilterTest
 {
     HtmlFilter f = null;

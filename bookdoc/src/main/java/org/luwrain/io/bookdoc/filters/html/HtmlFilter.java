@@ -23,24 +23,24 @@ public final class HtmlFilter extends AttrsBase implements Filter
     static private final String DEFAULT_CHARSET = "UTF-8";
 
     private org.jsoup.nodes.Document jsoupDoc = null;
-    private URL docUrl = null;
+    private URL url = null;
 
 @Override public Doc load(InputStream is, Properties props) throws IOException
     {
 		final String urlStr = props.getProperty(Filter.PROP_URL);
 		log.trace("Parsing HTML from {}", urlStr);
-	if (urlStr == null || urlStr.isEmpty())
-throw new IOException("no \'url\' property");
-	    this.docUrl = new URL(urlStr);
+	if (urlStr == null || urlStr.isBlank())
+throw new IOException("no '" + Filter.PROP_URL + "' property");
+	    this.url = new URL(urlStr);
 	final String charsetValue = props.getProperty(Filter.PROP_CHARSET);
 	final String charset;
 		if (charsetValue != null && !charsetValue.isEmpty())
 		    charset = charsetValue; else
 		    charset = DEFAULT_CHARSET;
 		log.trace("Charset is {}", charset);
-	this.jsoupDoc = Jsoup.parse(is, charset, docUrl.toString());
+	this.jsoupDoc = Jsoup.parse(is, charset, url.toString());
 	final Doc doc = constructDoc();
-doc.setProperty("url", docUrl.toString());
+doc.setProperty("url", url.toString());
 doc.setProperty("contenttype", "FIXMEContentTypes.TEXT_HTML_DEFAULT");
 doc.setProperty("charset", charset);
 	return doc;
@@ -51,7 +51,8 @@ doc.setProperty("charset", charset);
 	final Map<String, String> meta = new HashMap<>();
 	collectMeta(jsoupDoc.head(), meta);
 	addAttrs(jsoupDoc.body());
-	final Root root = new Root(new NodeParser(jsoupDoc.body(), false).process().resNodes);
+	final Root root = new Root(new NodeParser(new Context(url), jsoupDoc.body(), false)
+				   .process().resNodes);
 	final Doc doc = new Doc(root, jsoupDoc.title());
 	//	doc.setHrefs(allHrefs.toArray(new String[allHrefs.size()]));
 	return doc;

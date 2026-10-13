@@ -14,7 +14,6 @@ import okhttp3.mockwebserver.*;
 
 import org.luwrain.io.bookdoc.*;
 
-
 public class LoaderImplTest
 {
     static private final String SIMPLE =
@@ -54,21 +53,23 @@ public class LoaderImplTest
 	assertNotNull(root);
 	final var items = root.getItems();
 	assertNotNull(items);
-	assertEquals(3, items.size(), "Incorrect number of items in the root container");
+	assertEquals(1, items.size(), "Incorrect number of items in the root container");
 	final ContainerItem
-	i0 = items.get(0),
+	i0 = items.get(0)/*,
 	i1 = items.get(1),
-	i2 = items.get(2);
+	i2 = items.get(2)*/;
 	assertEquals(Paragraph.class, i0.getClass());
+	/*
 	assertEquals(Paragraph.class, i1.getClass());
 	assertEquals(Paragraph.class, i2.getClass());
+	*/
 	final Paragraph
-	p0 = (Paragraph)i0,
+	p0 = (Paragraph)i0/*,
 	p1 = (Paragraph)i1,
-	p2 = (Paragraph)i2;
-	assertEquals(" ", p0.getText());
-	assertEquals("Simple test text", p1.getText());
-	assertEquals(" ", p2.getText());
+	p2 = (Paragraph)i2*/;
+	//	assertEquals(" ", p0.getText());
+	assertEquals("Simple test text", p0.getText());
+	//	assertEquals(" ", p2.getText());
     }
 
     @Test public void charsetFromResponseHeader() throws IOException
