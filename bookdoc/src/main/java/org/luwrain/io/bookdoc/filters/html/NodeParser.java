@@ -139,10 +139,13 @@ final class NodeParser
 	case "aside": {
 	    commitParagraph();
 	context.addAttributes(el);
+	try {
 	final var p = new NodeParser(context, el, preMode).process();
-	context.releaseAttributes();
-	log.trace("Parsed, {} nodes", p.getResultNodes().size());
 	resNodes.addAll(p.getResultNodes());
+	}
+	finally {
+		context.releaseAttributes();
+	}
 		break;
 	    }
 
@@ -154,19 +157,20 @@ final class NodeParser
 	case "h66":
 	case "h7":
 	case "h8":
-	case "h9": {
+	case "h9":
 	    commitParagraph();
 	context.addAttributes(el);
-	/*
+	try {
 	final Heading h = new Heading(tagName.trim().charAt(1) - '0');
-		h.getItems().addAll(onNode(el, preMode));
-	h.setAttributes(getAttributes());
-	*/
-	context.releaseAttributes();
-	//	nodes.add(h);
-	    }
-	break;
-	
+		h.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
+		//	h.setAttributes(getAttributes());
+	resNodes.add(h);
+	}
+	finally {
+		context.releaseAttributes();
+	}
+		break;
+
 	case "li": {
 	    	    commitParagraph();
 	context.addAttributes(el);
@@ -178,36 +182,88 @@ final class NodeParser
 	    		    break;
 	}
 	    
-	    	case "ul": {
+	    	case "ul": 
 	    	    commitParagraph();
 	context.addAttributes(el);
+	try {
 	    final var ul = new UnorderedList();
 	    ul.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
 	    //	    	h.setAttributes(getAttributes());
-	context.releaseAttributes();
 	    resNodes.add(ul);
-	    		    break;
 	}
+	finally {
+	    	context.releaseAttributes();
+	}
+	    		    break;
 
-
-	case "ol":
-	case "table":
-	case "th":
-	case "tr":
-	case "td":
-	    {
-			/*
-	    commitParagraph();
+			    	    	case "ol": 
+	    	    commitParagraph();
 	context.addAttributes(el);
-		final Heading h = new Heading(1);
-	h.getItems().addAll(onNode(el, preMode));
-	h.setAttributes(getAttributes());
-	releaseAttrs();
-	nodes.add(h);
-	break;
-	*/
-	    }
-	    
+	try {
+	    final var ol = new OrderedList();
+	    ol.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
+	    //	    	h.setAttributes(getAttributes());
+	    resNodes.add(ol);
+	}
+	finally {
+	    	context.releaseAttributes();
+	}
+	    		    break;
+
+			    	case "td":
+				    	    	    commitParagraph();
+	context.addAttributes(el);
+	try {
+	    final var cell = new TableCell();
+	    cell.addAllItems(new NodeParser(context, el, preMode).process().getResultNodes());
+	    //	    	h.setAttributes(getAttributes());
+	    resNodes.add(cell);
+	}
+	finally {
+	    	context.releaseAttributes();
+	}
+	    		    break;
+
+			    			    	case "tr":
+							    	case "th":
+				    	    	    commitParagraph();
+	context.addAttributes(el);
+	try {
+	    final var row = new TableRow();
+	    row.addAllItems(new NodeParser(context, el, preMode).process()
+			    .getResultNodes().stream()
+			    .filter(e -> (e instanceof TableCell))
+			    .map(e -> (TableCell)e)
+			    .toList());
+	    //	    	h.setAttributes(getAttributes());
+	    resNodes.add(row);
+	}
+	finally {
+	    	context.releaseAttributes();
+	}
+	    		    break;
+
+			    			    			    	case "table":
+				    	    	    commitParagraph();
+	context.addAttributes(el);
+	try {
+	    final var table = new Table();
+	    table.addAllItems(new NodeParser(context, el, preMode).process()
+			    .getResultNodes().stream()
+			    .filter(e -> (e instanceof TableRow))
+			    .map(e -> (TableRow)e)
+			    .toList());
+	    //	    	h.setAttributes(getAttributes());
+	    resNodes.add(table);
+	}
+	finally {
+	    	context.releaseAttributes();
+	}
+	    		    break;
+
+
+
+
 	case "img":
 	case "a":
 	case "tt":
@@ -247,14 +303,16 @@ void processTextElement(Element el)
 	//	if (tagName.equals("img"))
 	    //	    onImg(el, runs);
 	    final String anchor = tagName.equals("a")?getAnchor(el):null;
-	    log.trace("Anchor {}", anchor);
+	    //	    log.trace("Anchor {}", anchor);
 	if (anchor != null)
 	    context.anchorStack.add(anchor);
 	try {
-	    resNodes.addAll(new NodeParser(context, el, preMode).process().getResultNodes());
+	    final var res = new NodeParser(context, el, preMode).process().getResultNodes();
+	    if (res.size() == 1 && res.get(0) instanceof Paragraph paragraph)
+		runs.addAll(paragraph.getRuns()); else
+	    resNodes.addAll(res);
 	}
-	finally
-	{
+	finally {
 	    if (anchor != null)
 		context.anchorStack.pollLast();
 	}

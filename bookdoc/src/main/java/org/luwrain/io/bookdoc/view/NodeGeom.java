@@ -41,7 +41,11 @@ final class NodeGeom
         final int numItems = items.size();
         if (c instanceof TableRow tableRow)
         {
-            final int cellWidth = (recommended - numItems + 1) >= numItems ? (recommended - numItems + 1) / numItems : 1;
+	    final int cellWidth;
+	    if (numItems > 0)
+	    cellWidth = (recommended - numItems + 1) >= numItems ? (recommended - numItems + 1) / numItems : 1; else
+		cellWidth = 20; //FIXME:
+
             for (ContainerItem i : items)
                 calcWidth((Container) i, cellWidth);
             tableRow.getGeom().width = 0;
