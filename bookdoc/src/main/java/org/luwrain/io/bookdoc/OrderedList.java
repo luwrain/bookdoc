@@ -3,6 +3,12 @@
 
 package org.luwrain.io.bookdoc;
 
+/**
+ * An ordered list inside a document.
+ *
+ * <p>An ordered list is a {@link CommonList} whose entries have a particular
+ * order. Its direct children are {@link ListItem} elements.</p>
+ */
 public class OrderedList extends CommonList implements ContainerItem
 {
 }

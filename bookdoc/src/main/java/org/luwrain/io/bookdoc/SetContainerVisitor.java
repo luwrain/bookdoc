@@ -6,10 +6,17 @@ package org.luwrain.io.bookdoc;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
+/**
+ * A visitor that links document tree elements to their parents.
+ *
+ * <p>After a document is built, this visitor can be used to populate the
+ * back-references of the tree: every {@link ContainerItem} is assigned its
+ * owning container and every {@link TextRun} is assigned its owning paragraph.</p>
+ */
 public class SetContainerVisitor extends Visitor
 {
     static private final Logger log = LogManager.getLogger();
-    
+
     @Override public void visitEveryNode(Node node)
     {
 	if (node instanceof Container cont)
