@@ -16,6 +16,8 @@ import org.jsoup.select.*;
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.filters.*;
 
+import static java.util.Objects.*;
+
 @AutoService(Filter.class)
 public final class HtmlFilter extends AttrsBase implements Filter
 {
@@ -27,6 +29,8 @@ public final class HtmlFilter extends AttrsBase implements Filter
 
 @Override public Doc load(InputStream is, Properties props) throws IOException
     {
+	requireNonNull(is, "is can't be empty");
+	requireNonNull(props, "props can't be empty");
 		final String urlStr = props.getProperty(Filter.PROP_URL);
 		log.trace("Parsing HTML from {}", urlStr);
 	if (urlStr == null || urlStr.isBlank())

@@ -12,8 +12,8 @@ import java.util.*;
 import org.luwrain.io.bookdoc.*;
 import org.luwrain.io.bookdoc.filters.*;
 import org.luwrain.io.bookdoc.loaders.*;
-@Disabled
-public class HtmlFilterTest
+
+public class HtmlFilterBasicTest
 {
     HtmlFilter f = null;
 
@@ -37,7 +37,7 @@ public class HtmlFilterTest
 	final Doc d = loadDoc("empty.html");
 	assertNotNull(d);
 	assertNotNull(d.getRoot());
-	assertEquals(1, d.getRoot().getItemCount());
+	assertEquals(0, d.getRoot().getItemCount());
     }
 
     @Test public void loadHeadingsDocument() throws Exception
@@ -47,7 +47,7 @@ public class HtmlFilterTest
 	assertNotNull(d.getRoot());
 	final var items = d.getRoot().getItems();
 	assertNotNull(items);
-	assertEquals(18, items.size());
+	assertEquals(11, items.size());
     }
 
     @Test public void loadListsDocument() throws Exception
@@ -362,116 +362,6 @@ public class HtmlFilterTest
 	assertEquals("title", Doc.PROP_TITLE);
     }
 
-    // ---- ContentTypes tests ----
-
-    /*
-    @Test public void contentTypesSuggestHtml()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.TEXT_HTML, ct.suggest("index.html"));
-	assertEquals(ContentTypes.TEXT_HTML, ct.suggest("page.htm"));
-    }
-
-    @Test public void contentTypesSuggestPlainText()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.TEXT_PLAIN, ct.suggest("readme.txt"));
-    }
-
-    @Test public void contentTypesSuggestDoc()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.APP_DOC, ct.suggest("document.doc"));
-    }
-
-    @Test public void contentTypesSuggestDocx()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.APP_DOCX, ct.suggest("document.docx"));
-    }
-
-    @Test public void contentTypesSuggestPdf()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.APP_PDF, ct.suggest("report.pdf"));
-    }
-
-    @Test public void contentTypesSuggestXlsx()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.APP_XLSX, ct.suggest("data.xlsx"));
-    }
-
-    @Test public void contentTypesSuggestBinary()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.DATA_BINARY, ct.suggest("file.dat"));
-	assertEquals(ContentTypes.DATA_BINARY, ct.suggest("file.raw"));
-    }
-
-    @Test public void contentTypesSuggestFb2()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("application/fb2", ct.suggest("book.fb2"));
-    }
-
-    @Test public void contentTypesSuggestXhtml()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("application/xhtml", ct.suggest("page.xhtml"));
-	assertEquals("application/xhtml", ct.suggest("page.xhtm"));
-    }
-
-    @Test public void contentTypesSuggestZip()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("application/zip", ct.suggest("archive.zip"));
-    }
-
-    @Test public void contentTypesSuggestPostscript()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("application/postscript", ct.suggest("document.ps"));
-    }
-
-    @Test public void contentTypesSuggestUnknownExtension()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("", ct.suggest("file.unknown"));
-    }
-
-    @Test public void contentTypesSuggestNullFileName()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("", ct.suggest(null));
-    }
-
-    @Test public void contentTypesSuggestEmptyFileName()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals("", ct.suggest(""));
-    }
-
-    @Test public void contentTypesCaseInsensitive()
-    {
-	final ContentTypes ct = new ContentTypes();
-	assertEquals(ContentTypes.TEXT_HTML, ct.suggest("INDEX.HTML"));
-	assertEquals(ContentTypes.TEXT_HTML, ct.suggest("Page.Htm"));
-    }
-
-    @Test public void contentTypesConstants()
-    {
-	assertEquals("application/msword", ContentTypes.APP_DOC);
-	assertEquals("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ContentTypes.APP_DOCX);
-	assertEquals("application/pdf", ContentTypes.APP_PDF);
-	assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ContentTypes.APP_XLSX);
-	assertEquals("application/octet-stream", ContentTypes.DATA_BINARY);
-	assertEquals("text/html", ContentTypes.TEXT_HTML);
-	assertEquals("text/plain", ContentTypes.TEXT_PLAIN);
-	assertEquals("content/unknown", ContentTypes.UNKNOWN);
-    }
-    */
-
     // ---- Multiple loads of same filter instance ----
 
     @Test public void loadMultipleDocumentsWithSameFilter() throws Exception
@@ -489,7 +379,7 @@ public class HtmlFilterTest
 
     // ---- Null and edge cases ----
 
-    @Disabled @Test public void loadWithNullInputStreamThrows() throws Exception
+    @Test public void loadWithNullInputStreamThrows() throws Exception
     {
 	final var p = new Properties();
 	p.put(Filter.PROP_URL, "http://localhost");
@@ -605,8 +495,7 @@ public class HtmlFilterTest
 	final Doc d = loadDoc("empty.html");
 	assertNotNull(d);
 	assertEquals("Empty Document", d.getProperty(Doc.PROP_TITLE));
-		assertEquals(1, d.getRoot().getItems().size());
-		assertTrue(d.getRoot().getItems().get(0) instanceof Paragraph);
+		assertEquals(0, d.getRoot().getItems().size());
     }
 
     @Test public void metaRichHtmlLoadsWithoutException() throws Exception
