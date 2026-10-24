@@ -38,4 +38,10 @@ public interface ContainerItem
      * @return the attributes, or {@code null} if not set
      */
     Attributes getAttributes();
+
+    //TODO: Javadoc
+    void setIndexInContainer(int index);
+
+    //TODO: Javadoc
+    int getIndexInContainer();
 }

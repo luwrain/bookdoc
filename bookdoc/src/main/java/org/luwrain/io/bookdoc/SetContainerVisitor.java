@@ -19,10 +19,14 @@ public class SetContainerVisitor extends Visitor
 
     @Override public void visitEveryNode(Node node)
     {
+	int index = 0;
 	if (node instanceof Container cont)
 	    for(final var i: cont.getItems())
 		if (i instanceof ContainerItem c)
-		    c.setContainer(cont); else
+		{
+		    c.setContainer(cont);
+		    c.setIndexInContainer(index++);
+		}else
 		    log.warn("Unlink container item of the class {}", i.getClass().getName());
     }
 

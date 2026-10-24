@@ -18,6 +18,7 @@ public class Node
     static public final EmptyNode EMPTY = new EmptyNode();
 
     private Container container = null;
+    private int indexInContainer = -1;
     protected Geom geom = null;
     protected Attributes attributes = null;
 
@@ -66,6 +67,24 @@ public class Node
 	    attributes = new Attributes();
 	return attributes;
     }
+
+    //TODO: Javadoc
+    public void setIndexInContainer(int index)
+    {
+	if (index < 0)
+	    throw new IllegalArgumentException("index can't be negative (" + index + ")");
+	this.indexInContainer = index;
+    }
+
+    //TODO: Javadoc
+    public int getIndexInContainer()
+    {
+	if (indexInContainer < 0)
+	    throw new IllegalStateException("Index in container wasn't initialized");
+	return indexInContainer;
+    }
+
+	
 
     /**
      * Collects the plain text content of this node by concatenating the text
